@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .clip-path-bottom {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #F2F0E9; /* Cream */
+  color: #1A1A1A; /* Charcoal */
+  overflow-x: hidden;
+}
+
+/* Micro-interactions & Component Classes */
+.btn-magnetic {
+  @apply relative overflow-hidden transition-transform duration-[400ms] flex items-center justify-center;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn-magnetic:hover {
+  transform: scale(1.03) translateY(-1px);
+}
+
+.btn-magnetic::before {
+  content: '';
+  @apply absolute inset-0 bg-white/20 translate-y-[100%] transition-transform duration-[400ms] ease-out rounded-full z-0 pointer-events-none;
+}
+
+.btn-magnetic:hover::before {
+  @apply translate-y-0;
+}
+
+.link-lift {
+  @apply transition-transform duration-300 inline-block;
+}
+
+.link-lift:hover {
+  @apply -translate-y-[1px] opacity-80;
+}
+
+/* Typography Scales */
+h1, h2, h3, h4, h5, h6 {
+  @apply tracking-tight font-sans;
+}
+
+.font-drama {
+  font-family: inherit; /* Inherit the Coromant Garamond we'll apply directly to elements */
+  font-style: italic;
+  letter-spacing: normal;
+}
+
+.font-data {
+  @apply font-mono;
+}
+
+/* Hide scrollbar for clean aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F2F0E9;
+}
+::-webkit-scrollbar-thumb {
+  background: #1A2F2B;
+  border-radius: 4px;
+}

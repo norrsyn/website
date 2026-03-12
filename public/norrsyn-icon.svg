@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1024" height="1024">
+  <style>
+    .fav-bg {
+      fill: #111111;
+    }
+    .fav-text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 800;
+      font-size: 320px;
+      letter-spacing: -0.05em;
+      fill: #FAFAFA;
+    }
+    .fav-accent {
+      fill: #3ECF8E;
+    }
+  </style>
+  <rect width="512" height="512" rx="120" class="fav-bg" />
+  <text x="49%" y="54%" dominant-baseline="middle" text-anchor="middle" class="fav-text">
+    N<tspan class="fav-accent">_</tspan>
+  </text>
+</svg>

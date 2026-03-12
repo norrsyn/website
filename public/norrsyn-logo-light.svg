@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="1200" height="240">
+  <style>
+    .text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 800;
+      font-size: 64px;
+      letter-spacing: 0.15em;
+      fill: #FAFAFA;
+    }
+    .accent {
+      fill: #3ECF8E;
+    }
+  </style>
+  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" class="text">
+    NORRSYN<tspan class="accent">_</tspan>
+  </text>
+</svg>
