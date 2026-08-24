@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Favicon: N_ -->
+    <link rel="icon" type="image/svg+xml" href="/norrsyn-icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/norrsyn-icon.png" />
+    <link rel="apple-touch-icon" href="/norrsyn-icon.png" />
+    <link rel="shortcut icon" href="/norrsyn-icon.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
+    <title>Norrsyn – Rätt kunder. Bättre affärer.</title>
+    <meta name="description" content="Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt." />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Swedish" />
+    <link rel="canonical" href="https://norrsyn.se/" />
+
+    <!-- OpenGraph (LinkedIn / Slack / Social) -->
+    <meta property="og:title" content="Norrsyn – Rätt kunder. Bättre affärer." />
+    <meta property="og:description" content="Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://norrsyn.se/" />
+    <meta property="og:image" content="https://norrsyn.se/og-image.jpg" />
+    <meta property="og:locale" content="sv_SE" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Norrsyn – Rätt kunder. Bättre affärer." />
+    <meta name="twitter:description" content="Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt." />
+    <meta name="twitter:image" content="https://norrsyn.se/og-image.jpg" />
+
+    <!-- Structured Data (Schema Markup) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Norrsyn",
+      "url": "https://norrsyn.se",
+      "description": "Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt.",
+      "logo": "https://norrsyn.se/norrsyn-icon.png",
+      "sameAs": []
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-background text-dark relative font-sans antialiased selection:bg-accent selection:text-white">
+    <!-- Global Noise Overlay -->
+    <svg class="fixed inset-0 w-full h-full pointer-events-none z-[9999] opacity-[0.03] md:opacity-[0.05]">
+      <filter id="noiseFilter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+    </svg>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
