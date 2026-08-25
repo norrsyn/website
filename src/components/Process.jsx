@@ -279,11 +279,11 @@ function S2() {
         <Node n="02" />
         <header className="jr-head">
           <div className="eyebrow text-green-deep mb-4">Marknaden</div>
-          <h2 className="jr-title">”Sedan avgränsar vi marknaden.”</h2>
+          <h2 className="jr-title">”Hela marknaden är inte er marknad.”</h2>
           <p className="jr-body">
-            Er kravbild avgränsar den breda marknaden till de bolag som är
-            värda att undersöka. I det här exemplet: 3&nbsp;120 bolag, kohorten
-            vi följer härifrån.
+            Er kravbild ringar in de bolag som är värda att undersöka. I det
+            här exemplet: 3&nbsp;120 bolag, som vi följer genom resten av
+            processen.
           </p>
         </header>
 
@@ -345,7 +345,7 @@ function S3() {
           </div>
         </div>
 
-        <span className="jr-field-label" aria-hidden="true">Kohorten från 02 · 3 120 bolag</span>
+        <span className="jr-field-label" aria-hidden="true">Bolagen från 02 · 3 120 stycken</span>
         <div data-field3 className="jr-field" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0,1fr))` }} aria-hidden="true">
           {Array.from({ length: MARKS }, (_, i) => (
             <i key={i} data-state={RANKS[i] < ALIVE_AFTER_03 ? 'solid' : 'struck'} className="jm" />
@@ -353,8 +353,8 @@ function S3() {
         </div>
 
         <Foot>
-          Samma kohort som i 02: <span data-count3 className="jr-count">388</span>{' '}
-          av 3&nbsp;120 bolag håller. Resten ligger kvar som blekt bläck.
+          Samma bolag som i 02: <span data-count3 className="jr-count">388</span>{' '}
+          av 3&nbsp;120 håller. Resten ligger kvar som blekt bläck.
           Siffrorna är illustrativa.
         </Foot>
       </div>

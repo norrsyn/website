@@ -572,6 +572,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 @media (max-width: 1023px) { .jr-entry { display: none; } }
 
+/* The simplified-example caption sits under the ledger, where the completed
+   requirement runs home on desktop — push it below that stroke's path. */
+@media (min-width: 1024px) { .jr-01 .jr-foot { margin-top: 5.5rem; } }
+
 /* 01's header clears the arrival band so the entry glide crosses whitespace
    only — and the gap is generous: the visitor reads the statement while the
    line is still travelling, and the first question resolves only once the
