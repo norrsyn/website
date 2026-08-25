@@ -26,6 +26,21 @@ gsap.registerPlugin(ScrollTrigger);
 // Fog survives the photographic boundary: a soft apron drifts over the first
 // reach of the dark, so the atmosphere surrenders gradually instead of ending.
 // ==========================================================================
+/* The existence-register as grey noise: deterministic per-record variation in
+   ink and length, with occasional louder specks. Thousands of companies with
+   no way to tell them apart should read as static, not as a tidy archive —
+   that IS the section's argument. */
+const PH_NOISE = Array.from({ length: 912 }, (_, i) => {
+  let s = ((i + 1) * 2654435761) % 4294967296;
+  const rnd = () => ((s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296);
+  const r1 = rnd();
+  const r2 = rnd();
+  return {
+    o: +(0.09 + r1 * 0.3 + (r2 > 0.96 ? 0.25 : 0)).toFixed(2),
+    w: +(0.4 + r2 * 0.6).toFixed(2),
+  };
+});
+
 export const Philosophy = () => {
   const root = useRef(null);
 
@@ -147,8 +162,13 @@ export const Philosophy = () => {
           <div>
             <div className="eyebrow text-white/40 mb-4">Bolag som existerar</div>
             <div data-ph-field className="ph-field" aria-hidden="true">
-              {Array.from({ length: 912 }, (_, i) => <i key={i} />)}
+              {PH_NOISE.map((m, i) => (
+                <i key={i} style={{ opacity: m.o, transform: `scaleX(${m.w})` }} />
+              ))}
             </div>
+            <p className="ph-field-note">
+              Tusentals bolag utan urskiljning är inte en marknad. Det är brus.
+            </p>
           </div>
           <div className="ph-slots">
             <div className="eyebrow text-white/40 mb-4">Vad listan inte vet</div>
