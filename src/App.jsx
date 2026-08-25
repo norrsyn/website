@@ -381,14 +381,14 @@ function Hero() {
                 href="#kontakt"
                 className="btn bg-paper text-graphite hover:bg-white px-7 py-4 font-semibold text-[15px] w-full sm:w-auto"
               >
-                Beskriv er målmarknad
+                Se om vi kan hjälpa er
                 <ArrowRight size={17} strokeWidth={2.2} />
               </a>
               <a
                 href="#processen"
                 className="btn border border-white/20 text-white/85 hover:border-white/40 hover:text-white px-7 py-4 font-semibold text-[15px] w-full sm:w-auto"
               >
-                Så arbetar vi
+                Se hur vi arbetar
               </a>
             </div>
           </div>
