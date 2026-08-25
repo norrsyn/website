@@ -338,30 +338,36 @@ export const About = () => {
               data-about
               className="font-sans font-semibold text-ink text-[1.9rem] md:text-[2.4rem] leading-[1.12] tracking-[-0.035em]"
             >
-              Kvalitet slår volym, varje gång.
+              Vi gör grundarbetet inför era viktigaste samtal.
             </h2>
           </div>
           <div className="md:col-span-8 md:pl-6 grid sm:grid-cols-2 gap-8 md:gap-12">
             <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
               <p data-about>
-                Vi finns för att lösa ett konkret problem i B2B-försäljning: säljare
-                lägger sin bästa tid på bolag ingen har tittat närmare på.
+                Norrsyn finns av ett enkelt skäl: säljare lägger sin bästa tid på
+                bolag som ingen har hunnit titta närmare på. Det vill vi ändra på.
               </p>
               <p data-about>
-                Genom att gå igenom svenska bolag kontinuerligt ser vi var behov och
-                affärssituationer håller på att uppstå, och vi kan belägga det.
+                Vi går kontinuerligt igenom svenska bolag och ser var behov och
+                affärssituationer håller på att uppstå. Allt vi påstår går att
+                belägga, och tolkningar är alltid märkta som tolkningar.
               </p>
             </div>
             <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
               <p data-about>
-                Därför levererar vi inte listor. Vi levererar ett fåtal genomarbetade
-                Briefs där en affär är rimlig, med källorna kvar så att era säljare
-                kan bedöma dem själva.
+                Vi utgår från Jönköping, mitt i det Sverige vi arbetar igenom.
+                Våra kunder finns där kravbilden passar: bolag som säljer B2B på
+                den svenska marknaden, oavsett var de själva sitter.
+              </p>
+              <p data-about>
+                Det vi lämnar ifrån oss är aldrig listor, utan ett fåtal
+                genomarbetade Briefs där en affär är rimlig. Källorna följer med,
+                så att era säljare kan bedöma dem själva.
               </p>
               <p data-about className="text-ink font-medium">
-                Målet är inte bättre data. Målet är att en säljare ska kunna öppna
-                med något som faktiskt stämmer om just det bolaget, i stället för
-                att fråga vem hen borde ringa.
+                Målet är inte bättre data, utan att varje samtal ska börja med
+                något som stämmer om just det bolaget. Kvalitet slår volym,
+                varje gång.
               </p>
             </div>
           </div>

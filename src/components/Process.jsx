@@ -371,7 +371,7 @@ function S4() {
         <Node n="04" />
         <header className="jr-head">
           <div className="eyebrow text-green-deep mb-4">Researchen</div>
-          <h2 className="jr-title">”De som återstår granskas på djupet.”</h2>
+          <h2 className="jr-title">”Bolagen som sticker ut granskas på djupet.”</h2>
           <p className="jr-body">
             Vi läser bolaget från flera håll och letar efter vad som faktiskt
             har förändrats. Men samma händelse betyder olika saker för olika
