@@ -365,9 +365,8 @@ export const About = () => {
                 så att era säljare kan bedöma dem själva.
               </p>
               <p data-about className="text-ink font-medium">
-                Målet är inte bättre data, utan att varje samtal ska börja med
-                något som stämmer om just det bolaget. Kvalitet slår volym,
-                varje gång.
+                Målet är enkelt: mindre tid på monotont letande, mer tid med
+                rätt bolag. Kvalitet slår volym, varje gång.
               </p>
             </div>
           </div>
