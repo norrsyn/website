@@ -536,6 +536,19 @@ export const Footer = () => (
               <li key={h}><a href={h} className="link-underline">{l}</a></li>
             ))}
           </ul>
+          {/* The customer portal, introduced quietly where a returning
+              customer would look for it — and as a crawlable link so the
+              subdomain enters the search graph. */}
+          <div className="eyebrow text-white/55 mt-8 mb-3">Kund hos oss?</div>
+          <p className="text-white/50 text-[13px] leading-[1.7] mb-2 max-w-[16rem]">
+            Era Briefs och leveranser finns i portalen.
+          </p>
+          <a
+            href="https://app.norrsyn.se"
+            className="link-underline inline-flex items-center gap-1.5 text-[14px] text-white/75"
+          >
+            app.norrsyn.se <ArrowUpRight size={13} />
+          </a>
         </div>
 
         <div className="md:col-span-3">
