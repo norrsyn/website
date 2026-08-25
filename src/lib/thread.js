@@ -229,8 +229,11 @@ export function initThread() {
         desktop the six-strand rope does, drawn as one bundle tip. 06's rope
         ends where the splay takes over and feeds the Brief. ─────────────── */
   $$('.jr-rail-line').forEach((line) => {
-    const sec = line.closest('section');
-    scaleSeg(line, rectBand(sec, 0, 1), 'Y');
+    // The band is the rail CONTAINER's own extent, not the section's: for
+    // full-height rails they are identical, but 06's closed rail ends at its
+    // terminal square, and the tip must arrive there exactly when the head
+    // does — never leaving the square detached below a still-drawing line.
+    scaleSeg(line, rectBand(line.closest('.jr-rail'), 0, 1), 'Y');
   });
   $$('[data-rope]').forEach((svg) => {
     const sec = svg.closest('section');

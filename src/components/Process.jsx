@@ -156,6 +156,7 @@ function S1() {
   return (
     <section id="kravbilden" className="jr jr-01">
       <div data-entry-rail className="jr-entry" aria-hidden="true" />
+      <div className="jr-rail" aria-hidden="true"><span data-jrv className="jr-rail-line" /></div>
       <div className="jr-inner">
         <Node n="01" />
         <header className="jr-head">
@@ -249,7 +250,6 @@ function S1() {
               <text x={1 + 26} y={NECK_Y + 81.5}>OFFERBRAIN</text>
             </g>
           </svg>
-          <span className="jr-tail-m" aria-hidden="true" />
           <div className="jr-intake" role="list">
             {INTAKE.map((row) => (
               <div key={row.norm} role="listitem" className="jr-intake-row">

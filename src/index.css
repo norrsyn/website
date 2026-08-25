@@ -551,7 +551,8 @@ h1, h2, h3, h4, h5, h6 {
      the spine; chapter 02's rail picks up exactly at the section boundary. */
   margin-bottom: 0;
 }
-.jr-01 .jr-inner { padding-bottom: 260px; }
+.jr-01 .jr-inner { padding-bottom: 120px; }
+@media (min-width: 1024px) { .jr-01 .jr-inner { padding-bottom: 260px; } }
 /* The thread arriving from Problemet: section top down to the formation
    SVG's origin. Height is measured (the one legitimate measured anchor) and
    cached; same x-formula as every rail. */
@@ -609,16 +610,6 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--green-deep);
 }
 @media (max-width: 1023px) { .jr-out-dot { display: none; } }
-.jr-tail-m {
-  display: none;
-  position: absolute;
-  left: -2.4rem;
-  bottom: -120px;
-  width: 2px;
-  height: 120px;
-  background: rgba(46, 110, 85, 0.55);
-}
-@media (max-width: 1023px) { .jr-tail-m { display: block; } }
 .jr-intake { border-top: 1px solid rgba(21,24,26,0.12); }
 .jr-intake-row {
   position: relative;

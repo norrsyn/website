@@ -100,6 +100,11 @@ export const Philosophy = () => {
       {/* Fog surviving the photographic boundary. */}
       <div className="ph-fog" aria-hidden="true" />
 
+      {/* Mobile: the thread is born at the top of the problem and runs the
+          margin — the same rail grammar as every process section, so the
+          seams downward are exact. Desktop uses the drawn route instead
+          (the rail line is display:none at >=1024). */}
+      <div className="jr-rail" aria-hidden="true"><span data-jrv className="jr-rail-line" /></div>
       {/* The unresolved strand and its open terminal. */}
       <svg className="ph-route" aria-hidden="true">
         <path data-route fill="none" />
