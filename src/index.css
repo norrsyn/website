@@ -542,11 +542,12 @@ h1, h2, h3, h4, h5, h6 {
   gap: 5px;
   max-width: 46rem;
 }
-/* On narrow screens the 24-column cells get slim; a lower mark height keeps
-   every record wider than it is tall — the same artefact as desktop, scaled. */
+/* On narrow screens the marks keep the desktop bar proportion (5:2) at
+   whatever width the 24-column grid gives them — the artefact is a true
+   miniature of the desktop one, not a different diagram. */
 @media (max-width: 639px) {
-  .jr-field { gap: 4px 3px; }
-  .jr-field .jm { height: 5px; }
+  .jr-field { gap: 3px 2px; }
+  .jr-field .jm { height: auto; aspect-ratio: 5 / 2; }
 }
 
 /* ── 01 · intake ────────────────────────────────────────────────────────── */
@@ -604,6 +605,11 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 10px;
   letter-spacing: 0.18em;
   fill: var(--green-deep);
+}
+.jr-form .jr-oblabel text.jr-oblabel-sub {
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  fill: var(--ink-4);
 }
 .jr-form [data-form] { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.5; stroke-linecap: round; }
 .jr-form [data-form-spine] { stroke: rgba(46, 110, 85, 0.62); stroke-width: 2; stroke-linecap: round; }

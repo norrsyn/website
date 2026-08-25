@@ -248,6 +248,10 @@ function S1() {
             <g data-oblabel className="jr-oblabel">
               <line x1={1 + 15.5} y1={NECK_Y + 78} x2={1 + 21} y2={NECK_Y + 78} />
               <text x={1 + 26} y={NECK_Y + 81.5}>OFFERBRAIN</text>
+              {/* The tell: this is the model that rides the line from here on. */}
+              <text className="jr-oblabel-sub" x={1 + 26} y={NECK_Y + 97}>
+                er kravbild, med i varje beslut härifrån och ned
+              </text>
             </g>
           </svg>
           <div className="jr-intake" role="list">
