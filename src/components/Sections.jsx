@@ -1,552 +1,469 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, ShieldCheck, Cpu, Search, GitBranch, Radar } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { prefersReducedMotion, EASE } from '../lib/motion.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ==========================================
-// Component: Philosophy 
-// ==========================================
+// ==========================================================================
+// Problemet — the bridge.
+//
+// Rebuilt from scratch. The old composition (rail + terminals + a numbered
+// three-row list) read as a website diagram; this is an editorial argument:
+//
+//   A FIELD of quiet marks — the companies a register knows exist.
+//   THREE HOLLOW SLOTS — the intelligence the register does not contain:
+//   need, person, timing.
+//
+// The thread arrives from the hero still unresolved: it crosses the seam,
+// steps quietly into the left gutter, descends PAST the field of existing
+// companies — able to see them, unable to choose among them — and ends in an
+// open ring. That inability is the section's thesis, and the closing line
+// hands it to chapter 01: to find the right companies, we first have to
+// define what right means.
+//
+// Fog survives the photographic boundary: a soft apron drifts over the first
+// reach of the dark, so the atmosphere surrenders gradually instead of ending.
+// ==========================================================================
 export const Philosophy = () => {
-    const sectionRef = useRef(null);
-    const textRef1 = useRef(null);
-    const textRef2 = useRef(null);
+  const root = useRef(null);
 
-    useEffect(() => {
-        let ctx = gsap.context(() => {
-            gsap.from([textRef1.current, textRef2.current], {
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top 60%",
-                },
-                y: 50,
-                opacity: 0,
-                duration: 1.2,
-                stagger: 0.3,
-                ease: "power3.out"
-            });
-        }, sectionRef);
-        return () => ctx.revert();
-    }, []);
-
-    return (
-        <section ref={sectionRef} id="B2B-LEADS-PROBLEMET" className="py-24 md:py-32 bg-dark text-white relative overflow-hidden">
-            <div className="absolute inset-0 z-0 opacity-10 mix-blend-overlay">
-                <img src="https://images.unsplash.com/photo-1502657877623-f66bf489d236?q=80&w=2938&auto=format&fit=crop" alt="Organic texture" className="w-full h-full object-cover grayscale" />
-            </div>
-            
-            <div className="max-w-5xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-                <h2 ref={textRef1} className="font-sans font-bold text-3xl md:text-5xl md:leading-[1.1] max-w-4xl tracking-tight mb-8">
-                    Leadlistor <span className="font-drama italic text-accent font-normal text-4xl md:text-[5rem]">räcker inte längre.</span>
-                </h2>
-                <div ref={textRef2} className="font-sans text-base text-white/75 max-w-2xl text-left space-y-4">
-                    <p>Många IT-konsultbolag arbetar med stora listor av företag att kontakta.</p>
-                    <p>Problemet är att listor saknar kontext.</p>
-                    <ul className="list-none space-y-2 pl-0">
-                        <li className="flex items-start gap-2"><span className="text-accent mt-1">•</span> vilka företag som faktiskt har ett behov</li>
-                        <li className="flex items-start gap-2"><span className="text-accent mt-1">•</span> vem som fattar beslut</li>
-                        <li className="flex items-start gap-2"><span className="text-accent mt-1">•</span> varför ert erbjudande är relevant just nu</li>
-                    </ul>
-                    <p className="text-white/90 font-medium">Norrsyn analyserar marknaden och identifierar affärssituationer där sannolikheten för en affär är högre.</p>
-                </div>
-            </div>
-        </section>
-    );
-};
-
-// ==========================================
-// Component: Protocol Archive
-// ==========================================
-export const Protocol = () => {
-    const containerRef = useRef(null);
-    const cardsRef = useRef([]);
-
-    useEffect(() => {
-        let ctx = gsap.context(() => {
-            let mm = gsap.matchMedia();
-
-            // Desktop: Full cinematic pinning, scaling and blur
-            mm.add("(min-width: 769px)", () => {
-                cardsRef.current.forEach((card, i) => {
-                    if(i === cardsRef.current.length - 1) return; // Skip last one
-                    
-                    ScrollTrigger.create({
-                        trigger: card,
-                        start: "top top",
-                        end: "bottom top",
-                        pin: true,
-                        pinSpacing: false,
-                        scrub: true,
-                        animation: gsap.to(card, {
-                            scale: 0.9,
-                            opacity: 0.5,
-                            filter: "blur(20px)",
-                            ease: "none"
-                        })
-                    });
-                });
-            });
-
-            // Mobile: Lightweight non-pinned scroll fade, no blur/scale triggers
-            mm.add("(max-width: 768px)", () => {
-                cardsRef.current.forEach((card, i) => {
-                    if(i === cardsRef.current.length - 1) return;
-                    
-                    ScrollTrigger.create({
-                        trigger: card,
-                        start: "top 20%",
-                        end: "bottom 30%",
-                        scrub: true,
-                        animation: gsap.to(card, {
-                            opacity: 0.4,
-                            filter: "blur(2px)",
-                            y: -10,
-                            ease: "none"
-                        })
-                    });
-                });
-            });
-
-        }, containerRef);
-        return () => ctx.revert();
-    }, []);
-
-    const steps = [
-        {
-            num: "01",
-            title: "Ni definierar er målmarknad",
-            desc: "Ni beskriver vilken typ av bolag ni vill nå — bransch, storlek, geografi och tekniska behov.",
-            icon: <Search className="w-12 h-12 text-accent mb-6" />,
-            animationClass: "animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"
-        },
-        {
-            num: "02",
-            title: "Vi analyserar marknaden",
-            desc: "Tusentals svenska bolag analyseras. Affärssignaler, förändringar och tekniska initiativ identifieras.",
-            icon: <Radar className="w-12 h-12 text-accent mb-6" />,
-            animationClass: "animate-[spin_5s_cubic-bezier(0.4,0,0.6,1)_infinite] border-t-accent border-r-transparent border-b-transparent border-l-transparent opacity-70"
-        },
-        {
-            num: "03",
-            title: "Ni får koncentrerade möjligheter",
-            desc: "Ni får ett noggrant urval av analyserade företag levererade med kontext inför första kontakt.",
-            icon: <ShieldCheck className="w-12 h-12 text-accent mb-6" />,
-            animationClass: "animate-pulse border-accent/50 scale-105"
+  useEffect(() => {
+    let cleanupRoute = () => {};
+    const ctx = gsap.context(() => {
+      // The route: from the hero trunk's landing, one quiet step left into the
+      // gutter, then down past the field to the open terminal. Deterministic
+      // viewport geometry — the glide runs at y≈64px, above every glyph.
+      const layoutRoute = () => {
+        const el = root.current;
+        if (!el) return;
+        const W = document.documentElement.clientWidth;
+        const H = el.offsetHeight;
+        const tx = Math.max(0.5 * W, 700);
+        const gx = Math.max(16, W / 2 - 576 + 17.6) + 1;
+        // One gesture, not an outline: the thread lands from the hero, and a
+        // single long sweep carries it from the centre axis into the left
+        // margin, through the fog apron, above every glyph. Then it descends
+        // as editorial structure.
+        const d = [
+          `M ${tx} -2`,
+          `L ${tx} 28`,
+          `C ${tx} 150, ${gx} 60, ${gx} 190`,
+          `L ${gx} ${H + 2}`,
+        ].join(' ');
+        el.querySelectorAll('[data-route]').forEach((p) => p.setAttribute('d', d));
+        // The excursion: at the register's height the line regards the field —
+        // a short deliberate tick toward it, ending in the open ring it cannot
+        // close. Able to see the companies, unable to choose among them.
+        const field = el.querySelector('[data-ph-field]');
+        const tick = el.querySelector('[data-ring-tick]');
+        const ring = el.querySelector('[data-ring]');
+        if (field && tick && ring) {
+          const fr = field.getBoundingClientRect();
+          const er = el.getBoundingClientRect();
+          const fy = fr.top - er.top + fr.height * 0.5;
+          tick.setAttribute('d', `M ${gx} ${fy} L ${gx + 22} ${fy}`);
+          ring.style.left = `${gx + 29}px`;
+          ring.style.top = `${fy}px`;
         }
-    ];
+      };
+      layoutRoute();
+      window.addEventListener('resize', layoutRoute);
+      cleanupRoute = () => window.removeEventListener('resize', layoutRoute);
 
-    return (
-        <section id="RESEARCH-PROCESS" ref={containerRef} className="bg-background relative">
-            {steps.map((step, i) => (
-                <div 
-                    key={i} 
-                    ref={el => cardsRef.current[i] = el}
-                    className="py-32 md:py-0 w-full md:h-[100dvh] flex items-center justify-center sticky top-0 bg-background border-t border-primary/5"
-                >
-                    <div className="max-w-4xl w-full px-6 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
-                        <div className="text-center md:text-left">
-                             <div className="font-mono text-accent text-base md:text-lg mb-3 md:mb-4">[ STEG_{step.num} ]</div>
-                             <h2 className="font-sans font-bold text-[2rem] leading-tight md:text-6xl text-primary mb-4 md:mb-6 tracking-tight">{step.title}</h2>
-                             <p className="text-dark/70 text-base md:text-lg leading-relaxed">{step.desc}</p>
-                        </div>
-                        <div className="bg-white/50 backdrop-blur-sm md:backdrop-blur-md border border-primary/10 rounded-[2.5rem] md:rounded-[3rem] aspect-square flex items-center justify-center p-8 md:p-12 shadow-sm md:shadow-[0_10px_40px_-10px_rgba(46,64,54,0.06)] max-w-[260px] md:max-w-none mx-auto w-full">
-                             {/* Abstract placeholder for the canvas/svg animations required by spec */}
-                             <div className="w-full h-full border border-dashed border-primary/20 rounded-full flex flex-col items-center justify-center relative">
-                                  {step.icon}
-                                  <div className={`absolute inset-0 rounded-full border border-accent/30 ${step.animationClass}`}></div>
-                             </div>
-                        </div>
-                    </div>
-                </div>
+      if (prefersReducedMotion()) return;
+
+      // The route, the ring and the slot activations are engine-driven
+      // (src/lib/thread.js). Only content text animates here.
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: root.current, start: 'top 58%', once: true },
+        defaults: { ease: 'power2.out' },
+      });
+      tl.from('[data-phil-line]', { yPercent: 105, duration: 1.05, stagger: 0.1 })
+        .from('[data-ph-copy]', { opacity: 0, y: 10, duration: 0.9 }, 0.4)
+        .from('[data-ph-field]', { opacity: 0, duration: 1.2 }, 0.5)
+        .from('[data-ph-hand]', { opacity: 0, y: 10, duration: 0.9 }, 1.7);
+    }, root);
+    return () => {
+      cleanupRoute();
+      ctx.revert();
+    };
+  }, []);
+
+  return (
+    <section
+      ref={root}
+      id="varfor-norrsyn"
+      className="on-dark jr-dark relative overflow-hidden bg-graphite text-white"
+    >
+      {/* Fog surviving the photographic boundary. */}
+      <div className="ph-fog" aria-hidden="true" />
+
+      {/* The unresolved strand and its open terminal. */}
+      <svg className="ph-route" aria-hidden="true">
+        <path data-route fill="none" />
+        <path data-ring-tick fill="none" />
+      </svg>
+      <span data-ring className="ph-ring" aria-hidden="true" />
+
+      <div className="jr-inner">
+        <div className="eyebrow text-white/50 mb-8 md:mb-10">Problemet</div>
+
+        <h2 className="max-w-4xl mb-10 md:mb-12">
+          <span className="reveal-mask">
+            <span
+              data-phil-line
+              className="block font-sans font-semibold text-white
+                         text-[2.2rem] sm:text-5xl md:text-[3.7rem] leading-[1.04] tracking-[-0.035em]"
+            >
+              Leadlistor
+            </span>
+          </span>
+          <span className="reveal-mask">
+            <span
+              data-phil-line
+              className="display block text-[#E7E1D4]
+                         text-[2.6rem] sm:text-[3.6rem] md:text-[4.5rem] leading-[1.02]"
+            >
+              räcker inte längre.
+            </span>
+          </span>
+        </h2>
+
+        <p data-ph-copy className="text-white/65 text-[15px] md:text-base leading-[1.75] max-w-md mb-14 md:mb-16">
+          Ett register talar om vilka bolag som finns. Det säger ingenting om
+          vilka som har ett verkligt skäl att köpa, vem som äger frågan, eller
+          varför just nu.
+        </p>
+
+        {/* The field, and what the list cannot see. */}
+        <div className="ph-grid">
+          <div>
+            <div className="eyebrow text-white/40 mb-4">Bolag som existerar</div>
+            <div data-ph-field className="ph-field" aria-hidden="true">
+              {Array.from({ length: 912 }, (_, i) => <i key={i} />)}
+            </div>
+          </div>
+          <div className="ph-slots">
+            <div className="eyebrow text-white/40 mb-4">Vad listan inte vet</div>
+            {[
+              ['behov', 'Behov', 'Finns det ett verkligt skäl att köpa?'],
+              ['person', 'Person', 'Vem äger frågan internt?'],
+              ['timing', 'Timing', 'Varför är det läge just nu?'],
+            ].map(([kind, t, q]) => (
+              <div data-ph-slot data-kind={kind} key={t} className="ph-slot">
+                <span className="ph-slot-box" aria-hidden="true" />
+                <span>
+                  <span className="ph-slot-label">{t}</span>
+                  <span className="ph-slot-q">{q}</span>
+                </span>
+              </div>
             ))}
-        </section>
-    );
+          </div>
+        </div>
+
+        <p data-ph-hand className="mt-16 md:mt-20 max-w-2xl text-white text-[17px] md:text-[19px] leading-[1.6] font-medium tracking-[-0.015em]">
+          För att hitta rätt bolag måste vi först definiera vad rätt betyder.
+          Det är där arbetet börjar.
+        </p>
+      </div>
+    </section>
+  );
 };
 
-// ==========================================
-// Component: About (Om Norrsyn)
-// ==========================================
+// ==========================================================================
+// Handoff — the exhale after the Brief.
+//
+// One truth, stated positively: Norrsyn does not do the deal; it removes the
+// guessing from the way in. The glyph closes the visual story — a chosen
+// company, a line, and an open ring: the conversation, which stays human.
+// ==========================================================================
+export const Handoff = () => {
+  const root = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) return;
+      gsap.from('[data-ho]', {
+        scrollTrigger: { trigger: root.current, start: 'top 72%', once: true },
+        y: 14, opacity: 0, duration: 0.9, stagger: 0.12, ease: EASE.out,
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="overlamningen" ref={root} className="bg-paper">
+      <div className="mx-auto max-w-3xl px-6 sm:px-10 py-28 md:py-40 text-center">
+        <div data-ho className="ho-glyph" aria-hidden="true">
+          <span className="ho-mark" />
+          <span className="ho-line" />
+          <span className="ho-ring" />
+        </div>
+        <h2
+          data-ho
+          className="font-sans font-semibold text-ink text-[1.7rem] md:text-[2.3rem] leading-[1.15] tracking-[-0.03em] mb-6"
+        >
+          När säljaren tar över ska så lite som möjligt vara en gissning.
+        </h2>
+        <p data-ho className="text-ink-3 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
+          Affären avgörs fortfarande mellan människor. Vi avgör inte vad som
+          händer i samtalet, men vi ser till att det finns ett verkligt skäl
+          att ta det: rätt bolag, rätt personer, rätt läge och ett underlag
+          som går att använda.
+        </p>
+        <p data-ho className="text-ink font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
+          En Brief är inte ett löfte om en affär. Det är vårt arbete för att
+          så lite som möjligt ska lämnas åt slumpen innan första kontakten.
+        </p>
+      </div>
+    </section>
+  );
+};
+
+// ==========================================================================
+// About
+// ==========================================================================
 export const About = () => {
-    return (
-        <section id="om-norrsyn" className="py-24 md:py-32 bg-background relative z-10">
-            <div className="max-w-4xl mx-auto px-6">
-                <div className="font-mono text-accent text-sm md:text-base mb-6 tracking-wider uppercase">
-                     Om Norrsyn
-                </div>
-                <h2 className="font-sans font-bold text-3xl md:text-5xl text-primary mb-12 tracking-tight leading-[1.2]">
-                    Norrsyn hjälper B2B-bolag att identifiera affärsmöjligheter genom <span className="font-drama italic text-accent font-normal relative top-1">research, analys och kontext.</span>
-                </h2>
-                <div className="grid md:grid-cols-2 gap-12 text-dark/75 text-base leading-relaxed font-sans">
-                    <div>
-                        <p className="mb-6">Vi existerar för att lösa ett fundamentalt problem inom B2B-försäljning: avsaknaden av kontext. Stora listor med kalla leads skapar sällan verkligt värde utan slösar istället säljteamens tid.</p>
-                        <p>Genom att kontinuerligt skanna och analysera svenska bolag kan vi identifiera var tekniska behov och affärssituationer håller på att uppstå.</p>
-                    </div>
-                    <div>
-                        <p className="mb-6">Vår övertygelse är att kvalitet och research alltid slår volym. Därför levererar vi inte generiska listor, utan ett noga utvalt antal koncentrerade möjligheter där en affär faktiskt kan vara realistisk.</p>
-                        <p className="font-medium text-primary">Det ger dig och era säljare rätt förutsättningar inför den allra första kontakten.</p>
-                    </div>
-                </div>
+  const root = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) return;
+      gsap.from('[data-about]', {
+        scrollTrigger: { trigger: root.current, start: 'top 78%', once: true },
+        y: 16, opacity: 0, duration: 0.9, stagger: 0.09, ease: EASE.out,
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="om-norrsyn" ref={root} className="bg-paper-2 border-t border-ink/8">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
+        <div className="grid md:grid-cols-12 gap-10 md:gap-16">
+          <div className="md:col-span-4">
+            <div data-about className="eyebrow text-ink-4 mb-6">Om Norrsyn</div>
+            <h2
+              data-about
+              className="font-sans font-semibold text-ink text-[1.9rem] md:text-[2.4rem] leading-[1.12] tracking-[-0.035em]"
+            >
+              Kvalitet slår volym, varje gång.
+            </h2>
+          </div>
+          <div className="md:col-span-8 md:pl-6 grid sm:grid-cols-2 gap-8 md:gap-12">
+            <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
+              <p data-about>
+                Vi finns för att lösa ett konkret problem i B2B-försäljning: säljare
+                lägger sin bästa tid på bolag ingen har tittat närmare på.
+              </p>
+              <p data-about>
+                Genom att gå igenom svenska bolag kontinuerligt ser vi var behov och
+                affärssituationer håller på att uppstå, och vi kan belägga det.
+              </p>
             </div>
-        </section>
-    );
-};
-
-// ==========================================
-// Component: Metrics Sektion
-// ==========================================
-export const Metrics = () => {
-    return (
-        <section id="RESEARCH-RESULTAT" className="bg-primary text-white py-16 md:py-24 border-y border-white/5">
-            <div className="max-w-4xl mx-auto px-6 grid grid-cols-2 gap-8 md:gap-12 text-center divide-x divide-white/8">
-                <div className="flex flex-col items-center">
-                    <div className="font-drama text-5xl md:text-5xl lg:text-7xl text-accent mb-2 md:mb-3">1000+</div>
-                    <div className="font-sans text-xs md:text-sm text-white/60 uppercase tracking-widest max-w-[170px]">Företag filtrerade</div>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="font-drama text-5xl md:text-5xl lg:text-7xl text-accent mb-2 md:mb-3">100+</div>
-                    <div className="font-sans text-xs md:text-sm text-white/60 uppercase tracking-widest max-w-[170px]">Timmar research sparade</div>
-                </div>
+            <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
+              <p data-about>
+                Därför levererar vi inte listor. Vi levererar ett fåtal genomarbetade
+                Briefs där en affär är rimlig, med källorna kvar så att era säljare
+                kan bedöma dem själva.
+              </p>
+              <p data-about className="text-ink font-medium">
+                Målet är inte bättre data. Målet är att en säljare ska kunna öppna
+                med något som faktiskt stämmer om just det bolaget, i stället för
+                att fråga vem hen borde ringa.
+              </p>
             </div>
-        </section>
-    );
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
-// ==========================================
-// Component: Example Opportunity
-// ==========================================
-export const ExampleOpportunity = () => {
-    return (
-        <section id="leveransinnehall" className="py-24 md:py-32 bg-background relative z-10 border-t border-primary/5">
-             <div className="max-w-5xl mx-auto px-6 text-center mb-16">
-                 <h2 className="font-sans font-bold text-4xl md:text-5xl text-primary mb-4 tracking-tight">
-                     Exempel på identifierad <span className="font-drama italic text-accent font-normal">affärsmöjlighet</span>
-                 </h2>
-                 <p className="text-dark/70 text-base">
-                     Så här kan ett researchkort se ut för en IT-konsult innan första kontakt.
-                 </p>
-             </div>
-
-             {/* Example Card */}
-             <div className="max-w-4xl mx-auto bg-white border border-primary/10 rounded-3xl p-6 sm:p-8 md:p-12 shadow-sm md:shadow-[0_10px_30px_-10px_rgba(26,47,43,0.08)] relative overflow-hidden text-left flex flex-col">
-                 <div className="absolute top-0 right-0 w-64 h-64 bg-accent/2 md:bg-accent/3 rounded-full blur-xl md:blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-
-                 {/* Header */}
-                 <div className="pb-8 border-b border-primary/8 mb-8 relative z-10">
-                     <div className="flex items-center justify-between mb-4">
-                         <div className="flex items-center gap-3">
-                             <span className="font-mono text-[9px] text-dark/40 bg-background border border-primary/8 px-2 py-0.5 rounded tracking-widest uppercase">DEMOEXEMPEL • FIKTIVT BOLAG</span>
-                             <span className="font-mono text-[9px] text-accent tracking-[0.15em] uppercase">Kvalificerad mot er ICP</span>
-                         </div>
-                         <div className="flex flex-col items-end shrink-0">
-                             <div className="font-drama italic text-3xl text-accent leading-none mb-0.5">86/100</div>
-                             <div className="font-mono text-[9px] text-dark/35 uppercase tracking-wider">ICP Score</div>
-                         </div>
-                     </div>
-                     <div className="flex flex-col md:flex-row justify-between items-start gap-4">
-                         <div>
-                             <h3 className="font-sans font-bold text-2xl md:text-3xl text-primary mb-1">Nordic Flow Distribution AB</h3>
-                             <div className="text-dark/40 text-xs font-mono mb-4">Partihandel / Distribution • Västra Götaland • Sverige</div>
-                             <p className="text-dark/70 text-sm max-w-xl leading-relaxed">Bolaget distribuerar tekniska komponenter till industri- och installationsbolag och arbetar med lager, orderflöden och flera leverantörsled.</p>
-                         </div>
-                     </div>
-                 </div>
-
-                 {/* Fact / enrichment strip */}
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-primary/5 rounded-xl overflow-hidden mb-8 md:mb-10 border border-primary/5 relative z-10 w-full">
-                     {[
-                         { label: 'Omsättning', value: '64,8 MSEK' },
-                         { label: 'Resultat', value: '5,7 MSEK' },
-                         { label: 'Anställda', value: '28' },
-                         { label: 'Tillväxt', value: '+18% YoY', accent: true },
-                     ].map(({ label, value, accent }) => (
-                         <div key={label} className="bg-white px-5 py-4">
-                             <div className="font-mono text-[9px] text-dark/40 uppercase tracking-wider mb-1">{label}</div>
-                             <div className={`font-sans font-semibold text-base ${accent ? 'text-accent' : 'text-primary'}`}>{value}</div>
-                         </div>
-                     ))}
-                 </div>
-
-                 {/* Body grid */}
-                 <div className="grid md:grid-cols-2 gap-8 md:gap-10 relative z-10">
-                     {/* Left col — intelligence */}
-                     <div className="space-y-6">
-
-                         {/* Company details */}
-                         <div className="py-4 px-4 bg-background rounded-xl border border-primary/5 text-[11px] font-mono text-dark/40 space-y-2 leading-[1.6]">
-                             <div className="text-[9px] uppercase tracking-wider text-dark/25 mb-3">Företagsinfo</div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Org.nr</span> <span className="text-dark/70">5594XX-XXXX</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Adress</span> <span className="text-dark/70">Importgatan 12<span className="hidden sm:inline"><br/></span><span className="sm:hidden">, </span>417 55 Göteborg</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Webbplats</span> <span className="text-dark/70">nordicflowdistribution.se</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Bransch</span> <span className="text-dark/70">Distribution / Grossist</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Affärsmodell</span> <span className="text-dark/70">B2B</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Region</span> <span className="text-dark/70">Västra Götaland</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-24 shrink-0">Grundat</span> <span className="text-dark/70">2014</span></div>
-                         </div>
-
-                         <div>
-                             <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-2">Varför bolaget matchar</h4>
-                             <p className="text-dark/70 text-sm leading-relaxed">Bolaget verkar i en verksamhet med många processberoenden mellan lager, order, inköp och leverans. Kombinationen av tillväxt, fler operativa roller och ökad komplexitet gör bolaget relevant för en IT-konsult som säljer ERP, integrationer eller digitalisering av interna flöden.</p>
-                         </div>
-
-                         <div>
-                             <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-2">Affärssignaler</h4>
-                             <p className="text-dark/70 text-sm leading-relaxed">Bolaget har nyligen utökat lagerkapaciteten, rekryterat operativ personal inom logistik och ekonomi samt kommunicerat fokus på effektivare interna processer. Flera signaler tyder på att verksamheten växer i komplexitet och att behovet av bättre systemstöd ökar.</p>
-                         </div>
-
-                         <div>
-                             <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-2">Möjligt behov</h4>
-                             <p className="text-dark/70 text-sm leading-relaxed">När distributionsbolag växer uppstår ofta friktion mellan lagerstyrning, orderflöde, fakturering och rapportering. Om systemen inte hänger ihop riskerar verksamheten onödigt manuellt arbete, sämre överblick och svårare skalbarhet.</p>
-                         </div>
-
-                         <div className="py-4 px-4 bg-background rounded-xl border border-primary/5 text-[11px] font-mono text-dark/40 space-y-2 leading-[1.6] mt-4 md:mt-2">
-                             <div className="text-[9px] uppercase tracking-wider text-dark/25 mb-3">Identifierade systemmiljöer</div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-36 shrink-0">Affärssystem / ekonomi</span> <span className="text-dark/70">Fortnox (verifierat)</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-36 shrink-0">CRM</span> <span className="text-dark/70">HubSpot (trolig implementation)</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-36 shrink-0">Samarbete / dokument</span> <span className="text-dark/70">Microsoft 365</span></div>
-                             <div className="flex flex-col sm:flex-row gap-0.5 sm:gap-0"><span className="text-dark/40 inline-block w-full sm:w-36 shrink-0">Rapportering</span> <span className="text-dark/70">Excel (indikation)</span></div>
-                         </div>
-                     </div>
-
-                     {/* Right col — contacts + outreach */}
-                     <div className="space-y-7 bg-background/60 p-6 rounded-2xl border border-primary/5">
-                         <div>
-                             <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-3">Beslutsfattare</h4>
-                             <ul className="space-y-3">
-                                 {[
-                                     { name: "Maria Ekström", role: "VD", email: "maria.ekstrom@nordicflowdistribution.se", phone: "070-412 38 11", linkedin: "#" },
-                                     { name: "Oskar Lund", role: "Ekonomichef", email: "oskar.lund@nordicflowdistribution.se", phone: "070-455 91 24", linkedin: "#" },
-                                     { name: "Henrik Dahl", role: "Operativ chef", email: "henrik.dahl@nordicflowdistribution.se", phone: "070-433 62 08", linkedin: "#" }
-                                 ].map((contact, i) => (
-                                     <li key={i} className="p-4 bg-white rounded-xl shadow-sm border border-primary/5 space-y-2">
-                                         <div className="flex flex-wrap sm:flex-nowrap items-start sm:items-center justify-between gap-1 sm:gap-2">
-                                             <span className="font-semibold text-dark text-[13px] sm:text-sm leading-tight w-full sm:w-auto">{contact.name}</span>
-                                             <span className="text-[10px] text-dark/40 font-mono bg-background px-2 py-0.5 rounded shrink-0">{contact.role}</span>
-                                         </div>
-                                         <div className="font-mono text-[10px] sm:text-[11px] text-dark/50 space-y-1.5 mt-2">
-                                             <div className="truncate w-[220px] sm:w-full max-w-full"><a href={`mailto:${contact.email}`} className="hover:text-accent transition-colors">{contact.email}</a></div>
-                                             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                                                 <a href={`tel:${contact.phone}`} className="hover:text-accent transition-colors whitespace-nowrap">{contact.phone}</a>
-                                                 <span className="text-dark/20">•</span>
-                                                 <a href={contact.linkedin} className="text-dark/40 hover:text-accent transition-colors" onClick={(e) => e.preventDefault()}>LinkedIn</a>
-                                             </div>
-                                         </div>
-                                     </li>
-                                 ))}
-                             </ul>
-                         </div>
-                         
-                         <div>
-                             <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-3">Exempel på första dialog</h4>
-                             <p className="text-dark/75 text-sm italic border-l-2 border-accent pl-4 leading-relaxed font-medium mb-6">
-                                 "Hej Maria,<br/><br/>Jag såg att ni nyligen expanderat lagerverksamheten och samtidigt rekryterat fler inom ekonomi och logistik.<br/><br/>I organisationer som växer uppstår ofta mer komplexitet mellan orderflöde, lager och rapportering.<br/><br/>Hur arbetar ni idag med systemen bakom de processerna?"
-                             </p>
-                             
-                             <div className="pt-5 border-t border-primary/10">
-                                 <h4 className="font-mono text-[10px] text-dark/30 uppercase tracking-wider mb-3">Inför samtalet</h4>
-                                 <ul className="space-y-2">
-                                     <li className="flex items-start gap-2">
-                                        <div className="w-1 h-1 rounded-full bg-accent mt-1.5 shrink-0"></div>
-                                        <span className="text-xs text-dark/70 leading-snug">Hur hanteras order, lager och ekonomi idag</span>
-                                     </li>
-                                     <li className="flex items-start gap-2">
-                                        <div className="w-1 h-1 rounded-full bg-accent mt-1.5 shrink-0"></div>
-                                        <span className="text-xs text-dark/70 leading-snug">Arbetar de i ett sammanhängande system eller flera verktyg</span>
-                                     </li>
-                                     <li className="flex items-start gap-2">
-                                        <div className="w-1 h-1 rounded-full bg-accent mt-1.5 shrink-0"></div>
-                                        <span className="text-xs text-dark/70 leading-snug">Finns manuella moment i rapportering eller fakturering</span>
-                                     </li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-
-                 {/* Demo tags footer */}
-                 <div className="mt-8 pt-5 border-t border-primary/5 flex flex-col md:flex-row justify-between items-start md:items-end gap-3 relative z-10">
-                     <div className="text-[10px] text-dark/40 font-mono tracking-wide">
-                        <span className="font-semibold text-dark/60">Demo-källor:</span> LinkedIn · Bolagsdata · Företagswebbplats · Offentliga register
-                     </div>
-                     <div className="flex flex-col items-end gap-1 font-mono text-[9px] text-dark/30 uppercase tracking-widest text-right">
-                         <div>Research utförd: mars 2026</div>
-                         <div>Researchkort • Norrsyn_ Demo</div>
-                     </div>
-                 </div>
-             </div>
-
-             {/* Disclaimer Footnote */}
-             <div className="max-w-xl mx-auto mt-8 text-center px-6">
-                 <p className="text-[10px] text-dark/30 font-sans tracking-wide">
-                     Illustrativt demoexempel. Innehåll och analys är fiktiva.
-                 </p>
-             </div>
-        </section>
-    );
-};
-
-// ==========================================
-// Component: Contact (Kontakt / Begär analys)
-// ==========================================
+// ==========================================================================
+// Contact
+// ==========================================================================
 export const Contact = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        company: '',
-        email: '',
-        phone: '',
-        description: ''
-    });
-    const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [formData, setFormData] = useState({ name: '', company: '', email: '', phone: '', description: '' });
+  const [status, setStatus] = useState('idle');
 
-    const handleChange = (e) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
+  const handleChange = (e) => setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setStatus('loading');
-        
-        try {
-            const res = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            
-            if (res.ok) {
-                setStatus('success');
-                setFormData({ name: '', company: '', email: '', phone: '', description: '' });
-                // Return to idle after delay
-                setTimeout(() => setStatus('idle'), 5000);
-            } else {
-                setStatus('error');
-                setTimeout(() => setStatus('idle'), 4000);
-            }
-        } catch (error) {
-           console.error("Submission failed", error);
-           setStatus('error');
-           setTimeout(() => setStatus('idle'), 4000);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setStatus('success');
+        setFormData({ name: '', company: '', email: '', phone: '', description: '' });
+        setTimeout(() => setStatus('idle'), 6000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 5000);
+      }
+    } catch (err) {
+      console.error('Submission failed', err);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
+    }
+  };
 
-    return (
-        <section id="b2b-lead-formular" className="py-24 md:py-32 bg-dark text-white text-center px-4 sm:px-6 relative z-10 flex flex-col items-center justify-center overflow-hidden">
-            {/* Texture Background */}
-            <div className="absolute inset-0 md:-inset-[15px] z-0 opacity-[0.08] mix-blend-overlay pointer-events-none md:animate-drift-bg animate-breathing">
-                <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2946&auto=format&fit=crop" alt="Dark moss texture" className="w-full h-full object-cover grayscale scale-[1.02] md:scale-100 origin-center" />
-            </div>
+  const field =
+    'w-full bg-white/[0.04] border border-white/12 rounded-md px-3.5 py-3 text-white text-[15px] ' +
+    'placeholder:text-white/45 focus:outline-none focus:border-green/60 transition-colors';
 
-            <div className="relative z-10 w-full max-w-3xl mx-auto">
-                <h2 className="font-sans font-bold text-4xl sm:text-5xl md:text-6xl mb-6 tracking-tight px-2">
-                    Redo att hitta <span className="font-drama italic text-accent font-normal">rätt kunder?</span>
-                </h2>
-                <p className="text-white/70 text-base md:text-lg max-w-xl mx-auto mb-10 font-sans px-4">
-                    Hör av er så diskuterar vi potentiella affärsmöjligheter tillsammans.
-                </p>
+  return (
+    <section id="kontakt" className="on-dark bg-forest text-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.06] pointer-events-none" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1600&auto=format&fit=crop"
+          alt=""
+          className="h-full w-full object-cover grayscale"
+        />
+      </div>
 
-                {/* Reassurance list */}
-                <ul className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center text-sm md:text-sm text-white/50 font-mono mb-10 sm:mb-12">
-                    <li className="flex items-center gap-2"><span className="text-accent">✓</span> kostnadsfri initial analys</li>
-                    <li className="flex items-center gap-2"><span className="text-accent">✓</span> ingen bindning</li>
-                    <li className="flex items-center gap-2"><span className="text-accent">✓</span> vi svarar snabbt</li>
-                </ul>
+      <div className="relative mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
+        <div className="grid md:grid-cols-12 gap-12 md:gap-16">
+          <div className="md:col-span-5">
+            <div className="eyebrow text-white/50 mb-6">Kontakt</div>
+            <h2 className="font-sans font-semibold text-[2.1rem] md:text-[2.9rem] leading-[1.08] tracking-[-0.035em] mb-6">
+              Vi börjar med ett samtal.
+            </h2>
+            <p className="text-white/60 text-[15px] leading-[1.75] max-w-sm mb-10">
+              Berätta kort vad ni gör, så hör vi av oss. Vi pratar igenom vad
+              ni säljer och vart ni vill, och ser tillsammans om Norrsyn är
+              rätt för er.
+            </p>
+            {/* One quiet human alternative instead of a benefits checklist.
+                Whitespace does the rest of the composition's work. */}
+            <p className="text-white/50 text-[13px] leading-[1.7] border-t border-white/8 pt-4 max-w-sm">
+              Föredrar ni mejl?{' '}
+              <a href="mailto:info@norrsyn.se" className="link-underline text-white/75">info@norrsyn.se</a>
+            </p>
+          </div>
 
-                <form className="bg-white/5 backdrop-blur-md md:backdrop-blur-xl border border-white/8 rounded-[2rem] p-6 sm:p-8 md:p-12 text-left shadow-lg md:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] space-y-5 md:space-y-6" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-white/70 ml-1">Namn</label>
-                            <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 md:py-3.5 text-white focus:outline-none focus:border-accent transition-colors text-base" placeholder="Förnamn Efternamn" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-white/70 ml-1">Företag</label>
-                            <input type="text" name="company" required value={formData.company} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 md:py-3.5 text-white focus:outline-none focus:border-accent transition-colors text-base" placeholder="Företagsnamn AB" />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-white/70 ml-1">E-post</label>
-                            <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 md:py-3.5 text-white focus:outline-none focus:border-accent transition-colors text-base" placeholder="namn@foretag.se" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-semibold text-white/70 ml-1">Telefon</label>
-                            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 md:py-3.5 text-white focus:outline-none focus:border-accent transition-colors text-base" placeholder="070 123 45 67" />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-semibold text-white/70 ml-1">Beskriv er målmarknad</label>
-                        <textarea rows="3" name="description" required value={formData.description} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-4 md:py-3.5 text-white focus:outline-none focus:border-accent transition-colors resize-none text-base" placeholder="Vilken typ av tjänster erbjuder ni och vilka beslutsfattare vill ni nå?"></textarea>
-                    </div>
-                    <div className="pt-2 md:pt-4">
-                        <button disabled={status === 'loading' || status === 'success'} className={`btn-magnetic w-full px-6 md:px-8 py-4 md:py-4 rounded-xl font-sans font-bold text-base md:text-lg flex items-center justify-center gap-3 transition-colors ${status === 'success' ? 'bg-primary/80 border border-accent/40 text-accent/90 shadow-none' : status === 'error' ? 'bg-amber-900/60 text-amber-100 border border-amber-500/30' : 'bg-accent text-dark shadow-[0_4px_12px_rgba(62,207,142,0.15)] hover:bg-[#2fb579]'}`}>
-                            <span className="relative z-10 flex items-center justify-center gap-2">
-                                {status === 'loading' && 'Skickar...'}
-                                {status === 'success' && 'Tack — vi har tagit emot er förfrågan och återkommer så snart vi kan.'}
-                                {status === 'error' && <span className="text-sm">Kunde inte skicka. Försök igen eller maila info@norrsyn.se.</span>}
-                                {status === 'idle' && <><span className="hidden sm:inline">Prata med oss</span><span className="sm:hidden">Skicka förfrågan</span> <ArrowRight size={20} /></>}
-                            </span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-    );
+          <div className="md:col-span-7">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+              <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
+                <div className="space-y-2">
+                  <label htmlFor="c-name" className="eyebrow text-white/55 block">Namn</label>
+                  <input id="c-name" type="text" name="name" required value={formData.name} onChange={handleChange} className={field} placeholder="Förnamn Efternamn" />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="c-company" className="eyebrow text-white/55 block">Företag</label>
+                  <input id="c-company" type="text" name="company" required value={formData.company} onChange={handleChange} className={field} placeholder="Företagsnamn AB" />
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
+                <div className="space-y-2">
+                  <label htmlFor="c-email" className="eyebrow text-white/55 block">E-post</label>
+                  <input id="c-email" type="email" name="email" required value={formData.email} onChange={handleChange} className={field} placeholder="namn@foretag.se" />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="c-phone" className="eyebrow text-white/55 block">Telefon</label>
+                  <input id="c-phone" type="tel" name="phone" value={formData.phone} onChange={handleChange} className={field} placeholder="070 123 45 67" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="c-desc" className="eyebrow text-white/55 block">Berätta kort om ert företag</label>
+                <textarea id="c-desc" rows="4" name="description" value={formData.description} onChange={handleChange} className={`${field} resize-none`} placeholder="Vad gör ni, och har ni någon fråga?" />
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={status === 'loading' || status === 'success'}
+                  className={`btn w-full px-7 py-4 font-semibold text-[15px] ${
+                    status === 'success'
+                      ? 'bg-green-deep/20 border border-green/40 text-green-hi'
+                      : status === 'error'
+                        ? 'bg-amber/15 border border-amber/40 text-amber'
+                        : 'bg-paper text-graphite hover:bg-white'
+                  }`}
+                >
+                  {status === 'loading' && 'Skickar …'}
+                  {status === 'success' && 'Tack. Vi har tagit emot er förfrågan och hör av oss.'}
+                  {status === 'error' && 'Kunde inte skicka. Maila info@norrsyn.se så löser vi det.'}
+                  {status === 'idle' && (<>Skicka <ArrowRight size={17} strokeWidth={2.2} /></>)}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
-// ==========================================
-// Component: Footer
-// ==========================================
-export const Footer = () => {
-    return (
-        <footer id="footer" className="bg-dark text-white pt-24 pb-8 px-6 md:px-12 rounded-t-[4rem] relative z-20 -mt-10">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
-                <div className="md:col-span-2">
-                    <h3 className="font-sans font-bold text-2xl text-white tracking-widest uppercase mb-5">NORRSYN_</h3>
-                    <p className="text-white/50 max-w-sm text-sm leading-relaxed mb-4">
-                        Identifierar affärsmöjligheter för B2B-bolag genom research, analys och kontext.
-                    </p>
-                    <div className="text-white/30 text-sm font-sans space-y-1">
-                        <p>info@norrsyn.se</p>
-                        <p>Jönköping, Sverige</p>
-                    </div>
-                </div>
-                <div>
-                     <h4 className="font-sans font-semibold mb-6 text-white/70 text-sm uppercase tracking-wider">Navigation</h4>
-                     <ul className="space-y-3 text-white/45 text-sm">
-                         <li><a href="#metod-for-affarsmojligheter" className="hover:text-accent transition-colors">Metod</a></li>
-                         <li><a href="#leveransinnehall" className="hover:text-accent transition-colors">Leverans</a></li>
-                         <li><a href="#om-norrsyn" className="hover:text-accent transition-colors">Om oss</a></li>
-                         <li><a href="#contact" className="hover:text-accent transition-colors">Kontakt</a></li>
-                     </ul>
-                </div>
-                <div>
-                     <h4 className="font-sans font-semibold mb-6 text-white/70 text-sm uppercase tracking-wider">Information</h4>
-                     <ul className="space-y-3 text-white/45 text-sm">
-                         <li><a href="/integritetspolicy" className="hover:text-accent transition-colors">Integritetspolicy</a></li>
-                         <li><a href="/anvandarvillkor" className="hover:text-accent transition-colors">Användarvillkor</a></li>
-                         <li><a href="/cookiepolicy" className="hover:text-accent transition-colors">Cookiepolicy</a></li>
-                         <li className="flex justify-between items-center text-white/30 cursor-default opacity-80 pt-2 border-t border-white/5">
-                             <span>Insikter</span>
-                             <span className="text-[9px] uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded text-white/40">Kommer snart</span>
-                         </li>
-                         <li className="flex justify-between items-center text-white/30 cursor-default opacity-80">
-                             <span>Case</span>
-                             <span className="text-[9px] uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded text-white/40">Kommer snart</span>
-                         </li>
-                         <li className="flex justify-between items-center text-white/30 cursor-default opacity-80">
-                             <span>Social media</span>
-                             <span className="text-[9px] uppercase tracking-wider bg-white/5 px-2 py-0.5 rounded text-white/40">Kommer snart</span>
-                         </li>
-                     </ul>
-                </div>
-            </div>
-            
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/8 text-white/25 text-xs font-mono">
-                <p>&copy; 2026 Norrsyn AB</p>
-                <div className="flex items-center gap-1.5 mt-4 md:mt-0 opacity-40">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent/50 animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
-                    SYSTEM OPERATIVT
-                </div>
-            </div>
-        </footer>
-    );
-};
+// ==========================================================================
+// Footer
+//
+// The "SYSTEM OPERATIVT" pulse is gone: it reported nothing, and a status dot
+// that is always green is theatre. The roadmap items stay — they are genuine —
+// but they are stated once, quietly, without a badge that blinks.
+// ==========================================================================
+export const Footer = () => (
+  <footer className="on-dark bg-graphite text-white">
+    <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-20 pb-10">
+      <div className="grid md:grid-cols-12 gap-12 md:gap-10 pb-16 md:pb-20">
+        <div className="md:col-span-5">
+          <div className="font-sans font-bold text-lg tracking-[0.22em] uppercase mb-5">
+            Norrsyn<span className="text-green">_</span>
+          </div>
+          <p className="text-white/55 text-[14px] leading-[1.7] max-w-xs mb-6">
+            Vi identifierar affärsmöjligheter för B2B-bolag genom research, analys
+            av affärssignaler och kontext inför första kontakt.
+          </p>
+          {/* The legal entity, stated once in prose and once in the copyright
+              line. The brand still reads as Norrsyn everywhere else. */}
+          <p className="text-white/55 text-[13px] leading-[1.7] max-w-xs mb-6">
+            Norrsyn är ett varumärke och en tjänst från{' '}
+            <span className="text-white/75">NRSYN AB</span>, ett självständigt
+            svenskt aktiebolag med säte i Jönköping. NRSYN AB har ingen koppling
+            till Norrsyn AI HB.
+          </p>
+          <div className="font-mono text-[12.5px] text-white/55 space-y-1">
+            <a href="mailto:info@norrsyn.se" className="link-underline block w-fit">info@norrsyn.se</a>
+            <p className="text-white/50">Jönköping, Sverige</p>
+          </div>
+        </div>
+
+        <div className="md:col-span-3 md:col-start-7">
+          <div className="eyebrow text-white/55 mb-5">Navigation</div>
+          <ul className="space-y-2.5 text-white/55 text-[14px]">
+            {[['#processen', 'Processen'], ['#brief', 'Brief'], ['#om-norrsyn', 'Om oss'], ['#kontakt', 'Kontakt']].map(([h, l]) => (
+              <li key={h}><a href={h} className="link-underline">{l}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="md:col-span-3">
+          <div className="eyebrow text-white/55 mb-5">Information</div>
+          <ul className="space-y-2.5 text-white/55 text-[14px]">
+            <li><a href="/integritetspolicy" className="link-underline">Integritetspolicy</a></li>
+            <li><a href="/anvandarvillkor" className="link-underline">Användarvillkor</a></li>
+            <li><a href="/cookiepolicy" className="link-underline">Cookiepolicy</a></li>
+          </ul>
+          <div className="eyebrow text-white/55 mt-8 mb-3">Planerat</div>
+          <ul className="space-y-2 text-white/50 text-[14px]">
+            {['Insikter', 'Case', 'LinkedIn'].map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-7 border-t border-white/10 font-mono text-[11.5px] text-white/50">
+        <p>© 2026 NRSYN AB</p>
+        <a href="#start" className="link-underline flex items-center gap-1.5">
+          Till toppen <ArrowUpRight size={12} />
+        </a>
+      </div>
+    </div>
+  </footer>
+);

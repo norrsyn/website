@@ -37,10 +37,27 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://norrsyn.se/#organization",
       "name": "Norrsyn",
+      "legalName": "NRSYN AB",
+      "alternateName": "NRSYN AB",
       "url": "https://norrsyn.se",
-      "description": "Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt.",
+      "description": "Norrsyn identifierar affärsmöjligheter för B2B-bolag genom research, affärssignaler och kontext inför första kontakt. Norrsyn är ett varumärke och en tjänst från NRSYN AB.",
+      "disambiguatingDescription": "NRSYN AB är ett självständigt svenskt aktiebolag med säte i Jönköping och har ingen koppling till Norrsyn AI HB.",
       "logo": "https://norrsyn.se/norrsyn-icon.png",
+      "email": "info@norrsyn.se",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Jönköping",
+        "addressCountry": "SE"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "email": "info@norrsyn.se",
+        "areaServed": "SE",
+        "availableLanguage": ["sv"]
+      },
       "sameAs": []
     }
     </script>
@@ -48,13 +65,19 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Three families, three jobs. Newsreader replaces Cormorant Garamond as the
+         display serif: it reads as a research publication rather than an invitation,
+         and it is rationed to two appearances on the page. Outfit is dropped — it
+         was loaded but never used. -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-background text-dark relative font-sans antialiased selection:bg-accent selection:text-white">
-    <!-- Global Noise Overlay -->
-    <svg class="fixed inset-0 w-full h-full pointer-events-none z-[9999] opacity-[0.03] md:opacity-[0.05]">
+  <body class="bg-paper text-ink relative font-sans">
+    <!-- Global grain. Preserved from the original build: it is what stops the flat
+         tonal fields from reading as vector art. Slightly finer and lighter than
+         before so it survives on the near-white surfaces without dirtying them. -->
+    <svg class="fixed inset-0 w-full h-full pointer-events-none z-[9999] opacity-[0.028] md:opacity-[0.042]" aria-hidden="true">
       <filter id="noiseFilter">
-        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" />
       </filter>
       <rect width="100%" height="100%" filter="url(#noiseFilter)" />
     </svg>

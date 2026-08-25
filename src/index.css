@@ -2,114 +2,1402 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .clip-path-bottom {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
+/* ══════════════════════════════════════════════════════════════════════════
+ * NORRSYN — website foundation
+ *
+ * Three ideas hold the page together:
+ *
+ * 1. TONAL COMPOSITION. Sections are not "light" and "dark"; they step through
+ *    a ladder (paper → paper-2 → mist → graphite → forest). Adjacent sections
+ *    never share a tone, so scrolling reads as movement between rooms.
+ *
+ * 2. HAIRLINES OVER SHADOWS. Depth comes from 1px rules and small luminance
+ *    deltas, the way it does in the product. Almost nothing casts a shadow.
+ *
+ * 3. MOTION IS AN ENHANCEMENT, NEVER A GATE. Every element is legible with
+ *    JavaScript disabled or stalled. GSAP sets the "from" state itself, so a
+ *    failed script leaves content visible rather than blank.
+ * ══════════════════════════════════════════════════════════════════════════ */
 
-  @keyframes breathing {
-    0% { opacity: 0.94; }
-    100% { opacity: 1; }
-  }
+:root {
+  --paper:     #F4F1E9;
+  --paper-2:   #FAF8F3;
+  --ink-3:     #4E5459;
+  --mist:      #E7E9E6;
+  --graphite:  #15181A;
+  --forest:    #0C1310;
+  --ink:       #15181A;
+  --green:     #45A57F;
+  --green-deep:#2E6E55;
+  --ink-4:     #676D72;
 
-  .animate-breathing {
-    animation: breathing 4s ease-in-out infinite alternate;
-  }
+  /* Hairlines. One weight on light, one on dark. */
+  --rule:      rgba(21, 24, 26, 0.10);
+  --rule-soft: rgba(21, 24, 26, 0.06);
+  --rule-dark: rgba(255, 255, 255, 0.10);
+  --rule-dark-soft: rgba(255, 255, 255, 0.055);
 
-  @keyframes drift-bg {
-    0% { transform: translateY(0px) translateX(0px); }
-    33% { transform: translateY(-14px) translateX(5px); }
-    66% { transform: translateY(-6px) translateX(-4px); }
-    100% { transform: translateY(0px) translateX(0px); }
-  }
-
-  @keyframes drift-overlay {
-    0% { transform: translateY(0px) translateX(0px); opacity: 0.85; }
-    50% { transform: translateY(9px) translateX(-3px); opacity: 0.98; }
-    100% { transform: translateY(0px) translateX(0px); opacity: 0.85; }
-  }
-
-  @keyframes text-breathe {
-    0% { opacity: 0.86; text-shadow: 0px 4px 12px rgba(255,255,255,0.0); }
-    100% { opacity: 1; text-shadow: 0px 4px 12px rgba(255,255,255,0.08); }
-  }
-
-  .animate-drift-bg {
-    animation: drift-bg 32s ease-in-out infinite;
-  }
-
-  .animate-drift-overlay {
-    animation: drift-overlay 38s ease-in-out infinite;
-  }
-
-  .animate-text-breathe {
-    animation: text-breathe 6s ease-in-out infinite alternate;
-  }
+  --ease-out:  cubic-bezier(0.16, 1, 0.30, 1);
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #F2F0E9; /* Cream */
-  color: #1A1A1A; /* Charcoal */
-  overflow-x: hidden;
+  background-color: var(--paper);
+  color: var(--ink);
+  /* `clip`, not `hidden`. `overflow-x: hidden` makes the element a scroll
+   * container, and every `position: sticky` descendant then sticks to that
+   * container instead of the viewport — which means it never appears to stick
+   * at all. That silently disabled both the Steg stack and the Modellen panel.
+   * `overflow-x: clip` gives the same protection against a stray wide element
+   * without creating a scroll container. The page measures zero horizontal
+   * overflow down to 360px, so this is a safety net rather than a crutch. */
+  overflow-x: clip;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px; /* Offset for global sticky nav */
+  scroll-padding-top: 96px;
 }
 
-/* Micro-interactions & Component Classes */
-.btn-magnetic {
-  @apply relative overflow-hidden transition-transform duration-[400ms] flex items-center justify-center;
-  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss03";
 }
 
-.btn-magnetic:hover {
-  transform: scale(1.03) translateY(-1px);
+/* Numbers must not jitter — the site is full of financials, scores and counts. */
+[data-numeric], .tabular, table {
+  font-variant-numeric: tabular-nums;
 }
 
-.btn-magnetic::before {
-  content: '';
-  @apply absolute inset-0 bg-white/20 translate-y-[100%] transition-transform duration-[400ms] ease-out rounded-full z-0 pointer-events-none;
+::selection {
+  background: rgba(69, 165, 127, 0.24);
+  color: inherit;
 }
 
-.btn-magnetic:hover::before {
-  @apply translate-y-0;
-}
-
-.link-lift {
-  @apply transition-transform duration-300 inline-block;
-}
-
-.link-lift:hover {
-  @apply -translate-y-[1px] opacity-80;
-}
-
-/* Typography Scales */
-h1, h2, h3, h4, h5, h6 {
-  @apply tracking-tight font-sans;
-}
-
-.font-drama {
-  font-family: inherit; /* Inherit the Coromant Garamond we'll apply directly to elements */
-  font-style: italic;
-  letter-spacing: normal;
-}
-
-.font-data {
-  @apply font-mono;
-}
-
-/* Hide scrollbar for clean aesthetic */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #F2F0E9;
-}
-::-webkit-scrollbar-thumb {
-  background: #1A2F2B;
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--green-deep);
+  outline-offset: 3px;
   border-radius: 4px;
 }
+.on-dark :focus-visible { outline-color: var(--green); }
+
+/* ── Type roles ────────────────────────────────────────────────────────────
+ * Three families, three jobs. The display serif is deliberately rationed:
+ * it appears exactly twice on the page (hero line two, and the philosophy
+ * statement). Everything else is the grotesk or the mono.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: '"Plus Jakarta Sans"', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* The display face carries one job: to be the editorial half of the hero and
+ * the philosophy statement. Two optical corrections make it sit with the
+ * grotesk rather than beside it:
+ *
+ *   · WEIGHT. At 300 the serif's hairlines were a fraction of the sans's stems
+ *     and the pair read as two unrelated fonts. 400 closes the stem-weight gap
+ *     to something the eye accepts as one system.
+ *   · SIDE BEARING. An italic capital leans away from the margin, so it needs a
+ *     small negative indent to look aligned under a roman line. This is the
+ *     difference between "stacked" and "set".
+ */
+/* Roman, not italic: the serif is the editorial counter-voice to the
+   grotesk. Italic is reserved for one job on the whole site — quoted human
+   speech (the client's own words in chapter 01) — so the pairing reads as a
+   newspaper's, not a template's. */
+.display {
+  font-family: Newsreader, Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  font-variation-settings: "opsz" 72;
+  margin-left: -0.01em;
+}
+
+.eyebrow {
+  font-family: '"IBM Plex Mono"', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+@media (min-width: 768px) { .eyebrow { font-size: 11px; } }
+
+/* Long-form reading measure. */
+.prose-measure { max-width: 62ch; }
+
+/* ── Section rule ─────────────────────────────────────────────────────────
+ * The one divider used across the site: a hairline with a short accent tick
+ * at its left end. Structural, not decorative — it marks where a movement of
+ * the page begins.
+ * ────────────────────────────────────────────────────────────────────────── */
+.rule-tick {
+  position: relative;
+  border-top: 1px solid var(--rule);
+}
+.rule-tick::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 40px; height: 1px;
+  background: var(--green-deep);
+}
+.on-dark .rule-tick { border-top-color: var(--rule-dark); }
+.on-dark .rule-tick::before { background: var(--green); }
+
+/* ── Controls ─────────────────────────────────────────────────────────────
+ * Navigation and actions keep the original pill language (the floating navbar
+ * is the site's strongest inherited element). Documents and panels do not —
+ * they use the machined radii from the product.
+ * ────────────────────────────────────────────────────────────────────────── */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  transition: transform 320ms var(--ease-out),
+              background-color 200ms linear,
+              border-color 200ms linear,
+              color 200ms linear;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 320ms var(--ease-out);
+}
+.link-underline:hover { background-size: 100% 1px; }
+
+/* ── Hero atmosphere ──────────────────────────────────────────────────────
+ * Art direction lives here rather than in utility soup so it can be tuned as
+ * a photograph is tuned: exposure, saturation, then scrims.
+ *
+ * The grade is deliberately NOT a teal/orange cinematic curve. The image is
+ * pulled down in exposure, desaturated a little and given a touch of local
+ * contrast — a cold, natural Scandinavian negative. Colour separation comes
+ * from the scrims being *neutral* graphite, which lets the remaining green in
+ * the trees read as the only chroma in the frame.
+ * ────────────────────────────────────────────────────────────────────────── */
+.hero-photo {
+  filter: saturate(0.72) contrast(1.10) brightness(0.78);
+  object-position: 50% 56%;
+}
+
+/* Portrait crop. A 3:2 landscape frame in a 9:19.5 window keeps its full height,
+   which on a phone means the top two-thirds are empty fog. Scaling in and
+   biasing the frame down puts the treeline back under the type, where the
+   composition needs it. */
+@media (max-width: 767px) {
+  .hero-photo {
+    object-position: 56% 72%;
+    transform-origin: 50% 70%;
+    scale: 1.35;
+  }
+}
+
+/* ── Weather ──────────────────────────────────────────────────────────────
+ * The photograph is still. What moves is fog, and fog at three depths does not
+ * move at one speed — so there are three masked copies of the same image, each
+ * confined to its own band of the valley and each on its own clock:
+ *
+ *   .mist-far   the high bank behind the ridge   110s, smallest travel
+ *   .mist-mid   the body of fog in the valley     58s
+ *   .mist-near  the low drift over the treeline   34s, largest travel
+ *
+ * Because each is masked to a band where the underlying picture is already
+ * soft, the offset copies read as vapour moving rather than as the image
+ * sliding. Nothing is masked over the sharp foreground trees, so no edge in
+ * the photograph ever ghosts or doubles.
+ *
+ * The near layer travels roughly 7px per second, which is the point: it should
+ * be unnoticeable in the first glance and obvious by the fourth second.
+ *
+ * No smoke texture, no video, no blur filter. Three composited layers animating
+ * transform and opacity, all disabled under prefers-reduced-motion.
+ * ────────────────────────────────────────────────────────────────────────── */
+.mist-layer {
+  position: absolute;
+  inset: -12%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 56%;
+  filter: saturate(0.5) contrast(1.02) brightness(0.9);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.mist-far {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 16%, #000 34%, transparent 50%);
+  mask-image: linear-gradient(to bottom, transparent 2%, #000 16%, #000 34%, transparent 50%);
+  animation: mist-far-drift 180s ease-in-out -70s infinite alternate,
+             mist-far-breathe 113s ease-in-out -40s infinite alternate;
+}
+
+.mist-mid {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 18%, #000 34%, #000 52%, transparent 68%);
+  mask-image: linear-gradient(to bottom, transparent 18%, #000 34%, #000 52%, transparent 68%);
+  animation: mist-mid-drift 95s ease-in-out -35s infinite alternate,
+             mist-mid-breathe 67s ease-in-out -20s infinite alternate;
+}
+
+.mist-near {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 34%, #000 48%, #000 64%, transparent 84%);
+  mask-image: linear-gradient(to bottom, transparent 34%, #000 48%, #000 64%, transparent 84%);
+  animation: mist-near-drift 70s ease-in-out -25s infinite alternate,
+             mist-near-breathe 47s ease-in-out -12s infinite alternate;
+}
+
+/* The low bank: a barely-there body of vapour drifting across the lower
+   frame, BEHIND the reading scrim and the type. It never competes with the
+   headline — it is what makes the whole scene, composition included, inhabit
+   the same weather. */
+.mist-low {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 55%, #000 72%, #000 88%, transparent 98%);
+  mask-image: linear-gradient(to bottom, transparent 55%, #000 72%, #000 88%, transparent 98%);
+  animation: mist-low-drift 150s ease-in-out -60s infinite alternate,
+             mist-low-breathe 83s ease-in-out -30s infinite alternate;
+}
+
+/* Drift paths carry a mid-station, so the reversal of the alternate loop is
+   a curve rather than a metronome. Travel is broad and slow: weather moving
+   through a landscape, not an overlay oscillating. */
+@keyframes mist-far-drift {
+  0%   { transform: translate3d(-2.6%, 0.5%, 0) scale(1.06); }
+  55%  { transform: translate3d(0.5%, -0.1%, 0) scale(1.085); }
+  100% { transform: translate3d(2.8%, -0.5%, 0) scale(1.06); }
+}
+@keyframes mist-mid-drift {
+  0%   { transform: translate3d(4.2%, -0.7%, 0) scale(1.09); }
+  50%  { transform: translate3d(-0.4%, 0.2%, 0) scale(1.06); }
+  100% { transform: translate3d(-4.4%, 0.9%, 0) scale(1.075); }
+}
+@keyframes mist-near-drift {
+  0%   { transform: translate3d(-6.5%, 1.1%, 0) scale(1.07); }
+  45%  { transform: translate3d(0.6%, -0.2%, 0) scale(1.1); }
+  100% { transform: translate3d(6.8%, -0.9%, 0) scale(1.08); }
+}
+@keyframes mist-low-drift {
+  0%   { transform: translate3d(-5.5%, 0.4%, 0) scale(1.08); }
+  50%  { transform: translate3d(0.5%, 0, 0) scale(1.06); }
+  100% { transform: translate3d(5.5%, -0.4%, 0) scale(1.09); }
+}
+
+@keyframes mist-far-breathe  { from { opacity: 0.10; } to { opacity: 0.20; } }
+@keyframes mist-mid-breathe  { from { opacity: 0.3; } to { opacity: 0.15; } }
+@keyframes mist-near-breathe { from { opacity: 0.11; } to { opacity: 0.24; } }
+@keyframes mist-low-breathe  { from { opacity: 0.05; } to { opacity: 0.11; } }
+
+/* The wisp: one denser body of fog that crosses the whole valley and exits.
+   A 45%-wide copy of the image, feathered on both sides, travelling one way
+   on a long clock; its opacity is zero at both ends of the journey, so there
+   is no visible loop seam — it simply arrives again from the left later. */
+.mist-wisp {
+  inset: 0;
+  width: 54%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 22%, #000 38%, #000 56%, transparent 72%),
+                      linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 22%, #000 38%, #000 56%, transparent 72%),
+              linear-gradient(to right, transparent, #000 22%, #000 78%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  filter: saturate(0.45) contrast(1.0) brightness(1.02);
+  animation: wisp-run 130s linear infinite;
+}
+@keyframes wisp-run {
+  0%   { transform: translate3d(-110%, 1%, 0) scale(1.07); opacity: 0; }
+  18%  { opacity: 0.16; }
+  55%  { opacity: 0.2; }
+  88%  { opacity: 0; }
+  100% { transform: translate3d(260%, -1%, 0) scale(1.05); opacity: 0; }
+}
+@media (max-width: 767px) { .mist-wisp { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mist-layer { animation: none; opacity: 0.12; }
+  .mist-wisp { display: none; }
+  .fog-blob { animation: none; }
+}
+
+/* Depth scrim — bottom-weighted, neutral, and stopped well short of opaque so
+   the treeline keeps its detail instead of being crushed to black. */
+.hero-scrim-base {
+  background:
+    linear-gradient(to top,
+      rgba(21, 24, 26, 0.99) 0%,
+      rgba(18, 21, 22, 0.9) 7%,
+      rgba(9, 12, 11, 0.78) 20%,
+      rgba(10, 14, 12, 0.42) 40%,
+      rgba(12, 17, 14, 0.14) 64%,
+      rgba(12, 17, 14, 0.05) 100%);
+}
+
+/* Reading scrim — a soft horizontal falloff under the bottom-left type block.
+   This is what buys tonal separation for the headline; without it the type
+   would need a heavier global overlay and the photograph would die. */
+.hero-scrim-read {
+  background:
+    radial-gradient(120% 85% at 6% 92%,
+      rgba(7, 10, 9, 0.86) 0%,
+      rgba(7, 10, 9, 0.66) 26%,
+      rgba(7, 10, 9, 0.34) 48%,
+      rgba(7, 10, 9, 0.10) 68%,
+      transparent 84%);
+}
+
+/* Navbar scrim — the floating island sits *inside* the photograph, so it needs
+   a whisper of tone above it rather than a bar. */
+.hero-scrim-nav {
+  background: linear-gradient(to bottom,
+    rgba(10, 14, 12, 0.40) 0%,
+    rgba(10, 14, 12, 0.16) 45%,
+    transparent 100%);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * PROCESSEN — six sections, one spine
+ *
+ * The spine is a 2px rule at the inner container's left edge. Every section
+ * positions its own segment at the same x, so the segments read as one
+ * continuous object crossing tonal boundaries. Content sits to the right of
+ * it (.jr-inner padding-left). The birth curves in 01, the fan in 02, the
+ * manifold in 03, the branches in 04/06 and the reasoning lines in 05 are all
+ * fixed-geometry SVG or rules — nothing is measured from the DOM at runtime.
+ *
+ * Default states are FINAL states. JS rewinds and animates when motion is on.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+.jr { position: relative; }
+.jr-inner {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem 5.5rem 3.4rem;
+}
+@media (min-width: 640px) { .jr-inner { padding-left: 4.5rem; padding-right: 2.5rem; } }
+@media (min-width: 1024px) { .jr-inner { padding: 7rem 3rem 7rem 5.5rem; } }
+
+/* Tonal rhythm: 01 paper · 02 mist · 03 graphite · 04 white · 05 forest · 06 paper-2 */
+.jr-01 { background: var(--paper); }
+.jr-02 { background: var(--mist); }
+.jr-03 { background: var(--graphite); color: #fff; }
+.jr-04 { background: #fff; }
+.jr-05 { background: var(--forest); color: #fff; }
+.jr-06 { background: var(--paper-2); }
+
+/* ── The spine ──────────────────────────────────────────────────────────── */
+.jr-rail {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: max(1rem, calc(50% - 36rem + 1.1rem));
+  width: 2px;
+  pointer-events: none;
+}
+@media (max-width: 639px) { .jr-rail { left: 1rem; } }
+.jr-rail-line {
+  display: block;
+  width: 100%; height: 100%;
+  background: rgba(46, 110, 85, 0.6);
+}
+.jr-dark .jr-rail-line { background: rgba(69, 165, 127, 0.52); }
+/* Desktop carries the six-strand bundle; the plain line is the mobile rail. */
+@media (min-width: 1024px) { .jr-rail-line { display: none; } }
+.jr-rope {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 1024px) { .jr-rope { display: block; } }
+.jr-rope path { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.1; stroke-linecap: round; }
+.jr-dark .jr-rope path { stroke: rgba(69, 165, 127, 0.48); }
+/* The end of the line: 06's rail stops above the portal and closes with a
+   square terminal — the model has arrived at the deliverable. */
+.jr-rail-end { bottom: 34%; }
+.jr-rail-end::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: -4px;
+  width: 8px; height: 8px;
+  transform: translateX(-50%);
+  background: var(--green-deep);
+}
+/* On desktop the strands do not stop above the portal — they feed the Brief
+   and terminate inside it. The closed square is mobile grammar only. */
+@media (min-width: 1024px) {
+  .jr-rail-end { bottom: 0; }
+  .jr-rail-end::after { display: none; }
+}
+
+/* Chapter node: a square on the line and a large quiet numeral. */
+.jr-node {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  pointer-events: none;
+}
+@media (min-width: 1024px) { .jr-node { top: 7rem; } }
+.jr-node-square {
+  width: 9px; height: 9px;
+  background: var(--green-deep);
+  flex: 0 0 auto;
+}
+.jr-dark .jr-node-square { background: var(--green); }
+.jr-node-num {
+  font-family: '"IBM Plex Mono"', ui-monospace, monospace;
+  font-size: 40px;
+  line-height: 1;
+  color: rgba(21, 24, 26, 0.14);
+  letter-spacing: -0.02em;
+}
+.jr-dark .jr-node-num { color: rgba(255, 255, 255, 0.14); }
+@media (min-width: 1024px) { .jr-node-num { font-size: 56px; } }
+/* Anchored inside .jr-inner at content-left, shifted left so the SQUARE's
+   centre lands on the rail. Gap between rail and content: base 2.3rem
+   (pad 3.4 − rail 1.1), sm 3.4rem, lg 4.4rem; mobile rail sits at 1rem so the
+   gap is 2.4rem. Half the 9px square is 4.5px. */
+.jr-inner .jr-node { position: absolute; top: 2rem; left: calc(1.1rem - 4.5px); }
+@media (max-width: 639px) { .jr-inner .jr-node { left: calc(1rem - 4.5px); } }
+@media (min-width: 1024px) { .jr-inner .jr-node { top: 2.6rem; } }
+
+/* ── Shared type ────────────────────────────────────────────────────────── */
+.jr-head { max-width: 40rem; margin-bottom: 3rem; }
+@media (min-width: 1024px) { .jr-head { margin-bottom: 3.75rem; } }
+.jr-title {
+  font-weight: 600;
+  font-size: 1.9rem;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin-bottom: 1rem;
+  /* All six chapters speak: one voice, six statements, quoted. The opening
+     quote hangs into the margin so the type edge stays optically aligned. */
+  text-indent: -0.36em;
+}
+@media (min-width: 1024px) { .jr-title { font-size: 2.6rem; } }
+.jr-body { font-size: 15px; line-height: 1.7; color: var(--ink-3); }
+.jr-dark .jr-body { color: rgba(255, 255, 255, 0.66); }
+.jr-term { color: var(--green-deep); font-weight: 600; }
+.jr-dark .jr-term { color: var(--green); }
+.jr-foot {
+  margin-top: 2rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--ink-3); /* ink-4 clears AA on paper but not on mist */
+  max-width: 34rem;
+}
+.jr-dark .jr-foot { color: rgba(255, 255, 255, 0.5); }
+.jr-count { color: var(--green-deep); font-size: 13px; }
+.jr-dark .jr-count { color: var(--green); }
+
+/* ── Company marks ──────────────────────────────────────────────────────── */
+.jm {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 12px;
+  border-radius: 1px;
+  background: rgba(21, 24, 26, 0.5);
+  transition: background-color 140ms linear, opacity 140ms linear;
+}
+.jm[data-on="0"] { opacity: 0; }
+.jm[data-state="struck"] { background: rgba(21, 24, 26, 0.12); opacity: 0.55; }
+.jm::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: rgba(21, 24, 26, 0.4);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 420ms var(--ease-out);
+}
+.jm[data-state="struck"]::after { transform: scaleX(1); }
+.jm[data-state="chosen"] { background: var(--green-deep); box-shadow: 0 0 0 2px rgba(46,110,85,0.25); }
+.jr-dark .jm { background: rgba(255, 255, 255, 0.55); }
+/* On dark ground a rejected company is hollowed, not dimmed: the outline
+   keeps its place in the ledger while the ink is gone. */
+.jr-dark .jm[data-state="struck"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  opacity: 0.6;
+}
+.jr-dark .jm[data-state="struck"]::after { background: rgba(255, 255, 255, 0.3); }
+.jr-field {
+  display: grid;
+  gap: 5px;
+  max-width: 46rem;
+}
+
+/* ── 01 · intake ────────────────────────────────────────────────────────── */
+.jr-intake-wrap {
+  position: relative;
+  max-width: 52rem;
+  /* The tail below the ledger is where the six branches finish merging into
+     the spine; chapter 02's rail picks up exactly at the section boundary. */
+  margin-bottom: 0;
+}
+.jr-01 .jr-inner { padding-bottom: 260px; }
+/* The thread arriving from Problemet: section top down to the formation
+   SVG's origin. Height is measured (the one legitimate measured anchor) and
+   cached; same x-formula as every rail. */
+.jr-entry {
+  position: absolute;
+  top: 0;
+  left: max(1rem, calc(50% - 36rem + 1.1rem));
+  width: 2px;
+  background: rgba(46, 110, 85, 0.6);
+  pointer-events: none;
+}
+@media (max-width: 1023px) { .jr-entry { display: none; } }
+
+/* 01's header clears the arrival band so the entry glide crosses whitespace
+   only — and the gap is generous: the visitor reads the statement while the
+   line is still travelling, and the first question resolves only once the
+   ledger itself is the visual focus. */
+.jr-01 .jr-head { margin-bottom: 5rem; }
+@media (min-width: 1024px) { .jr-01 .jr-head { margin-bottom: 10rem; } }
+
+/* The formation SVG spans from the spine (left gutter) across the ledger to
+   the right-hand collector. True-pixel viewBox; desktop only — phone rows
+   wrap, so the geometry yields to the plain tail line. */
+.jr-form {
+  position: absolute;
+  top: -200px;
+  left: -4.4rem;
+  overflow: visible;
+  pointer-events: none;
+}
+.jr-form [data-entry] { stroke: rgba(46, 110, 85, 0.6); stroke-width: 1.75; stroke-linecap: round; fill: none; }
+.jr-form [data-ob-dot] { fill: var(--green-deep); transition: opacity 300ms var(--ease-out); }
+.jr-form [data-collect],
+.jr-form [data-collect-close] { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.5; stroke-linecap: round; fill: none; }
+.jr-form [data-ob-strand] { stroke: rgba(46, 110, 85, 0.55); stroke-width: 1.1; stroke-linecap: round; }
+.jr-form .jr-oblabel line { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1; }
+.jr-form .jr-oblabel text {
+  font-family: '"IBM Plex Mono"', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  fill: var(--green-deep);
+}
+.jr-form [data-form] { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.5; stroke-linecap: round; }
+.jr-form [data-form-spine] { stroke: rgba(46, 110, 85, 0.62); stroke-width: 2; stroke-linecap: round; }
+@media (max-width: 1023px) { .jr-form { display: none; } }
+
+/* The output terminal: where a criterion becomes a connection. */
+.jr-out-dot {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--green-deep);
+}
+@media (max-width: 1023px) { .jr-out-dot { display: none; } }
+.jr-tail-m {
+  display: none;
+  position: absolute;
+  left: -2.4rem;
+  bottom: -120px;
+  width: 2px;
+  height: 120px;
+  background: rgba(46, 110, 85, 0.55);
+}
+@media (max-width: 1023px) { .jr-tail-m { display: block; } }
+.jr-intake { border-top: 1px solid rgba(21,24,26,0.12); }
+.jr-intake-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(21,24,26,0.08);
+}
+@media (min-width: 1024px) {
+  /* Fixed height is what lets the branches be exact without measuring. */
+  .jr-intake-row { height: 56px; padding: 0; }
+}
+
+/* The causal beat, per row: the head arrives → the exchange is read → the
+   criterion becomes part of the system. Defaults are the FINAL (read, live)
+   state; the engine rewinds rows the line has not reached yet. The beats are
+   state changes resolved over ~300ms — position decides, easing only settles. */
+.jr-intake-q,
+.jr-intake-raw { transition: opacity 380ms var(--ease-out); }
+.jr-intake-row[data-read="0"] .jr-intake-q { opacity: 0.35; }
+.jr-intake-row[data-read="0"] .jr-intake-raw { opacity: 0.28; }
+.jr-intake-norm {
+  transition: color 300ms var(--ease-out), border-color 300ms var(--ease-out),
+              background-color 300ms var(--ease-out);
+}
+.jr-intake-row[data-live="0"] .jr-intake-norm {
+  color: var(--ink-4);
+  border-color: rgba(21, 24, 26, 0.14);
+  background: transparent;
+}
+.jr-out-dot { transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out); }
+.jr-intake-row[data-live="0"] .jr-out-dot { opacity: 0; transform: scale(0.4); }
+
+.jr-intake-q { font-size: 12px; color: var(--ink-4); line-height: 1.45; }
+/* The client's own words: human speech, set in the display serif. */
+.jr-intake-raw {
+  font-family: Newsreader, Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink);
+  font-variation-settings: "opsz" 18;
+}
+.jr-intake-norm {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  border: 1px solid rgba(46,110,85,0.28);
+  background: rgba(46,110,85,0.06);
+  border-radius: 2px;
+  padding: 4px 6px;
+  white-space: nowrap;
+  align-self: center;
+}
+@media (max-width: 767px) {
+  .jr-intake-row { grid-template-columns: 1fr auto; }
+  .jr-intake-q { grid-column: 1 / -1; }
+  .jr-intake-raw { font-size: 14.5px; }
+}
+
+/* The birth: six curves gathering into the spine. The SVG's left edge is the
+   spine's x; it spans from the container's spine line to its right edge. */
+.jr-birth {
+  padding-left: max(1rem, calc(50% - 36rem + 1.1rem));
+  padding-right: 1.5rem;
+}
+@media (max-width: 639px) { .jr-birth { padding-left: 1rem; } }
+.jr-birth svg { display: block; width: min(52rem, 100%); height: 130px; }
+.jr-birth path { stroke: rgba(46, 110, 85, 0.55); stroke-width: 2; }
+
+/* ── 02 · market ────────────────────────────────────────────────────────── */
+/* The universe: a quiet dot lattice, wider and paler than the cohort, painted
+   as a background pattern so its thousands of "companies" cost nothing. */
+.jr-map {
+  position: relative;
+  max-width: 52rem;
+  padding: 2.6rem 2.8rem;
+  background-image: radial-gradient(circle, rgba(21, 24, 26, 0.17) 1px, transparent 1.5px);
+  background-size: 13px 13px;
+}
+.jr-carve {
+  position: absolute;
+  top: 0;
+  left: -2.4rem;
+  width: 2.4rem;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+@media (min-width: 640px) { .jr-carve { left: -3.4rem; width: 3.4rem; } }
+@media (min-width: 1024px) { .jr-carve { left: -4.4rem; width: 4.4rem; } }
+.jr-carve path { stroke: rgba(46, 110, 85, 0.45); stroke-width: 1.5; stroke-linecap: round; }
+/* The boundary the criteria draw around the working cohort. */
+/* Label on the open lattice: the wider universe, named without a number. */
+.jr-map-label {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(21, 24, 26, 0.4);
+}
+.jr-bound {
+  --bound-alpha: 1;
+  position: relative;
+  background: var(--mist);
+  border: 1px solid rgba(46, 110, 85, calc(0.45 * var(--bound-alpha)));
+  padding: 1.4rem 1.2rem 1.2rem;
+}
+.jr-bound::before,
+.jr-bound::after {
+  content: '';
+  position: absolute;
+  width: 10px; height: 10px;
+  border: 2px solid rgba(46, 110, 85, calc(0.8 * var(--bound-alpha)));
+}
+.jr-bound::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.jr-bound::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+.jr-bound-label {
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  padding: 0 6px;
+  background: var(--mist);
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(38, 92, 71, calc(1 * var(--bound-alpha)));
+}
+
+/* ── The fan ─────────────────────────────────────────────────────────────
+ * Wherever a branch leaves the master rail to act (03's criteria bus, 04's
+ * dossier, 05's ledger), it departs as six hairline filaments — the model's
+ * internal structure, founded in 01 — converging into the single branch
+ * across the gutter. Desktop only; below 1024 the plain branch rule stays.
+ * ────────────────────────────────────────────────────────────────────────── */
+.jr-fan {
+  position: absolute;
+  left: -4.4rem;
+  width: 4.4rem;
+  height: 26px;
+  overflow: visible;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 1024px) { .jr-fan { display: block; } }
+.jr-fan path { stroke: rgba(46, 110, 85, 0.55); stroke-width: 0.85; stroke-linecap: round; }
+.jr-dark .jr-fan path { stroke: rgba(69, 165, 127, 0.55); }
+.jr-manifold .jr-fan { top: -12px; }
+.jr-dossier-wrap .jr-fan,
+.jr-fit-wrap .jr-fan { top: calc(1.4rem - 12px); }
+
+/* ── 03 · manifold ──────────────────────────────────────────────────────── */
+.jr-manifold { position: relative; max-width: 46rem; margin-bottom: 1.6rem; }
+.jr-bus {
+  height: 2px;
+  background: rgba(69, 165, 127, 0.5);
+  transform-origin: left center;
+  margin-left: -2.4rem;
+}
+@media (min-width: 640px) { .jr-bus { margin-left: -3.4rem; } }
+@media (min-width: 1024px) { .jr-bus { margin-left: 0; } }
+.jr-taps { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.jr-tap { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.jr-tap-line {
+  display: block;
+  width: 2px; height: 14px;
+  background: rgba(69, 165, 127, 0.5);
+  transform-origin: top center;
+  margin-left: 2px;
+}
+.jr-tap-label {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 260ms var(--ease-out);
+}
+/* The criterion currently doing the cutting. */
+.jr-tap[data-on="1"] .jr-tap-label { color: var(--green); }
+.jr-tap[data-on="1"] .jr-tap-line { background: var(--green); }
+
+/* ── 04 · dossier ───────────────────────────────────────────────────────── */
+.jr-dossier-wrap { position: relative; max-width: 44rem; }
+.jr-branch {
+  position: absolute;
+  top: 1.4rem;
+  left: -2.4rem;
+  width: 2.4rem;
+  height: 2px;
+  background: rgba(46, 110, 85, 0.45);
+}
+.jr-branch::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  background: var(--green-deep);
+  border-radius: 1px;
+}
+@media (min-width: 640px) { .jr-branch { left: -3.4rem; width: 3.4rem; } }
+@media (min-width: 1024px) { .jr-branch { left: -4.4rem; width: 4.4rem; } }
+/* Where a fan exists (03/04/05, desktop), it IS the branch. 06 keeps the
+   plain rule at every width: the model has resolved into the document and
+   no longer announces its structure. */
+@media (min-width: 1024px) {
+  .jr-dossier-wrap .jr-branch,
+  .jr-fit-wrap .jr-branch { display: none; }
+}
+.jr-dossier {
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-left: 2px solid var(--green-deep);
+  background: var(--paper-2);
+  border-radius: 2px;
+  padding: 1.2rem 1.4rem;
+}
+.jr-dossier-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(21,24,26,0.1);
+  margin-bottom: 0.4rem;
+}
+.jm-big { width: 22px; height: 22px; border-radius: 2px; background: rgba(21,24,26,0.75); flex: 0 0 auto; }
+.jr-dossier-name { font-weight: 600; font-size: 16px; letter-spacing: -0.02em; color: var(--ink); }
+.jr-dossier-sub { font-family: '"IBM Plex Mono"', monospace; font-size: 10.5px; color: var(--ink-4); margin-top: 2px; }
+.jr-dossier-tag { margin-left: auto; font-family: '"IBM Plex Mono"', monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-4); }
+/* The forensic strip: source categories, dim until their evidence arrives. */
+.jr-srcstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  padding: 0.55rem 0 0.2rem;
+}
+.jr-srcstrip span {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  opacity: 0.4;
+}
+.jr-evlist { display: flex; flex-direction: column; gap: 8px; padding-top: 0.7rem; }
+/* Slips, not table rows: each finding is its own physical piece of paper,
+   with a slightly irregular left edge as the pile accumulates. */
+.jr-ev {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(21,24,26,0.1);
+  border-left: 2px solid rgba(21,24,26,0.25);
+  background: #fff;
+  border-radius: 2px;
+}
+.jr-ev:nth-child(2) { margin-left: 14px; }
+.jr-ev:nth-child(3) { margin-left: 5px; }
+.jr-ev:nth-child(4) { margin-left: 18px; }
+.jr-ev:nth-child(5) { margin-left: 9px; }
+.jr-ev-text { display: block; font-size: 13.5px; color: var(--ink); line-height: 1.45; }
+.jr-ev-meta { display: flex; align-items: center; gap: 9px; margin-top: 4px; }
+.jr-ev-src { font-family: '"IBM Plex Mono"', monospace; font-size: 9.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-4); }
+/* The relevance layer: what makes a fact commercial. One consistent phrase
+   across 04 and 05. */
+.jr-ev-rel {
+  display: block;
+  margin-top: 6px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(46, 110, 85, 0.35);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.jr-ev-rel-k {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  margin-right: 7px;
+}
+.jr-ev-rel-a {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px;
+  color: rgba(46, 110, 85, 0.6);
+  margin-right: 7px;
+}
+.jr-ev-rel-c {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+  margin-right: 7px;
+}
+.jr-ev-rel-w { color: var(--ink-3); }
+.jr-tier {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+  border-radius: 2px; padding: 2px 5px; border: 1px solid;
+}
+.jt-ok  { color: var(--green-deep); border-color: rgba(46,110,85,0.3);  background: rgba(46,110,85,0.06); }
+.jt-mid { color: #8A6A22;           border-color: rgba(201,160,74,0.4); background: rgba(201,160,74,0.09); }
+.jt-low { color: var(--ink-4);      border-color: rgba(21,24,26,0.14);  background: rgba(21,24,26,0.03); }
+.jr-dark .jt-ok  { color: var(--green); border-color: rgba(69,165,127,0.35); background: rgba(69,165,127,0.1); }
+.jr-dark .jt-mid { color: #C9A04A; border-color: rgba(201,160,74,0.4); background: rgba(201,160,74,0.12); }
+.jr-dark .jt-low { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
+
+/* ── 05 · the fit ledger ──────────────────────────────────────────────────
+ * criterion → lane → decision mark → finding → verdict. One straight lane
+ * per judgement; nothing crosses; the container inherits the spine as its
+ * left rule, fed by the same branch grammar as 04 and 06.
+ * ────────────────────────────────────────────────────────────────────────── */
+.jr-fit-wrap { position: relative; max-width: 56rem; }
+.jr-fit {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 2px solid var(--green);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.9rem 1.2rem 0.6rem;
+}
+.jr-fit-cols {
+  display: grid;
+  grid-template-columns: 9.5rem 4.4rem 1fr 10rem;
+  gap: 0 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 0.3rem;
+}
+.jr-fit-cols span {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+.jr-fit-cols span:nth-child(2) { grid-column: 3; }
+.jr-fit-cols span:nth-child(3) { text-align: right; }
+.jr-fit-row {
+  display: grid;
+  grid-template-columns: 9.5rem 4.4rem 1fr 10rem;
+  gap: 0 1rem;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.jr-fit-row:last-child { border-bottom: 0; }
+.jr-fit-crit {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: right;
+}
+.jr-fit-lanewrap { position: relative; height: 12px; display: flex; align-items: center; }
+.jr-fit-lane {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: rgba(69, 165, 127, 0.5);
+  transform-origin: left center;
+}
+.jr-fit-mark {
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 6px; height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.jr-fit-find { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.jr-fit-text { font-size: 13px; color: rgba(255, 255, 255, 0.85); line-height: 1.4; }
+.jr-fit-verdict {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--green);
+}
+.jr-fit-verdict.is-open { color: rgba(255, 255, 255, 0.5); }
+@media (max-width: 1023px) {
+  .jr-fit { padding: 0.8rem 0.9rem 0.5rem; }
+  .jr-fit-cols { display: none; }
+  .jr-fit-row { grid-template-columns: 1fr; gap: 4px 0; padding: 0.7rem 0; }
+  .jr-fit-crit { text-align: left; }
+  .jr-fit-lanewrap { display: none; }
+  .jr-fit-verdict { text-align: left; }
+}
+
+.jr-verdict {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 1.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  max-width: 52rem;
+}
+.jr-verdict-scale { display: inline-flex; gap: 5px; }
+.jr-verdict-scale span {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.35);
+}
+.jr-verdict-scale span[data-grade="1"] {
+  border-color: rgba(69, 165, 127, 0.5);
+  background: rgba(69, 165, 127, 0.1);
+  color: var(--green);
+}
+.jr-verdict-text { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+.jr-strip { display: flex; gap: 6px; margin-top: 2rem; max-width: 20rem; }
+.jr-strip .jm { width: 22px; height: 12px; }
+
+/* ── 06 · the Brief and its delivery ───────────────────────────────────── */
+.jr-finalists { display: flex; align-items: center; gap: 7px; margin-bottom: 1.2rem; max-width: 24rem; }
+.jr-finalists .jm { width: 22px; height: 12px; }
+.jr-finalists .jm[data-dim="1"] { background: rgba(21, 24, 26, 0.14); }
+
+.jr-brief-wrap { position: relative; max-width: 42rem; }
+.jr-splay {
+  position: absolute;
+  left: -4.4rem;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 1024px) { .jr-splay { display: block; } }
+.jr-splay path { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.1; stroke-linecap: round; }
+@media (min-width: 1024px) { .jr-brief-wrap .jr-branch { display: none; } }
+.jr-brief {
+  background: #fff;
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-left: 2px solid var(--green-deep);
+  border-radius: 2px;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 1px 1px rgba(21,24,26,0.04), 0 16px 40px -18px rgba(21,24,26,0.16);
+}
+.jr-brief-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-bottom: 0.7rem; border-bottom: 1px solid rgba(21,24,26,0.1); margin-bottom: 0.8rem;
+}
+.jr-brief-score { font-family: '"IBM Plex Mono"', monospace; font-size: 12px; color: var(--ink); }
+.jr-brief-name { font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: var(--ink); }
+.jr-brief-sub { font-family: '"IBM Plex Mono"', monospace; font-size: 10.5px; color: var(--ink-4); margin-top: 2px; }
+.jr-zones { margin-top: 1.1rem; display: grid; gap: 1rem; }
+@media (min-width: 768px) { .jr-zones { grid-template-columns: 1.2fr 1fr 1fr; gap: 1.4rem; } }
+.jr-zone ul { display: flex; flex-direction: column; gap: 6px; }
+.jr-zone li, .jr-zone p { font-size: 12.5px; color: var(--ink-3); line-height: 1.55; }
+.jr-zone-src { font-family: '"IBM Plex Mono"', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-4); white-space: nowrap; }
+
+.jr-portal {
+  max-width: 42rem;
+  margin-top: 1.6rem;
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-radius: 2px;
+  background: var(--paper);
+}
+.jr-portal-bar {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(21,24,26,0.1);
+  background: rgba(21,24,26,0.02);
+}
+.jr-portal-feat {
+  padding: 0.85rem 1rem 0.95rem;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.1);
+  background: rgba(46, 110, 85, 0.03);
+}
+.jr-portal-title { font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; color: var(--ink); }
+.jr-portal-brief {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(21, 24, 26, 0.1);
+  background: #fff;
+  border-radius: 2px;
+}
+.jr-portal-brief .jm { width: 16px; height: 9px; flex: 0 0 auto; }
+.jr-portal-brief-name { font-size: 12.5px; font-weight: 500; color: var(--ink-2); }
+.jr-portal-brief-grade {
+  margin-left: auto;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  white-space: nowrap;
+}
+.jr-portal-row {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: 0.65rem 1rem;
+  font-size: 12.5px; color: var(--ink-3);
+  border-bottom: 1px solid rgba(21,24,26,0.06);
+}
+.jr-portal-row.is-current { color: var(--ink); background: rgba(46,110,85,0.04); }
+.jr-portal-meta { font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: var(--ink-4); white-space: nowrap; }
+.jr-portal-note { padding: 0.7rem 1rem; font-size: 11.5px; line-height: 1.6; color: var(--ink-4); }
+
+/* ── The seed, the bridge and the handoff ─────────────────────────────────
+ * The system starts in the hero: a latent green trace at the fold, at the
+ * spine's exact x. The Philosophy section picks it up, runs it past three
+ * OPEN branches (the questions a list cannot answer) and ends it in an open
+ * ring — unresolved — which is why chapter 01 has to begin. After the full
+ * Brief, the handoff glyph closes the story: a chosen company, a line, and an
+ * open ring again — the conversation, which stays human.
+ * ────────────────────────────────────────────────────────────────────────── */
+/* The far trajectories live INSIDE the photograph's own stacking context —
+   after the far/mid mist, before the near mist and the wisp — so nearer fog
+   visibly crosses in front of them. A mask around the trunk axis (--xt, set
+   by the hero's layout pass) dissolves them before they can touch the
+   diagram plane: distant signals point toward the convergence; only the
+   near planes complete it. */
+.hero-fil-far {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg,
+    #000 0,
+    #000 calc(var(--xt, 50%) - 170px),
+    transparent calc(var(--xt, 50%) - 36px),
+    transparent calc(var(--xt, 50%) + 36px),
+    #000 calc(var(--xt, 50%) + 170px),
+    #000 100%);
+  mask-image: linear-gradient(90deg,
+    #000 0,
+    #000 calc(var(--xt, 50%) - 170px),
+    transparent calc(var(--xt, 50%) - 36px),
+    transparent calc(var(--xt, 50%) + 36px),
+    #000 calc(var(--xt, 50%) + 170px),
+    #000 100%);
+}
+@media (max-width: 1023px) { .hero-fil-far { display: none; } }
+
+/* The filament SVG spans the hero. z-2: above the scrims, below every word. */
+.hero-fil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+@media (max-width: 1023px) { .hero-fil { display: none; } }
+
+/* The presence in the fog: a wide, pale, green-grey softness sitting BETWEEN
+   mist layers, so nearer fog visibly crosses in front of it. Where the thread
+   is deepest in the atmosphere it is barely green at all. */
+.fog-blob {
+  position: absolute;
+  top: 8%;
+  height: 44%;
+  left: 37%;
+  width: 27%;
+  background: radial-gradient(55% 50% at 50% 50%,
+    rgba(148, 176, 160, 0.17),
+    rgba(128, 160, 142, 0.08) 55%,
+    transparent 78%);
+  filter: blur(18px);
+  animation: blob-drift 53s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes blob-drift {
+  from { transform: translate3d(-1.4%, 0.6%, 0) scale(1); opacity: 0.75; }
+  to   { transform: translate3d(1.8%, -0.8%, 0) scale(1.12); opacity: 1; }
+}
+@media (max-width: 1023px) { .fog-blob { display: none; } }
+
+/* ── Problemet ────────────────────────────────────────────────────────────
+ * Fog apron: the atmosphere survives the photographic boundary. Two soft grey
+ * volumes drifting over the first reach of the dark, masked out by 30% height.
+ * The route: the still-unresolved thread stepping into the gutter and ending
+ * in an open ring. The field: companies a register knows exist. The slots:
+ * the three pieces of intelligence a list does not contain.
+ * ────────────────────────────────────────────────────────────────────────── */
+.ph-fog {
+  position: absolute;
+  top: -2%;
+  left: 0; right: 0;
+  height: 34%;
+  pointer-events: none;
+  background:
+    radial-gradient(55% 70% at 30% 0%, rgba(190, 200, 195, 0.10), transparent 70%),
+    radial-gradient(50% 80% at 72% 6%, rgba(180, 192, 186, 0.08), transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 30%, transparent 100%);
+  filter: blur(10px);
+  animation: ph-fog-drift 41s ease-in-out infinite alternate;
+}
+@keyframes ph-fog-drift {
+  from { transform: translate3d(-1.5%, 0, 0); opacity: 0.85; }
+  to   { transform: translate3d(1.5%, 0, 0); opacity: 1; }
+}
+
+.ph-route {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+/* Exactly the trunk's exit weight — the seam carries no change of line. */
+.ph-route path { stroke: rgba(69, 165, 127, 0.62); stroke-width: 2; stroke-linecap: round; }
+.ph-ring {
+  position: absolute;
+  width: 9px; height: 9px;
+  border: 1.5px solid rgba(69, 165, 127, 0.85);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out);
+}
+@media (max-width: 1023px) { .ph-route, .ph-ring { display: none; } }
+
+/* The arrival corridor: the sweep from the hero needs open air above the
+   type, and the opening sequence earns the pause. */
+#varfor-norrsyn .jr-inner { padding-top: 8.5rem; }
+@media (min-width: 1024px) { #varfor-norrsyn .jr-inner { padding-top: 11rem; } }
+
+.ph-grid {
+  display: grid;
+  gap: 3rem;
+  max-width: 56rem;
+}
+@media (min-width: 900px) { .ph-grid { grid-template-columns: 1.7fr 1fr; gap: 4rem; } }
+
+.ph-field {
+  display: grid;
+  grid-template-columns: repeat(38, minmax(0, 1fr));
+  gap: 4px 3px;
+}
+/* Records, not decoration: every mark is an entry, and entries differ — in
+   weight (how much the register holds) and in length (how much was filed).
+   The variation is deterministic and quiet; the field should read as "a
+   database knows there are MANY companies" at first glance. */
+.ph-field i {
+  display: block;
+  height: 5px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  transform-origin: left center;
+}
+.ph-field i:nth-child(3n) { opacity: 0.65; }
+.ph-field i:nth-child(7n) { opacity: 0.9; background: rgba(255, 255, 255, 0.38); }
+.ph-field i:nth-child(5n) { transform: scaleX(0.72); }
+.ph-field i:nth-child(11n) { transform: scaleX(0.86); }
+.ph-field i:nth-child(13n) { opacity: 0.5; }
+
+.ph-slots { display: flex; flex-direction: column; }
+.ph-slot {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ph-slot:last-child { border-bottom: 0; }
+/* The hollow box: the value that is not there. */
+.ph-slot-box {
+  flex: 0 0 auto;
+  position: relative;
+  width: 13px; height: 13px;
+  margin-top: 3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  border-radius: 2px;
+  background: transparent;
+  transition: border-color 400ms var(--ease-out), background-color 400ms var(--ease-out);
+}
+.ph-slot-box::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background-color 400ms var(--ease-out);
+}
+/* Three semantic marks, not checkboxes: the dimensions a list does not
+   know. BEHOV is a warm signal set on point; PERSON is an individual inside
+   an organisation; TIMING is a clock face waiting to be read. One geometry
+   and one restrained hue step each. Activation as the head passes is a
+   quiet gain of colour — a question being asked, never a box being ticked. */
+.ph-slot[data-kind="behov"] .ph-slot-box { transform: rotate(45deg) scale(0.92); border-color: rgba(201, 160, 74, 0.55); }
+.ph-slot[data-kind="person"] .ph-slot-box::after {
+  inset: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+}
+.ph-slot[data-kind="timing"] .ph-slot-box { border-radius: 50%; }
+.ph-slot[data-kind="timing"] .ph-slot-box::after {
+  inset: auto;
+  left: 50%; top: 50%;
+  width: 1.5px; height: 5px;
+  margin-left: -0.75px; margin-top: -5px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.3);
+  transform-origin: bottom center;
+  transform: rotate(35deg);
+}
+.ph-slot[data-active="1"][data-kind="behov"] .ph-slot-box { border-color: rgba(201, 160, 74, 0.95); background: rgba(201, 160, 74, 0.13); }
+.ph-slot[data-active="1"][data-kind="person"] .ph-slot-box { border-color: rgba(69, 165, 127, 0.85); }
+.ph-slot[data-active="1"][data-kind="person"] .ph-slot-box::after { background: rgba(69, 165, 127, 0.85); }
+.ph-slot[data-active="1"][data-kind="timing"] .ph-slot-box { border-color: rgba(69, 165, 127, 0.85); }
+.ph-slot[data-active="1"][data-kind="timing"] .ph-slot-box::after { background: rgba(69, 165, 127, 0.95); }
+.ph-slot-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+.ph-slot-q {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ho-glyph { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 2.2rem; }
+.ho-mark { display: block; width: 22px; height: 12px; border-radius: 1px; background: var(--green-deep); box-shadow: 0 0 0 2px rgba(46,110,85,0.22); }
+.ho-line { display: block; width: 72px; height: 1.5px; background: rgba(21, 24, 26, 0.3); }
+.ho-ring { display: block; width: 10px; height: 10px; border: 1.5px solid var(--green-deep); border-radius: 50%; }
+
+/* ── Motion primitives ────────────────────────────────────────────────────
+ * `.rise` elements are fully visible by default. GSAP sets the offset state
+ * at runtime and animates back to zero, so no script means no blank page.
+ * ────────────────────────────────────────────────────────────────────────── */
+/* The mask must be taller than its line box or it eats descenders — display
+   type is set at leading < 1.1, so the glyphs overflow their own line box. The
+   padding grows the clip window; the matching negative margin keeps the type
+   metrically where the layout expects it. */
+.reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding: 0.16em 0 0.22em;
+  margin: -0.16em 0 -0.22em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .btn:hover { transform: none; }
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(21, 24, 26, 0.18);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(21, 24, 26, 0.3); background-clip: padding-box; }
+* { scrollbar-color: rgba(21,24,26,0.2) transparent; scrollbar-width: thin; }
