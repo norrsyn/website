@@ -67,7 +67,7 @@ function Navbar() {
             : 'bg-paper/95 text-graphite hover:bg-white'
         }`}
       >
-        Beskriv er målmarknad
+        Kontakta oss
         <ArrowRight size={13} className="hidden sm:block -mr-0.5" strokeWidth={2.2} />
       </a>
     </nav>
