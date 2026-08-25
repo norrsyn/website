@@ -3,7 +3,25 @@ import React from 'react';
 // ==========================================
 // Base Layout Wrapper for Legal Pages
 // ==========================================
-const LegalLayout = ({ title, children, footerLinks }) => (
+/* Per-route head correctness for the SPA: each public page declares its own
+   canonical and title (the static index.html only knows the homepage), and
+   the 404 route marks itself noindex so the rewrite's 200-status pages never
+   pollute the index. Routes are full page loads, so set-and-forget is safe. */
+const useRouteMeta = (title, path, noindex) => {
+    React.useEffect(() => {
+        document.title = `${title} – Norrsyn`;
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical && path) canonical.setAttribute('href', `https://norrsyn.se${path}`);
+        if (noindex) {
+            const robots = document.querySelector('meta[name="robots"]');
+            if (robots) robots.setAttribute('content', 'noindex');
+        }
+    }, [title, path, noindex]);
+};
+
+const LegalLayout = ({ title, children, footerLinks, path, noindex }) => {
+    useRouteMeta(title, path, noindex);
+    return (
     <div className="min-h-screen flex flex-col bg-paper text-ink">
         <nav className="on-dark bg-graphite text-white px-6 sm:px-10 py-5 flex items-center justify-between">
             <a href="/" className="font-sans font-bold text-sm tracking-[0.22em] uppercase text-white">
@@ -33,7 +51,8 @@ const LegalLayout = ({ title, children, footerLinks }) => (
             </div>
         </footer>
     </div>
-);
+    );
+};
 
 // ==========================================
 // Integritetspolicy
@@ -49,7 +68,7 @@ const LegalLayout = ({ title, children, footerLinks }) => (
 // No compliance claim is made anywhere, and no retention period is invented.
 // ==========================================
 export const Integritetspolicy = () => (
-    <LegalLayout title="Integritetspolicy" footerLinks={[
+    <LegalLayout title="Integritetspolicy" path="/integritetspolicy" footerLinks={[
         { label: "Användarvillkor", path: "/anvandarvillkor" },
         { label: "Cookiepolicy", path: "/cookiepolicy" }
     ]}>
@@ -95,7 +114,7 @@ export const Integritetspolicy = () => (
 // Användarvillkor
 // ==========================================
 export const Anvandarvillkor = () => (
-    <LegalLayout title="Användarvillkor" footerLinks={[
+    <LegalLayout title="Användarvillkor" path="/anvandarvillkor" footerLinks={[
         { label: "Integritetspolicy", path: "/integritetspolicy" },
         { label: "Cookiepolicy", path: "/cookiepolicy" }
     ]}>
@@ -117,7 +136,7 @@ export const Anvandarvillkor = () => (
 // Cookiepolicy
 // ==========================================
 export const Cookiepolicy = () => (
-    <LegalLayout title="Cookiepolicy" footerLinks={[
+    <LegalLayout title="Cookiepolicy" path="/cookiepolicy" footerLinks={[
         { label: "Integritetspolicy", path: "/integritetspolicy" },
         { label: "Användarvillkor", path: "/anvandarvillkor" }
     ]}>
@@ -151,7 +170,7 @@ export const Cookiepolicy = () => (
 // part is the rewrite's doing and cannot be fixed from the client.
 // ==========================================
 export const NotFound = () => (
-    <LegalLayout title="Sidan finns inte" footerLinks={[
+    <LegalLayout title="Sidan finns inte" noindex footerLinks={[
         { label: "Integritetspolicy", path: "/integritetspolicy" },
         { label: "Användarvillkor", path: "/anvandarvillkor" },
         { label: "Cookiepolicy", path: "/cookiepolicy" }

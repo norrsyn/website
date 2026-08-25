@@ -227,6 +227,72 @@ export const Handoff = () => {
 };
 
 // ==========================================================================
+// Fortsättningen — the market over time.
+//
+// A compact addendum after the Brief: the work does not stop at one delivery.
+// One strip in the company-mark grammar shows a relevant market being worked
+// through — investigated, qualified, remaining — with the remaining share in
+// a muted violet that appears nowhere else on the site, so "not yet worked"
+// reads as its own category rather than another green state. Proportions
+// echo the demo cohort (3 120 of an 18 400-company relevant market) and are
+// labelled illustrative. No fake live data.
+// ==========================================================================
+const TAM_MARKS = Array.from({ length: 48 }, (_, i) => {
+  if (i === 6) return 'chosen';
+  return i < 8 ? 'done' : 'left';
+});
+
+export const Tam = () => {
+  const root = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) return;
+      gsap.from('[data-tam]', {
+        scrollTrigger: { trigger: root.current, start: 'top 78%', once: true },
+        y: 12, opacity: 0, duration: 0.9, stagger: 0.1, ease: EASE.out,
+      });
+      // The strip resolves left to right: the market being worked through.
+      gsap.from('.tam-strip i', {
+        scrollTrigger: { trigger: root.current, start: 'top 74%', once: true },
+        opacity: 0, duration: 0.5, ease: 'power2.out',
+        stagger: { each: 0.012, from: 'start' },
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="fortsattningen" ref={root} className="bg-paper-2 border-t border-ink/8">
+      <div className="mx-auto max-w-4xl px-6 sm:px-10 py-16 md:py-24">
+        <div data-tam className="eyebrow text-ink-4 mb-4">Fortsättningen</div>
+        <h2
+          data-tam
+          className="font-sans font-semibold text-ink text-[1.5rem] md:text-[1.9rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-2xl"
+        >
+          Vi fortsätter tills den relevanta marknaden är genomarbetad.
+        </h2>
+        <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-8">
+          Varje leverans arbetar igenom en del av marknaden. Vi håller reda på
+          vad som är undersökt, vad som har kvalificerat sig och vad som
+          återstår.
+        </p>
+        <div data-tam className="tam-strip" aria-hidden="true">
+          {TAM_MARKS.map((t, i) => <i key={i} data-t={t} />)}
+        </div>
+        <div data-tam className="tam-legend">
+          <span><i data-t="done" aria-hidden="true" /> Genomgånget · 3 120 bolag</span>
+          <span><i data-t="chosen" aria-hidden="true" /> Kvalificerade Briefs · 24</span>
+          <span><i data-t="left" aria-hidden="true" /> Kvar att undersöka · 15 280</span>
+        </div>
+        <p data-tam className="tam-note">
+          Illustrativ bild av en relevant marknad om 18 400 bolag.
+        </p>
+      </div>
+    </section>
+  );
+};
+
+// ==========================================================================
 // About
 // ==========================================================================
 export const About = () => {

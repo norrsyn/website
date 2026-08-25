@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
-import { Philosophy, Handoff, About, Contact, Footer } from './components/Sections.jsx';
+import { Philosophy, Tam, Handoff, About, Contact, Footer } from './components/Sections.jsx';
 import Process from './components/Process.jsx';
 import BriefExample from './components/Brief.jsx';
 import { Integritetspolicy, Anvandarvillkor, Cookiepolicy, NotFound } from './components/LegalPages.jsx';
@@ -372,8 +372,8 @@ function Hero() {
               className="text-white/80 text-[15px] sm:text-base md:text-[17px] leading-[1.65] max-w-xl mb-8 md:mb-9"
             >
               Vi går igenom den svenska marknaden och lämnar över de bolag där
-              ni har ett verkligt skäl att höra av er. Varje bolag kommer med
-              källor, sammanhang och en färdig ingång till första samtalet.
+              ni har ett verkligt skäl att höra av er. Med källor och en färdig
+              ingång till första samtalet.
             </p>
 
             <div data-hero-rise className="flex flex-col sm:flex-row gap-3 sm:items-center">
@@ -462,6 +462,7 @@ function App() {
       <Philosophy />
       <Process />
       <BriefExample />
+      <Tam />
       <Handoff />
       <About />
       <Contact />

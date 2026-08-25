@@ -165,8 +165,8 @@ function S1() {
           <p className="jr-body">
             Det gör vi tillsammans med er. Vad ni säljer, vilka som realistiskt
             köper det och vad som gör ett bolag ointressant. Svaren blir er{' '}
-            <span className="jr-term">OfferBrain</span>, kravbilden som resten av
-            arbetet mäts mot. Ni ser den som den gröna linjen härifrån och ned.
+            <span className="jr-term">OfferBrain</span>, kravbilden som resten
+            av arbetet mäts mot.
           </p>
         </header>
 
@@ -261,6 +261,10 @@ function S1() {
             ))}
           </div>
         </div>
+        <Foot>
+          Förenklat exempel på en kravbild. Er OfferBrain byggs ut med fler
+          kriterier och mer detalj.
+        </Foot>
       </div>
     </section>
   );
@@ -277,10 +281,9 @@ function S2() {
           <div className="eyebrow text-green-deep mb-4">Marknaden</div>
           <h2 className="jr-title">”Sedan avgränsar vi marknaden.”</h2>
           <p className="jr-body">
-            Den möjliga marknaden är många gånger större än någon enskild
-            genomgång. Kravbilden avgör vilka bolag som är värda att pröva, och
-            de blir kohorten vi följer härifrån: 3&nbsp;120 bolag i den här
-            illustrativa genomgången.
+            Er kravbild avgränsar den breda marknaden till de bolag som är
+            värda att undersöka. I det här exemplet: 3&nbsp;120 bolag, kohorten
+            vi följer härifrån.
           </p>
         </header>
 
@@ -323,10 +326,9 @@ function S3() {
           <div className="eyebrow text-green mb-4">Granskningen</div>
           <h2 className="jr-title">”Det mesta ska bort.”</h2>
           <p className="jr-body">
-            Varje bolag prövas mot kravbilden, kriterium för kriterium. Fel
-            bransch, fel storlek, fel geografi eller något som diskvalificerar
-            direkt: avgjort i kod, inte av en språkmodell. De flesta bolag ska
-            aldrig bli leads.
+            Sedan sorterar vi bort de bolag som inte passar. Fel bransch, fel
+            storlek, fel geografi eller något som diskvalificerar direkt.
+            Urvalet avgörs i kod, inte av en språkmodell.
           </p>
         </header>
 
@@ -343,6 +345,7 @@ function S3() {
           </div>
         </div>
 
+        <span className="jr-field-label" aria-hidden="true">Kohorten från 02 · 3 120 bolag</span>
         <div data-field3 className="jr-field" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0,1fr))` }} aria-hidden="true">
           {Array.from({ length: MARKS }, (_, i) => (
             <i key={i} data-state={RANKS[i] < ALIVE_AFTER_03 ? 'solid' : 'struck'} className="jm" />
@@ -350,9 +353,9 @@ function S3() {
         </div>
 
         <Foot>
-          <span data-count3 className="jr-count">388</span> bolag håller. Resten
-          ligger kvar som blekt bläck: ni ser vad som sorterades bort, inte bara
-          vad som blev kvar.
+          Samma kohort som i 02: <span data-count3 className="jr-count">388</span>{' '}
+          av 3&nbsp;120 bolag håller. Resten ligger kvar som blekt bläck.
+          Siffrorna är illustrativa.
         </Foot>
       </div>
     </section>
@@ -604,9 +607,8 @@ function S6() {
             </li>
           </ul>
           <p className="jr-portal-note">
-            Granskade Briefs levereras i er portal, samlade per leverans. Ni
-            öppnar dem när säljarbetet börjar och har varje leverans kvar att
-            gå tillbaka till.
+            Exempelvy. Granskade Briefs levereras i er portal, samlade per
+            leverans, och varje leverans finns kvar att gå tillbaka till.
           </p>
         </div>
 

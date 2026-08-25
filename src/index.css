@@ -800,6 +800,17 @@ h1, h2, h3, h4, h5, h6 {
 .jr-tap[data-on="1"] .jr-tap-label { color: var(--green); }
 .jr-tap[data-on="1"] .jr-tap-line { background: var(--green); }
 
+/* The cohort, named: the 03 field is visibly the same population 02 bounded. */
+.jr-field-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 /* ── 04 · dossier ───────────────────────────────────────────────────────── */
 .jr-dossier-wrap { position: relative; max-width: 44rem; }
 .jr-branch {
@@ -1349,6 +1360,45 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 12.5px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Fortsättningen · the market over time ──────────────────────────────── */
+.tam-strip {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 5px;
+  max-width: 46rem;
+}
+.tam-strip i,
+.tam-legend i {
+  display: block;
+  height: 12px;
+  border-radius: 1px;
+}
+[data-t="done"] { background: rgba(46, 110, 85, 0.55); }
+[data-t="chosen"] { background: var(--green-deep); box-shadow: 0 0 0 2px rgba(46, 110, 85, 0.2); }
+[data-t="left"] { background: rgba(117, 107, 148, 0.18); box-shadow: inset 0 0 0 1px rgba(117, 107, 148, 0.42); }
+.tam-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin-top: 1.1rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.tam-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.tam-legend i { width: 14px; height: 8px; flex: 0 0 auto; }
+.tam-note {
+  margin-top: 0.9rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px;
+  color: var(--ink-4);
+}
+@media (max-width: 639px) {
+  .tam-strip { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 }
 
 .ho-glyph { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 2.2rem; }
