@@ -214,7 +214,7 @@ export function initThread() {
   $$('[data-ob-strand]').forEach((p, i) => {
     dashSeg(p, () => {
       const t = docTop(form);
-      return [t + 680 + i * 7, t + 840 + i * 7];
+      return [t + 680 + i * 7, t + 930 + i * 7];
     });
   });
   const obLabel = $('[data-oblabel]');

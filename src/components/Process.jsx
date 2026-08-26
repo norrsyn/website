@@ -68,7 +68,7 @@ const F_HEAD = 200;         // the arrival band above the ledger — room to tra
 const F_RIGHT = 902;        // ledger right edge (52rem wide)
 const F_COLLECT_X = 934;
 const F_COLLECT_Y = F_HEAD + 6 * ROW01 + 36; // 456
-const F_H = 876;                             // the transformation zone breathes
+const F_H = 1000;                            // reaches past the caption into 02
 const F_W = 943;
 /* The OfferBrain fold: the arriving thread runs the head band, ties one loop
    of radius 7 — the same stroke folding into a knot — and exits downward as
