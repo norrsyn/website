@@ -104,8 +104,17 @@ const F_ENTRY = [
    THE FAN (03 · 04 · 05): where the bundle addresses an artefact, six
    filaments depart toward it — the strands briefly at work. */
 const STRAND_OFFS = [-5, -3, -1, 1, 3, 5]; // the bundle, six criteria wide
-const NECK_Y = F_COLLECT_Y + 44;           // 500 — where the single line splits
+const NECK_Y = F_COLLECT_Y + 44;           // where the fibers gather to breathe
 const PHASE = [0, 4, 8, 2, 6, 10];         // per-strand breathing offsets
+/* Each criterion is ONE continuous fiber from its question to the bundle:
+   its own lane in the collector ribbon, its own line in the run home, its
+   own entry into the spindle. Nested radii at both corners — six strands,
+   zero crossings. */
+const LANE_X = (i) => F_COLLECT_X + i * 2.2;      // ribbon lanes, 934..945
+const HOME_Y = (i) => F_COLLECT_Y - 12 + i * 2.4; // home lines, 560..572
+const TURN_R = (i) => 13 + i * 2.2;               // nested right corner
+const FOLD_R = (i) => 26 - i * 2.2;               // nested left corner
+const NECK_O = (i) => -2.75 + i * 1.1;            // spindle entry offsets
 
 /* The persistent bundle: six strands on the rail axis. Geometry is generated
    per section at layout time (drift returns to zero at every seam); the
@@ -182,62 +191,58 @@ function S1() {
           >
             <path data-entry d={F_ENTRY} pathLength="1" fill="none" />
             <circle data-ob-dot cx={F_COLLECT_X} cy={OB_Y} r="2.4" />
-            {/* Six hooks: each criterion's exit from its own row. */}
+            {/* Six fibers, part one: each criterion leaves ITS question,
+                joins its own lane in the collector ribbon — which visibly
+                gains one strand per answered row — and turns home. */}
             {INTAKE.map((_, i) => {
               const y = F_HEAD + i * ROW01 + ROW01 / 2;
               return (
                 <path
                   key={i}
-                  data-form
-                  d={`M ${F_RIGHT + 16} ${y} L ${F_COLLECT_X - 12} ${y} Q ${F_COLLECT_X} ${y} ${F_COLLECT_X} ${y + 14}`}
+                  data-sa
+                  d={[
+                    `M ${F_RIGHT + 16} ${y}`,
+                    `L ${LANE_X(i) - 12} ${y}`,
+                    `Q ${LANE_X(i)} ${y} ${LANE_X(i)} ${y + 14}`,
+                    `L ${LANE_X(i)} ${HOME_Y(i) - TURN_R(i)}`,
+                    `Q ${LANE_X(i)} ${HOME_Y(i)} ${LANE_X(i) - TURN_R(i)} ${HOME_Y(i)}`,
+                    `L 920 ${HOME_Y(i)}`,
+                  ].join(' ')}
                   pathLength="1"
                   fill="none"
                 />
               );
             })}
-            {/* The collector grows downward ONE ROW AT A TIME: segment i only
-                exists once criterion i has joined. After criterion three the
-                collector physically ends at row three. */}
-            {INTAKE.slice(0, 5).map((_, i) => {
-              const y = F_HEAD + i * ROW01 + ROW01 / 2 + 14;
-              return (
-                <path
-                  key={i}
-                  data-collect
-                  d={`M ${F_COLLECT_X} ${y} L ${F_COLLECT_X} ${y + ROW01}`}
-                  pathLength="1"
-                  fill="none"
-                />
-              );
-            })}
-            {/* The closing turn: only after the sixth criterion. */}
-            <path
-              data-collect-close
-              d={`M ${F_COLLECT_X} ${F_HEAD + 5 * ROW01 + 42} L ${F_COLLECT_X} ${F_COLLECT_Y - 24} Q ${F_COLLECT_X} ${F_COLLECT_Y} ${F_COLLECT_X - 24} ${F_COLLECT_Y}`}
-              pathLength="1"
-              fill="none"
-            />
-            {/* The completed requirement runs home and turns down the spine. */}
-            <path
-              data-form-spine
-              d={`M ${F_COLLECT_X - 24} ${F_COLLECT_Y} L 25 ${F_COLLECT_Y} Q 1 ${F_COLLECT_Y} 1 ${F_COLLECT_Y + 24} L 1 ${NECK_Y}`}
-              pathLength="1"
-              fill="none"
-            />
-            {/* THE TRANSFORMATION. The single line splits: six strands emerge,
-                breathe apart wider than their final spacing, and settle into
-                the persistent bundle. One line becomes six, for good. */}
+            {/* Part two: after the sixth joins, the six lines run home
+                together and fold down toward the neck. */}
+            {INTAKE.map((_, i) => (
+              <path
+                key={i}
+                data-sb
+                d={[
+                  `M 920 ${HOME_Y(i)}`,
+                  `L ${1 + NECK_O(i) + FOLD_R(i)} ${HOME_Y(i)}`,
+                  `Q ${1 + NECK_O(i)} ${HOME_Y(i)} ${1 + NECK_O(i)} ${HOME_Y(i) + FOLD_R(i)}`,
+                  `L ${1 + NECK_O(i)} ${NECK_Y}`,
+                ].join(' ')}
+                pathLength="1"
+                fill="none"
+              />
+            ))}
+            {/* Part three: the spindle — the same six fibers breathe apart,
+                OFFERBRAIN resolves at the waist, and they settle into the
+                travelling bundle. */}
             {STRAND_OFFS.map((f, i) => {
               const w = f * 2.6;
-              const p = PHASE[i];
+              const ph = PHASE[i];
               return (
                 <path
                   key={i}
-                  data-ob-strand
+                  data-sc
                   d={[
-                    `M 1 ${NECK_Y}`,
-                    `C 1 ${NECK_Y + 44 + p}, ${1 + w} ${NECK_Y + 60 + p}, ${1 + w} ${NECK_Y + 92 + p}`,
-                    `C ${1 + w} ${NECK_Y + 126 + p}, ${1 + f} ${NECK_Y + 156 + p}, ${1 + f} ${NECK_Y + 200}`,
+                    `M ${1 + NECK_O(i)} ${NECK_Y}`,
+                    `C ${1 + NECK_O(i)} ${NECK_Y + 44 + ph}, ${1 + w} ${NECK_Y + 60 + ph}, ${1 + w} ${NECK_Y + 92 + ph}`,
+                    `C ${1 + w} ${NECK_Y + 126 + ph}, ${1 + f} ${NECK_Y + 156 + ph}, ${1 + f} ${NECK_Y + 200}`,
                     `L ${1 + f} ${F_H}`,
                   ].join(' ')}
                   pathLength="1"

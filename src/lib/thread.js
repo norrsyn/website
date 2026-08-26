@@ -188,31 +188,26 @@ export function initThread() {
       }
     );
   });
-  // Hook i departs its row (top+20..38); collector segment i then GROWS the
-  // vertical by exactly one row (top+36..54), arriving at row i+1 as the head
-  // reads it. The closing turn exists only after the sixth criterion. At any
-  // scroll position the collector physically ends at the current question.
-  $$('[data-form]').forEach((p, i) => {
+  // Each criterion is one continuous fiber. Part A (hook + its ribbon lane)
+  // begins as the head reads its row and grows until the sixth has joined —
+  // the ribbon visibly gains one strand per answered question. Part B (the
+  // shared run home + fold) begins only after the collection is complete.
+  // Part C (spindle + descent) forms the travelling bundle, staggered.
+  $$('[data-sa]').forEach((pth, i) => {
     const row = rows[i];
-    if (row) dashSeg(p, nodeBand(row, -50, 18));
+    if (!row) return;
+    dashSeg(pth, () => [docTop(row) + 20, docTop(rows[5]) + 70]);
   });
-  $$('[data-collect]').forEach((p, i) => {
-    const row = rows[i];
-    if (row) dashSeg(p, nodeBand(row, -66, 18));
-  });
-  dashSeg($('[data-collect-close]'), nodeBand(rows[5], -66, 26));
   const wrap = $('.jr-intake-wrap');
-  // Collection closed → the completed single line runs home and turns down —
-  // and then TRANSFORMS: six strands emerge one after another, breathe apart,
-  // and settle into the persistent bundle. OFFERBRAIN resolves at the widest
-  // point of the split. From here the page has six lines, not one.
-  dashSeg($('[data-form-spine]'), () => {
-    const r = wrap.getBoundingClientRect();
-    const bottom = r.bottom + window.scrollY;
-    return [bottom + 55, bottom + 135];
+  $$('[data-sb]').forEach((pth) => {
+    dashSeg(pth, () => {
+      const r = wrap.getBoundingClientRect();
+      const bottom = r.bottom + window.scrollY;
+      return [bottom + 30, bottom + 110];
+    });
   });
-  $$('[data-ob-strand]').forEach((p, i) => {
-    dashSeg(p, () => {
+  $$('[data-sc]').forEach((pth, i) => {
+    dashSeg(pth, () => {
       const t = docTop(form);
       return [t + 680 + i * 7, t + 930 + i * 7];
     });

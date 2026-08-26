@@ -596,9 +596,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .jr-form [data-entry] { stroke: rgba(46, 110, 85, 0.6); stroke-width: 1.75; stroke-linecap: round; fill: none; }
 .jr-form [data-ob-dot] { fill: var(--green-deep); transition: opacity 300ms var(--ease-out); }
-.jr-form [data-collect],
-.jr-form [data-collect-close] { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.5; stroke-linecap: round; fill: none; }
-.jr-form [data-ob-strand] { stroke: rgba(46, 110, 85, 0.55); stroke-width: 1.1; stroke-linecap: round; }
+.jr-form [data-sa],
+.jr-form [data-sb],
+.jr-form [data-sc] { stroke: rgba(46, 110, 85, 0.55); stroke-width: 1.1; stroke-linecap: round; fill: none; }
 .jr-form .jr-oblabel line { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1; }
 .jr-form .jr-oblabel text {
   font-family: '"IBM Plex Mono"', ui-monospace, monospace;
@@ -611,8 +611,6 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.05em;
   fill: var(--ink-4);
 }
-.jr-form [data-form] { stroke: rgba(46, 110, 85, 0.5); stroke-width: 1.5; stroke-linecap: round; }
-.jr-form [data-form-spine] { stroke: rgba(46, 110, 85, 0.62); stroke-width: 2; stroke-linecap: round; }
 @media (max-width: 1023px) { .jr-form { display: none; } }
 
 /* The output terminal: where a criterion becomes a connection. */
