@@ -400,8 +400,10 @@ export default function BriefExample() {
         </article>
 
         <p className="mt-6 font-mono text-[10.5px] text-ink-3 max-w-xl">
-          Illustrativt demoexempel. Bolaget, siffrorna och personerna är fiktiva.
-          Strukturen, klassificeringen och konfidensnivåerna är produktens egna.
+          Illustrativt demoexempel. Bolaget, siffrorna och personerna är
+          fiktiva, och eventuella likheter med verkliga bolag eller personer
+          är en tillfällighet. Strukturen, klassificeringen och
+          konfidensnivåerna är produktens egna.
         </p>
       </div>
     </section>
