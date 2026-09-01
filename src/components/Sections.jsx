@@ -313,6 +313,143 @@ export const Tam = () => {
 };
 
 // ==========================================================================
+// På er radar — On-demand Account Intelligence.
+//
+// The second door into the same machine. The whole page up to here says
+// "Norrsyn finds the accounts"; this section completes the sentence: "and
+// when you already know the accounts, send them in." One artifact carries
+// the story: the customer's own list (in the portal's paper grammar) feeds
+// the research engine and comes back as an intelligence card (in the Brief's
+// document grammar) — same tiers, same honesty. The second outcome line,
+// "Begränsat underlag", is deliberate: honest absence of evidence is part of
+// the product, and showing it here inoculates the promise against hype.
+//
+// Motion contract as everywhere: defaults are the final state; GSAP rewinds
+// and animates only when motion is allowed.
+// ==========================================================================
+const OD_ACCOUNTS = [
+  'Skandinavisk Verkstadsteknik AB',
+  'Baltzar Components AB',
+  'Viggo Logistik AB',
+  'Nordana Emballage AB',
+];
+
+export const OnDemand = () => {
+  const root = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) return;
+      gsap.from('[data-od]', {
+        scrollTrigger: { trigger: root.current, start: 'top 76%', once: true },
+        y: 14, opacity: 0, duration: 0.9, stagger: 0.1, ease: EASE.out,
+      });
+      // The handover reads left to right: the list settles, the link asserts
+      // itself, and only then does the intelligence exist.
+      gsap.from('.od-list .od-row', {
+        scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
+        opacity: 0, x: -8, duration: 0.6, stagger: 0.09, delay: 0.15, ease: EASE.out,
+      });
+      gsap.from('.od-link', {
+        scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
+        opacity: 0, duration: 0.7, delay: 0.75, ease: 'power2.out',
+      });
+      gsap.from('.od-card, .od-alt', {
+        scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
+        opacity: 0, y: 12, duration: 0.9, stagger: 0.12, delay: 0.95, ease: EASE.out,
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section id="pa-er-radar" ref={root} className="bg-paper border-t border-ink/8">
+      <div className="mx-auto max-w-5xl px-6 sm:px-10 py-20 md:py-28">
+        <div data-od className="eyebrow text-green-deep mb-4">På er radar</div>
+        <h2
+          data-od
+          className="font-sans font-semibold text-ink text-[1.5rem] md:text-[1.9rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-2xl"
+        >
+          Redan bolag i sikte? Skicka dem till oss.
+        </h2>
+        <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
+          Norrsyn hittar löpande nya möjligheter i er marknad. Men ibland vet ni
+          redan vilka bolag ni vill in hos — strategiska accounts, bolag ert
+          säljteam pekat ut. Då gör vi samma djupresearch mot er kravbild på
+          just dem: läget, verifierade signaler, rätt personer och en ärlig
+          bedömning av timing.
+        </p>
+        <p data-od className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-xl mb-10">
+          Vi kallar det <span className="jr-term">On-demand Account Intelligence</span>.
+        </p>
+
+        {/* The artifact: your list in, intelligence out. */}
+        <div data-od className="od-flow" aria-hidden="true">
+          <div className="od-list">
+            <div className="od-list-bar">
+              <span className="eyebrow text-ink-3">Era accounts</span>
+              <span className="od-mono">4 bolag</span>
+            </div>
+            <ul>
+              {OD_ACCOUNTS.map((name) => (
+                <li key={name} className="od-row">
+                  <span className="jm" data-state="chosen" />
+                  <span className="od-row-name">{name}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="od-send">
+              Skicka till Norrsyn
+              <ArrowRight size={12} strokeWidth={2.25} />
+            </div>
+          </div>
+
+          <div className="od-link">
+            <span className="od-link-line" />
+            <span className="od-link-label">djupresearch mot er kravbild</span>
+            <span className="od-link-line" />
+          </div>
+
+          <div className="od-result">
+            <article className="od-card">
+              <header className="od-card-head">
+                <span className="eyebrow text-green-deep">Account Intelligence</span>
+                <span className="od-mono">På er begäran</span>
+              </header>
+              <div className="od-card-name">Skandinavisk Verkstadsteknik AB</div>
+              <div className="od-card-sub">Verkstadsindustri · Eskilstuna · 46 anställda</div>
+              <ul className="od-facts">
+                <li><span>Verifierade signaler</span><span className="od-fact-v">4 <i className="jr-tier jt-ok">Bekräftat</i></span></li>
+                <li><span>Relevanta personer</span><span className="od-fact-v">3</span></li>
+                <li><span>Källor</span><span className="od-fact-v">17</span></li>
+                <li><span>Timing</span><span className="od-fact-v">Stark — rekryterar systemansvarig</span></li>
+              </ul>
+            </article>
+            {/* Honesty is part of the artifact: one of the four came back
+                with too little verified evidence, and we say so. */}
+            <div className="od-alt">
+              <span className="jm" data-dim="1" />
+              <span className="od-alt-name">Baltzar Components AB</span>
+              <span className="jr-tier jt-low">Begränsat underlag</span>
+            </div>
+          </div>
+        </div>
+
+        <p data-od className="tam-note max-w-2xl">
+          Illustrativt exempel. Resultatet granskas av en analytiker och
+          levereras i er portal — och hittar vi inte belägg för köpläge säger
+          vi det rakt ut.
+        </p>
+        <p data-od className="od-abm">
+          För team som arbetar account-baserat (ABM) fungerar Norrsyn som
+          research-lagret: vi bevakar marknaden löpande, och era utvalda
+          accounts analyseras på djupet när ni behöver det.
+        </p>
+      </div>
+    </section>
+  );
+};
+
+// ==========================================================================
 // About
 // ==========================================================================
 export const About = () => {

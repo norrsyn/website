@@ -1418,6 +1418,117 @@ h1, h2, h3, h4, h5, h6 {
   .tam-strip { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 }
 
+/* ── På er radar · On-demand Account Intelligence ─────────────────────────
+ * One artifact, two grammars: the customer's list borrows the portal's paper
+ * card, the result borrows the Brief's white document. The link between them
+ * is typographic, not decorative — a labeled rule, horizontal on desktop,
+ * vertical when the flow stacks on mobile.
+ * ────────────────────────────────────────────────────────────────────────── */
+.od-flow {
+  display: grid;
+  gap: 1.1rem;
+  align-items: center;
+  margin-bottom: 1.4rem;
+}
+@media (min-width: 900px) {
+  .od-flow {
+    grid-template-columns: minmax(0, 5fr) auto minmax(0, 6fr);
+    gap: 1.4rem;
+  }
+}
+.od-mono {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.od-list {
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-radius: 2px;
+  background: var(--paper-2);
+}
+.od-list-bar {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.1);
+  background: rgba(21, 24, 26, 0.02);
+}
+.od-row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.07);
+}
+.od-row .jm { width: 16px; height: 9px; flex: 0 0 auto; }
+.od-row-name { font-size: 12.5px; font-weight: 500; color: var(--ink-2); }
+.od-send {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 0.6rem 0.9rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green-deep);
+  background: rgba(46, 110, 85, 0.05);
+}
+.od-link {
+  display: flex; align-items: center; gap: 10px;
+  max-width: 100%;
+}
+.od-link-line { display: block; flex: 1 1 24px; height: 1.5px; min-width: 16px; background: rgba(46, 110, 85, 0.45); }
+.od-link-label {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+@media (min-width: 900px) {
+  .od-link { flex-direction: column; width: 9.5rem; }
+  .od-link-line { width: 1.5px; height: 26px; flex: 0 0 auto; min-width: 0; }
+  .od-link-label { white-space: normal; text-align: center; line-height: 1.6; }
+}
+.od-card {
+  background: #fff;
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-left: 2px solid var(--green-deep);
+  border-radius: 2px;
+  padding: 1.1rem 1.3rem;
+  box-shadow: 0 1px 1px rgba(21,24,26,0.04), 0 16px 40px -18px rgba(21,24,26,0.16);
+}
+.od-card-head {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem;
+  padding-bottom: 0.65rem; border-bottom: 1px solid rgba(21,24,26,0.1); margin-bottom: 0.75rem;
+}
+.od-card-name { font-weight: 600; font-size: 16px; letter-spacing: -0.02em; color: var(--ink); }
+.od-card-sub { font-family: '"IBM Plex Mono"', monospace; font-size: 10.5px; color: var(--ink-4); margin-top: 2px; }
+.od-facts { margin-top: 0.9rem; display: flex; flex-direction: column; }
+.od-facts li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: 0.42rem 0;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.06);
+  font-size: 12.5px; color: var(--ink-4);
+}
+.od-facts li:last-child { border-bottom: none; }
+.od-fact-v { color: var(--ink-2); font-weight: 500; text-align: right; }
+.od-fact-v .jr-tier { margin-left: 6px; }
+.od-alt {
+  display: flex; align-items: center; gap: 9px;
+  margin-top: 0.7rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(21, 24, 26, 0.1);
+  border-radius: 2px;
+  background: rgba(21, 24, 26, 0.02);
+}
+.od-alt .jm { width: 16px; height: 9px; flex: 0 0 auto; background: rgba(21, 24, 26, 0.16); }
+.od-alt-name { font-size: 12px; font-weight: 500; color: var(--ink-3); }
+.od-alt .jr-tier { margin-left: auto; }
+.od-abm {
+  margin-top: 0.55rem;
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--ink-4);
+  max-width: 34rem;
+}
+
 .ho-glyph { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 2.2rem; }
 .ho-mark { display: block; width: 22px; height: 12px; border-radius: 1px; background: var(--green-deep); box-shadow: 0 0 0 2px rgba(46,110,85,0.22); }
 .ho-line { display: block; width: 72px; height: 1.5px; background: rgba(21, 24, 26, 0.3); }

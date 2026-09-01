@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
-import { Philosophy, Tam, Handoff, About, Contact, Footer } from './components/Sections.jsx';
+import { Philosophy, Tam, OnDemand, Handoff, About, Contact, Footer } from './components/Sections.jsx';
 import Process from './components/Process.jsx';
 import BriefExample from './components/Brief.jsx';
 import { Integritetspolicy, Anvandarvillkor, Cookiepolicy, NotFound } from './components/LegalPages.jsx';
@@ -463,6 +463,10 @@ function App() {
       <Process />
       <BriefExample />
       <Tam />
+      {/* The second door: the market is worked through continuously (Tam),
+          AND the accounts the customer already knows can be sent in. Placed
+          before the Handoff so the exhale still closes the whole story. */}
+      <OnDemand />
       <Handoff />
       <About />
       <Contact />
