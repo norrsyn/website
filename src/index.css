@@ -27,6 +27,7 @@
   --graphite:  #15181A;
   --forest:    #0C1310;
   --ink:       #15181A;
+  --ink-2: #2A2F33; /* 12.0:1 on paper */
   --green:     #45A57F;
   --green-deep:#2E6E55;
   --ink-4:     #676D72;
@@ -1045,7 +1046,8 @@ h1, h2, h3, h4, h5, h6 {
   border-top: 1px solid rgba(255,255,255,0.14);
   max-width: 52rem;
 }
-.jr-verdict-scale { display: inline-flex; gap: 5px; }
+.jr-verdict-scale { display: inline-flex; flex-wrap: wrap; gap: 5px; }
+.jr-verdict-scale span { white-space: nowrap; }
 .jr-verdict-scale span {
   font-family: '"IBM Plex Mono"', monospace;
   font-size: 11px;
@@ -1152,6 +1154,21 @@ h1, h2, h3, h4, h5, h6 {
 .jr-portal-row.is-current { color: var(--ink); background: rgba(46,110,85,0.04); }
 .jr-portal-meta { font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: var(--ink-4); white-space: nowrap; }
 .jr-portal-note { padding: 0.7rem 1rem; font-size: 11.5px; line-height: 1.6; color: var(--ink-4); }
+.jr-portal-row > span:first-child { white-space: nowrap; }
+/* Narrow screens: the featured Brief wraps onto two lines and each delivery
+   row stacks its date and state under the week. Nothing leaves the card. */
+@media (max-width: 639px) {
+  .jr-portal-bar { flex-wrap: wrap; gap: 2px 1rem; }
+  .jr-portal-nav { flex-wrap: wrap; gap: 0.4rem 1rem; }
+  .jr-portal-nav span { white-space: nowrap; }
+  .jr-portal-brief { flex-wrap: wrap; row-gap: 7px; }
+  .jr-portal-brief-name { flex: 1 1 60%; min-width: 0; }
+  .jr-portal-brief .jr-portal-state,
+  .jr-portal-brief .jr-portal-brief-grade { margin-left: 0; }
+  .jr-portal-brief .jr-portal-open { margin-left: auto; }
+  .jr-portal-row { flex-direction: column; gap: 5px; }
+  .jr-portal-row-meta { flex-wrap: wrap; }
+}
 
 /* ── The seed, the bridge and the handoff ─────────────────────────────────
  * The system starts in the hero: a latent green trace at the fold, at the

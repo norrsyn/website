@@ -1,0 +1,382 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * THE WALKTHROUGH — sketch
+ *
+ * The sections are transparent DOM over one fixed canvas (the stage). The
+ * stage paints the tonal bands, the line and every diagram; the DOM keeps
+ * the words and the documents. Rules here only turn the light-surface
+ * chapter styles from index.css into dark-stage ones, and hide the DOM
+ * pieces the stage now draws (marks, lanes, taps) while keeping their
+ * layout, so the stage can measure them.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+.wk { position: relative; z-index: 1; }
+/* The stage container spans the walkthrough; the engine places canvas tiles
+   inside it. In flow, so they scroll on the compositor with the text. */
+.wk-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.wk-tile {
+  position: absolute;
+  left: 0;
+  display: block;
+}
+.wk-sec { position: relative; z-index: 1; color: #fff; }
+.wk .jr-01, .wk .jr-02, .wk .jr-03, .wk .jr-04, .wk .jr-05, .wk .jr-06 { background: transparent; }
+
+/* Chapter type on the stage. */
+.wk .jr-title { color: #fff; }
+.wk .jr-q {
+  font-family: Newsreader, Georgia, serif;
+  font-weight: 400;
+  color: var(--green);
+  margin: 0 0.02em;
+}
+@media (min-width: 1024px) { .wk .jr-title { font-size: 2.9rem; } }
+.wk .jr-body { color: rgba(255, 255, 255, 0.76); }
+.wk .jr-term { color: var(--green); }
+.wk .jr-foot { color: rgba(255, 255, 255, 0.6); }
+.wk .jr-count { color: var(--green); }
+.wk .jr-node-square { background: var(--green); }
+.wk .jr-node-num { color: rgba(255, 255, 255, 0.14); }
+/* The square sits on the line's exact x (the rail is 2px wide; its centre
+   is one pixel right of the 1.1rem mark). */
+.wk .jr-inner .jr-node { left: calc(1.1rem - 3.5px); }
+@media (max-width: 639px) { .wk .jr-inner .jr-node { left: calc(1rem - 3.5px); } }
+
+/* ── Problemet ── */
+.wk-ph-field { height: 212px; }
+.wk .ph-field-note { color: rgba(255, 255, 255, 0.62); }
+.wk .ph-slot-q { color: rgba(255, 255, 255, 0.7); }
+.wk .ph-slot-box { border-color: rgba(255, 255, 255, 0.45); }
+/* Person is blue: an individual inside an organisation, its own hue. */
+.wk .ph-slot[data-kind="person"] .ph-slot-box { border-color: rgba(92, 155, 214, 0.6); }
+.wk .ph-slot[data-kind="person"] .ph-slot-box::after { background: rgba(92, 155, 214, 0.45); }
+.wk .ph-slot[data-active="1"][data-kind="person"] .ph-slot-box { border-color: rgba(92, 155, 214, 0.95); }
+.wk .ph-slot[data-active="1"][data-kind="person"] .ph-slot-box::after { background: rgba(92, 155, 214, 0.95); }
+.wk .ph-slot { border-bottom-color: rgba(255, 255, 255, 0.12); }
+.wk .wk-ph-copy { color: rgba(255, 255, 255, 0.78); }
+.wk .wk-ph-register {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  margin: 0 0 0.9rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.wk .wk-ph-register span { padding: 3px 6px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 2px; }
+
+/* ── 01 · the ledger, dark ── */
+.wk .jr-intake { border-top-color: rgba(255, 255, 255, 0.14); }
+.wk .jr-intake-row { border-bottom-color: rgba(255, 255, 255, 0.08); }
+.wk .jr-intake-q { color: rgba(255, 255, 255, 0.6); }
+.wk .jr-intake-raw { color: #EFE8DA; }
+.wk .jr-intake-norm {
+  color: var(--green);
+  border-color: rgba(69, 165, 127, 0.38);
+  background: rgba(69, 165, 127, 0.08);
+}
+.wk .jr-intake-row[data-live="0"] .jr-intake-norm {
+  color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: transparent;
+}
+.wk .jr-out-dot { background: var(--green); }
+
+/* ── 02 · the map: lattice, boundary and marks are painted by the stage ── */
+.wk .jr-map { background-image: none; }
+.wk .jr-map-label { color: rgba(255, 255, 255, 0.5); }
+.wk .jr-bound { background: transparent; border-color: transparent; }
+.wk .jr-bound::before, .wk .jr-bound::after { display: none; }
+.wk .jr-bound-label { background: #15181A; color: var(--green); }
+.wk .jr-field .jm { visibility: hidden; }
+
+/* ── 03 · the bus and taps are painted by the stage; labels stay ── */
+.wk .jr-bus, .wk .jr-tap-line { visibility: hidden; }
+.wk .jr-tap-label { color: rgba(255, 255, 255, 0.7); }
+.wk .jr-field-label { color: rgba(255, 255, 255, 0.55); }
+.wk .jr-fit-cols span { color: rgba(255, 255, 255, 0.5); }
+.wk .jr-fit-text { color: rgba(255, 255, 255, 0.9); }
+.wk .jr-verdict-text { color: rgba(255, 255, 255, 0.82); }
+/* The verdict in the customer's words, never a letter. */
+.wk .jr-verdict-scale span { font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 7px; }
+.wk .jr-verdict { flex-wrap: wrap; }
+
+/* ── Scroll-driven states must not lag the scroll: short settles only. ── */
+.wk .jr-intake-q, .wk .jr-intake-raw { transition-duration: 180ms; }
+.wk .jr-intake-norm { transition-duration: 160ms; }
+.wk .ph-slot-box, .wk .ph-slot-box::after { transition-duration: 180ms; }
+.wk .jr-tap-label { transition-duration: 140ms; }
+
+/* ── The case file · 04, 05, 06 follow one company ─────────────────────── */
+.wk .cs {
+  position: relative;
+  max-width: 56rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.wk .cs-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.wk .cs-mark { width: 22px; height: 12px; flex: 0 0 auto; }
+.wk .cs-name { font-weight: 600; font-size: 15px; letter-spacing: -0.015em; color: #fff; }
+.wk .cs-sub {
+  margin-top: 2px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.wk .cs-tag {
+  margin-left: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+/* 04 · the board: source — wire — finding — reading */
+.wk .cs-cols, .wk .cs-row {
+  display: grid;
+  grid-template-columns: 8.5rem 4.5rem 1.25fr 1fr;
+  gap: 0 1rem;
+  align-items: center;
+}
+.wk .cs-cols {
+  padding: 0.55rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.wk .cs-rows { list-style: none; margin: 0; padding: 0.25rem 0 0.35rem; }
+.wk .cs-row {
+  min-height: 58px;
+  padding: 0.6rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.wk .cs-row:last-child { border-bottom: 0; }
+.wk .cs-src {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0.45;
+}
+.wk .cs-wire { display: block; height: 1px; }
+.wk .cs-find { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wk .cs-find-t { font-size: 13px; color: rgba(255, 255, 255, 0.9); }
+.wk .cs-rel { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+/* The three questions, in the colours the page gave them: kravbild green,
+   behov amber, person blue. An unanswered question stays quiet. */
+.wk .cs-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 3px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+.wk .cs-tag i {
+  font-style: normal;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.wk .cs-tag[data-on="0"] { color: rgba(255, 255, 255, 0.3); }
+.wk .cs-tag[data-on="1"][data-k="krav"] { border-color: rgba(69, 165, 127, 0.45); }
+.wk .cs-tag[data-on="1"][data-k="krav"] i { color: var(--green); }
+.wk .cs-tag[data-on="1"][data-k="behov"] { border-color: rgba(201, 160, 74, 0.5); }
+.wk .cs-tag[data-on="1"][data-k="behov"] i { color: #C9A04A; }
+.wk .cs-tag[data-on="1"][data-k="person"] { border-color: rgba(92, 155, 214, 0.55); }
+.wk .cs-tag[data-on="1"][data-k="person"] i { color: #5C9BD6; }
+@media (max-width: 1023px) {
+  .wk .cs-cols { display: none; }
+  .wk .cs-row { grid-template-columns: 1fr; gap: 4px 0; }
+  .wk .cs-wire { display: none; }
+  .wk .cs-src { opacity: 0.6 !important; }
+}
+@media (max-width: 639px) {
+  .wk .cs-head { flex-wrap: wrap; row-gap: 0.5rem; }
+  .wk .cs-id { flex: 1 1 60%; min-width: 0; }
+  .wk .cs-name { font-size: 14px; }
+  .wk .cs-tag { flex-basis: 100%; margin-left: 0; padding-left: calc(22px + 0.9rem); }
+}
+
+/* 05 · the weighing: criteria | gutter | findings */
+.wk .wg {
+  display: grid;
+  grid-template-columns: 12rem 7rem 1fr;
+  padding: 0.4rem 1.2rem 0.6rem;
+}
+.wk .wg-h {
+  padding: 0.7rem 0 0.5rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.wk .wg-chip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 42px;
+  margin: 5px 0;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(69, 165, 127, 0.38);
+  background: rgba(69, 165, 127, 0.08);
+  border-radius: 2px;
+}
+.wk .wg-chip-t {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.wk .wg-chip[data-used="0"] { border-color: rgba(255, 255, 255, 0.14); background: transparent; }
+.wk .wg-chip[data-used="0"] .wg-chip-t { color: rgba(255, 255, 255, 0.5); }
+.wk .wg-chip-n {
+  margin-top: 2px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+}
+.wk .wg-find {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 52px;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.wk .wg-find:last-child { border-bottom: 0; }
+.wk .wg-find-t { font-size: 13px; color: rgba(255, 255, 255, 0.9); }
+.wk .wg-judge {
+  margin-left: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  white-space: nowrap;
+}
+.wk .wg-judge[data-v="Osäkert"] { color: rgba(255, 255, 255, 0.5); }
+.wk .wg-judge[data-v="Väger inte"] { color: rgba(255, 255, 255, 0.4); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
+.wk .wg-find[data-decoy="1"] .wg-find-t { color: rgba(255, 255, 255, 0.6); }
+.wk .wg-find-n {
+  flex-basis: 100%;
+  margin-top: -2px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.42);
+}
+.wk .wg-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 1rem;
+  padding: 0.9rem 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.wk .jr-strip { margin-top: 1.4rem; }
+@media (max-width: 1023px) {
+  .wk .wg { grid-template-columns: 1fr; }
+  .wk .wg-gutter { display: none; }
+  .wk .wg-judge { opacity: 1 !important; }
+}
+
+/* ── 06 · the finalists on dark; the Brief and the portal stay paper ── */
+.wk .jr-zones { grid-template-columns: 1fr 1fr; gap: 1.1rem 1.4rem; }
+.wk .jr-brief-review {
+  margin-left: auto;
+  margin-right: 12px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  border: 1px solid rgba(46, 110, 85, 0.35);
+  border-radius: 2px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+/* Narrow screens: the masthead keeps its two names on one line and gives the
+   analyst's stamp a line of its own. */
+@media (max-width: 639px) {
+  .wk .jr-brief-head { flex-wrap: wrap; }
+  .wk .jr-brief-head::after { content: ''; order: 2; flex-basis: 100%; height: 0; }
+  .wk .jr-brief-head > .eyebrow { order: 0; white-space: nowrap; }
+  .wk .jr-brief-score { order: 1; margin-left: auto; white-space: nowrap; }
+  .wk .jr-brief-review { order: 3; margin: 7px 0 0; }
+}
+.wk .jr-finalists .jm { background: rgba(255, 255, 255, 0.55); }
+.wk .jr-finalists .jm[data-dim="1"] { background: rgba(255, 255, 255, 0.16); }
+.wk .jr-finalists .jm[data-state="chosen"] {
+  background: var(--green);
+  box-shadow: 0 0 0 2px rgba(69, 165, 127, 0.25);
+}
+.wk .jr-brief {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), 0 30px 60px -24px rgba(0, 0, 0, 0.7);
+}
+.wk .jr-portal { box-shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.6); }
+/* The portal's own navigation, so the card reads as the product. */
+.wk .jr-portal-nav {
+  display: flex;
+  gap: 1.1rem;
+  padding: 0.55rem 1rem 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+.wk .jr-portal-nav span { padding-bottom: 0.45rem; border-bottom: 2px solid transparent; }
+.wk .jr-portal-nav span[data-on="1"] { color: var(--green-deep); border-bottom-color: var(--green-deep); }
+.wk .jr-portal-state {
+  margin-left: 10px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border: 1px solid rgba(21, 24, 26, 0.14);
+  border-radius: 2px;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+.wk .jr-portal-open {
+  margin-left: 12px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  white-space: nowrap;
+}
+.wk .jr-portal-row-meta { display: flex; align-items: baseline; gap: 10px; }

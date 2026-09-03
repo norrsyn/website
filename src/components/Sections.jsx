@@ -3,241 +3,67 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { prefersReducedMotion, EASE } from '../lib/motion.js';
+import '../tail.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ==========================================================================
-// Problemet — the bridge.
-//
-// Rebuilt from scratch. The old composition (rail + terminals + a numbered
-// three-row list) read as a website diagram; this is an editorial argument:
-//
-//   A FIELD of quiet marks — the companies a register knows exist.
-//   THREE HOLLOW SLOTS — the intelligence the register does not contain:
-//   need, person, timing.
-//
-// The thread arrives from the hero still unresolved: it crosses the seam,
-// steps quietly into the left gutter, descends PAST the field of existing
-// companies — able to see them, unable to choose among them — and ends in an
-// open ring. That inability is the section's thesis, and the closing line
-// hands it to chapter 01: to find the right companies, we first have to
-// define what right means.
-//
-// Fog survives the photographic boundary: a soft apron drifts over the first
-// reach of the dark, so the atmosphere surrenders gradually instead of ending.
-// ==========================================================================
-/* The existence-register as grey noise: deterministic per-record variation in
-   ink and length, with occasional louder specks. Thousands of companies with
-   no way to tell them apart should read as static, not as a tidy archive —
-   that IS the section's argument. */
-const PH_NOISE = Array.from({ length: 912 }, (_, i) => {
-  let s = ((i + 1) * 2654435761) % 4294967296;
-  const rnd = () => ((s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296);
-  const r1 = rnd();
-  const r2 = rnd();
-  return {
-    o: +(0.09 + r1 * 0.3 + (r2 > 0.96 ? 0.25 : 0)).toFixed(2),
-    w: +(0.4 + r2 * 0.6).toFixed(2),
-  };
-});
-
-export const Philosophy = () => {
-  const root = useRef(null);
-
-  useEffect(() => {
-    let cleanupRoute = () => {};
-    const ctx = gsap.context(() => {
-      // The route: from the hero trunk's landing, one quiet step left into the
-      // gutter, then down past the field to the open terminal. Deterministic
-      // viewport geometry — the glide runs at y≈64px, above every glyph.
-      const layoutRoute = () => {
-        const el = root.current;
-        if (!el) return;
-        const W = document.documentElement.clientWidth;
-        const H = el.offsetHeight;
-        const tx = Math.max(0.5 * W, 700);
-        const gx = Math.max(16, W / 2 - 576 + 17.6) + 1;
-        // One gesture, not an outline: the thread lands from the hero, and a
-        // single long sweep carries it from the centre axis into the left
-        // margin, through the fog apron, above every glyph. Then it descends
-        // as editorial structure.
-        const d = [
-          `M ${tx} -2`,
-          `L ${tx} 28`,
-          `C ${tx} 150, ${gx} 60, ${gx} 190`,
-          `L ${gx} ${H + 2}`,
-        ].join(' ');
-        el.querySelectorAll('[data-route]').forEach((p) => p.setAttribute('d', d));
-        // The excursion: at the register's height the line regards the field —
-        // a short deliberate tick toward it, ending in the open ring it cannot
-        // close. Able to see the companies, unable to choose among them.
-        const field = el.querySelector('[data-ph-field]');
-        const tick = el.querySelector('[data-ring-tick]');
-        const ring = el.querySelector('[data-ring]');
-        if (field && tick && ring) {
-          const fr = field.getBoundingClientRect();
-          const er = el.getBoundingClientRect();
-          const fy = fr.top - er.top + fr.height * 0.5;
-          tick.setAttribute('d', `M ${gx} ${fy} L ${gx + 22} ${fy}`);
-          ring.style.left = `${gx + 29}px`;
-          ring.style.top = `${fy}px`;
-        }
-      };
-      layoutRoute();
-      window.addEventListener('resize', layoutRoute);
-      cleanupRoute = () => window.removeEventListener('resize', layoutRoute);
-
-      if (prefersReducedMotion()) return;
-
-      // The route, the ring and the slot activations are engine-driven
-      // (src/lib/thread.js). Only content text animates here.
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: root.current, start: 'top 58%', once: true },
-        defaults: { ease: 'power2.out' },
-      });
-      tl.from('[data-phil-line]', { yPercent: 105, duration: 1.05, stagger: 0.1 })
-        .from('[data-ph-copy]', { opacity: 0, y: 10, duration: 0.9 }, 0.4)
-        .from('[data-ph-field]', { opacity: 0, duration: 1.2 }, 0.5)
-        .from('[data-ph-hand]', { opacity: 0, y: 10, duration: 0.9 }, 1.7);
-    }, root);
-    return () => {
-      cleanupRoute();
-      ctx.revert();
-    };
-  }, []);
-
-  return (
-    <section
-      ref={root}
-      id="varfor-norrsyn"
-      className="on-dark jr-dark relative overflow-hidden bg-graphite text-white"
-    >
-      {/* Fog surviving the photographic boundary. */}
-      <div className="ph-fog" aria-hidden="true" />
-
-      {/* Mobile: the thread is born at the top of the problem and runs the
-          margin — the same rail grammar as every process section, so the
-          seams downward are exact. Desktop uses the drawn route instead
-          (the rail line is display:none at >=1024). */}
-      <div className="jr-rail" aria-hidden="true"><span data-jrv className="jr-rail-line" /></div>
-      {/* The unresolved strand and its open terminal. */}
-      <svg className="ph-route" aria-hidden="true">
-        <path data-route fill="none" />
-        <path data-ring-tick fill="none" />
-      </svg>
-      <span data-ring className="ph-ring" aria-hidden="true" />
-
-      <div className="jr-inner">
-        <div className="eyebrow text-white/50 mb-8 md:mb-10">Problemet</div>
-
-        <h2 className="max-w-4xl mb-10 md:mb-12">
-          <span className="reveal-mask">
-            <span
-              data-phil-line
-              className="block font-sans font-semibold text-white
-                         text-[2.2rem] sm:text-5xl md:text-[3.7rem] leading-[1.04] tracking-[-0.035em]"
-            >
-              Leadlistor
-            </span>
-          </span>
-          <span className="reveal-mask">
-            <span
-              data-phil-line
-              className="display block text-[#E7E1D4]
-                         text-[2.6rem] sm:text-[3.6rem] md:text-[4.5rem] leading-[1.02]"
-            >
-              räcker inte längre.
-            </span>
-          </span>
-        </h2>
-
-        <p data-ph-copy className="text-white/65 text-[15px] md:text-base leading-[1.75] max-w-md mb-14 md:mb-16">
-          Ett register talar om vilka bolag som finns. Det säger ingenting om
-          vilka som har ett verkligt skäl att köpa, vem som äger frågan, eller
-          varför just nu.
-        </p>
-
-        {/* The field, and what the list cannot see. */}
-        <div className="ph-grid">
-          <div>
-            <div className="eyebrow text-white/40 mb-4">Bolag som existerar</div>
-            <div data-ph-field className="ph-field" aria-hidden="true">
-              {PH_NOISE.map((m, i) => (
-                <i key={i} style={{ opacity: m.o, transform: `scaleX(${m.w})` }} />
-              ))}
-            </div>
-            <p className="ph-field-note">
-              Tusentals bolag utan urskiljning är inte en marknad. Det är brus.
-            </p>
-          </div>
-          <div className="ph-slots">
-            <div className="eyebrow text-white/40 mb-4">Vad listan inte vet</div>
-            {[
-              ['behov', 'Behov', 'Finns det ett verkligt skäl att köpa?'],
-              ['person', 'Person', 'Vem äger frågan internt?'],
-              ['timing', 'Timing', 'Varför är det läge just nu?'],
-            ].map(([kind, t, q]) => (
-              <div data-ph-slot data-kind={kind} key={t} className="ph-slot">
-                <span className="ph-slot-box" aria-hidden="true" />
-                <span>
-                  <span className="ph-slot-label">{t}</span>
-                  <span className="ph-slot-q">{q}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <p data-ph-hand className="mt-16 md:mt-20 max-w-2xl text-white text-[17px] md:text-[19px] leading-[1.6] font-medium tracking-[-0.015em]">
-          För att hitta rätt bolag måste vi först definiera vad rätt betyder.
-          Det är där arbetet börjar.
-        </p>
-      </div>
-    </section>
-  );
-};
-
-// ==========================================================================
-// Handoff — the exhale after the Brief.
+// Handoff — the exhale after the Brief. Act III opens.
 //
 // One truth, stated positively: Norrsyn does not do the deal; it removes the
-// guessing from the way in. The glyph closes the visual story — a chosen
-// company, a line, and an open ring: the conversation, which stays human.
+// guessing from the way in. The glyph closes the visual story and is drawn
+// by the visitor's own scroll: the chosen company, the line (the Brief), and
+// the open ring — the conversation, which stays human.
 // ==========================================================================
 export const Handoff = () => {
   const root = useRef(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (prefersReducedMotion()) return;
+      // Played once on arrival, never scrubbed: a scrubbed glyph reverses on
+      // every flick of the wheel.
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: root.current, start: 'top 70%', once: true },
+        defaults: { ease: 'power2.out' },
+      });
+      tl.from('.ho-mark', { opacity: 0, duration: 0.5 }, 0)
+        .from('.ho-line', { scaleX: 0, duration: 0.9, ease: 'power2.inOut' }, 0.3)
+        .from('.ho-ring', { opacity: 0, duration: 0.5 }, 1.1)
+        .from('.ho-cap span', { opacity: 0, duration: 0.5, stagger: 0.15 }, 0.5);
       gsap.from('[data-ho]', {
         scrollTrigger: { trigger: root.current, start: 'top 72%', once: true },
-        y: 14, opacity: 0, duration: 0.9, stagger: 0.12, ease: EASE.out,
+        y: 8, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'power2.out',
       });
     }, root);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="overlamningen" ref={root} className="bg-paper">
-      <div className="mx-auto max-w-3xl px-6 sm:px-10 py-28 md:py-40 text-center">
-        <div data-ho className="ho-glyph" aria-hidden="true">
+    <section id="overlamningen" ref={root} className="ho on-dark">
+      <div className="ho-inner mx-auto max-w-3xl px-6 sm:px-10 py-28 md:py-40 text-center">
+        <div className="ho-glyph" aria-hidden="true">
           <span className="ho-mark" />
           <span className="ho-line" />
           <span className="ho-ring" />
         </div>
+        <div className="ho-cap" aria-hidden="true">
+          <span>Rätt bolag</span>
+          <span>Briefen</span>
+          <span>Samtalet</span>
+        </div>
         <h2
           data-ho
-          className="font-sans font-semibold text-ink text-[1.7rem] md:text-[2.3rem] leading-[1.15] tracking-[-0.03em] mb-6"
+          className="font-sans font-semibold text-white text-[1.9rem] md:text-[2.6rem] leading-[1.12] tracking-[-0.03em] mb-6"
         >
           När säljaren tar över ska så lite som möjligt vara en gissning.
         </h2>
-        <p data-ho className="text-ink-3 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
+        <p data-ho className="text-white/72 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
           Affären avgörs fortfarande mellan människor. Vi avgör inte vad som
           händer i samtalet, men vi ser till att det finns ett verkligt skäl
           att ta det: rätt bolag, rätt personer, rätt läge och ett underlag
           som går att använda.
         </p>
-        <p data-ho className="text-ink font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
+        <p data-ho className="text-white font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
           En Brief är inte ett löfte om en affär. Det är vårt arbete för att
           så lite som möjligt ska lämnas åt slumpen innan första kontakten.
         </p>
@@ -257,10 +83,20 @@ export const Handoff = () => {
 // echo the demo cohort (3 120 of an 18 400-company relevant market) and are
 // labelled illustrative. No fake live data.
 // ==========================================================================
-const TAM_MARKS = Array.from({ length: 48 }, (_, i) => {
-  if (i === 6) return 'chosen';
-  return i < 8 ? 'done' : 'left';
-});
+/* The portal's own market story, five stages, in the portal's own words.
+   Proportions echo the demo cohort (3 120 searched of 5 900 estimated to match,
+   inside an 18 400-company industry universe) and are labelled illustrative.
+   No fake live data. */
+const STAGES = [
+  {
+    v: '18 400', l: 'Ert branschuniversum', n: 'Aktiva bolag i de branscher ni säljer till.', k: 'universe',
+    // The estimate belongs to the universe, as it does in the portal.
+    ext: { v: '5 900', l: 'uppskattas matcha er profil', n: 'Statistisk uppskattning — inte en namnlista.' },
+  },
+  { v: '3 120', l: 'Genomsökta av Norrsyn', n: 'Hittills. Vi fortsätter tills hela uppskattningen är genomgången.', k: 'searched' },
+  { v: '96', l: 'Har hittills kvalificerat sig', n: 'Djupresearch mot er kravbild.', k: 'qualified' },
+  { v: '24', l: 'Levererade i briefs', n: 'Granskade av analytiker.', k: 'delivered' },
+];
 
 export const Tam = () => {
   const root = useRef(null);
@@ -269,13 +105,12 @@ export const Tam = () => {
       if (prefersReducedMotion()) return;
       gsap.from('[data-tam]', {
         scrollTrigger: { trigger: root.current, start: 'top 78%', once: true },
-        y: 12, opacity: 0, duration: 0.9, stagger: 0.1, ease: EASE.out,
+        y: 8, opacity: 0, duration: 1.1, stagger: 0.1, ease: 'power2.out',
       });
-      // The strip resolves left to right: the market being worked through.
-      gsap.from('.tam-strip i', {
-        scrollTrigger: { trigger: root.current, start: 'top 74%', once: true },
-        opacity: 0, duration: 0.5, ease: 'power2.out',
-        stagger: { each: 0.012, from: 'start' },
+      // The story resolves top to bottom: the market being worked through.
+      gsap.from('.mp-row', {
+        scrollTrigger: { trigger: '.mp', start: 'top 82%', once: true },
+        opacity: 0, y: 6, duration: 0.9, stagger: 0.1, delay: 0.15, ease: 'power2.out',
       });
     }, root);
     return () => ctx.revert();
@@ -283,30 +118,51 @@ export const Tam = () => {
 
   return (
     <section id="fortsattningen" ref={root} className="bg-paper-2 border-t border-ink/8">
-      <div className="mx-auto max-w-4xl px-6 sm:px-10 py-16 md:py-24">
-        <div data-tam className="eyebrow text-ink-4 mb-4">Fortsättningen</div>
-        <h2
-          data-tam
-          className="font-sans font-semibold text-ink text-[1.5rem] md:text-[1.9rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-2xl"
-        >
-          Vi fortsätter tills den relevanta marknaden är genomarbetad.
-        </h2>
-        <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-8">
-          Varje leverans arbetar igenom en del av marknaden. Vi håller reda på
-          vad som är undersökt, vad som har kvalificerat sig och vad som
-          återstår.
-        </p>
-        <div data-tam className="tam-strip" aria-hidden="true">
-          {TAM_MARKS.map((t, i) => <i key={i} data-t={t} />)}
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-20 md:py-28">
+        <div className="grid md:grid-cols-12 gap-10 md:gap-16">
+          <div className="md:col-span-6">
+            <div data-tam className="eyebrow text-ink-4 mb-4">Er marknad över tid</div>
+            <h2
+              data-tam
+              className="font-sans font-semibold text-ink text-[1.6rem] md:text-[2.1rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-xl"
+            >
+              Vi fortsätter tills den relevanta marknaden är genomarbetad.
+            </h2>
+            <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-lg mb-4">
+              Varje leverans arbetar igenom en del av marknaden. I portalen ser
+              ni hela vägen: hur stort ert branschuniversum är, hur många som
+              uppskattas matcha er profil, hur mycket vi har gått igenom, vad
+              som har kvalificerat sig och vad som har levererats.
+            </p>
+            <p data-tam className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-lg">
+              Vi håller reda på vad som är undersökt, vad som har kvalificerat
+              sig och vad som återstår. Ingenting försvinner mellan leveranserna.
+            </p>
+          </div>
+          <div className="md:col-span-6 md:pt-1">
+            <div data-tam className="eyebrow text-ink-4 mb-5">Er marknad · exempelvy från portalen</div>
+            <ol className="mp" aria-label="Er marknad i fem steg">
+              {STAGES.map((st) => (
+                <li key={st.k} className="mp-row" data-stage={st.k}>
+                  <span className="mp-value">{st.v}</span>
+                  <span>
+                    <span className="mp-label">{st.l}</span>
+                    <span className="mp-note">{st.n}</span>
+                    {st.ext && (
+                      <span className="mp-ext">
+                        <b>{st.ext.v}</b> {st.ext.l}
+                        <span className="mp-note">{st.ext.n}</span>
+                      </span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p data-tam className="tam-note">
+              Illustrativa siffror. Vyn finns under Översikt i er portal.
+            </p>
+          </div>
         </div>
-        <div data-tam className="tam-legend">
-          <span><i data-t="done" aria-hidden="true" /> Genomgånget · 3 120 bolag</span>
-          <span><i data-t="chosen" aria-hidden="true" /> Kvalificerade Briefs · 24</span>
-          <span><i data-t="left" aria-hidden="true" /> Kvar att undersöka · 15 280</span>
-        </div>
-        <p data-tam className="tam-note">
-          Illustrativ bild av en relevant marknad om 18 400 bolag.
-        </p>
       </div>
     </section>
   );
@@ -341,13 +197,13 @@ export const OnDemand = () => {
       if (prefersReducedMotion()) return;
       gsap.from('[data-od]', {
         scrollTrigger: { trigger: root.current, start: 'top 76%', once: true },
-        y: 14, opacity: 0, duration: 0.9, stagger: 0.1, ease: EASE.out,
+        y: 8, opacity: 0, duration: 1.1, stagger: 0.1, ease: 'power2.out',
       });
       // The handover reads left to right: the list settles, the link asserts
       // itself, and only then does the intelligence exist.
       gsap.from('.od-list .od-row', {
         scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
-        opacity: 0, x: -8, duration: 0.6, stagger: 0.09, delay: 0.15, ease: EASE.out,
+        opacity: 0, y: 5, duration: 0.8, stagger: 0.08, delay: 0.15, ease: 'power2.out',
       });
       gsap.from('.od-link', {
         scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
@@ -355,7 +211,7 @@ export const OnDemand = () => {
       });
       gsap.from('.od-card, .od-alt', {
         scrollTrigger: { trigger: '.od-flow', start: 'top 80%', once: true },
-        opacity: 0, y: 12, duration: 0.9, stagger: 0.12, delay: 0.95, ease: EASE.out,
+        opacity: 0, y: 8, duration: 1.0, stagger: 0.12, delay: 0.95, ease: 'power2.out',
       });
     }, root);
     return () => ctx.revert();
@@ -421,10 +277,10 @@ export const OnDemand = () => {
               <div className="od-card-name">Skandinavisk Verkstadsteknik AB</div>
               <div className="od-card-sub">Verkstadsindustri · Eskilstuna · 46 anställda</div>
               <ul className="od-facts">
-                <li><span>Verifierade signaler</span><span className="od-fact-v">4 <i className="jr-tier jt-ok">Bekräftat</i></span></li>
-                <li><span>Relevanta personer</span><span className="od-fact-v">3</span></li>
-                <li><span>Källor</span><span className="od-fact-v">17</span></li>
-                <li><span>Timing</span><span className="od-fact-v">Stark — rekryterar systemansvarig</span></li>
+                <li><span>Bedömning</span><span className="od-fact-v">Stark match</span></li>
+                <li><span>Bekräftade signaler</span><span className="od-fact-v">4 <i className="jr-tier jt-ok">Bekräftad</i></span></li>
+                <li><span>Relevanta personer</span><span className="od-fact-v">3 · e-post verifierad</span></li>
+                <li><span>Timing</span><span className="od-fact-v">Öppet fönster — rekryterar systemansvarig</span></li>
               </ul>
               {/* The tell that this is a document, not a scoreboard: the four
                   rows above are the masthead of a full, reviewed Brief. */}
@@ -443,10 +299,22 @@ export const OnDemand = () => {
           </div>
         </div>
 
+        <div data-od className="od-steps">
+          {[
+            ['01', 'Ni skickar bolagen', 'I portalen, under Account Intelligence. Bolagsnamn räcker; org.nr och webbplats om ni har dem. Vi bekräftar upplägg och pris.'],
+            ['02', 'Vi gör researchen', 'Med samma källkrav som allt annat vi levererar: signaler, personer och timing, lästa mot er kravbild.'],
+            ['03', 'En analytiker granskar', 'Tolkningar märks som tolkningar. Hittar vi inte belägg för köpläge säger vi det rakt ut.'],
+            ['04', 'Leverans i portalen', 'Resultatet publiceras som en leverans i er portal, bredvid de övriga.'],
+          ].map(([n, t, b]) => (
+            <div key={n} className="od-step">
+              <span className="od-step-n">{n}</span>
+              <span className="od-step-t">{t}</span>
+              <span className="od-step-b">{b}</span>
+            </div>
+          ))}
+        </div>
         <p data-od className="tam-note max-w-2xl">
-          Illustrativt exempel. Resultatet granskas av en analytiker och
-          levereras i er portal — och hittar vi inte belägg för köpläge säger
-          vi det rakt ut.
+          Illustrativt exempel. Bolagen och siffrorna är fiktiva.
         </p>
         <p data-od className="od-abm">
           För team som arbetar account-baserat (ABM) fungerar Norrsyn som
@@ -459,8 +327,14 @@ export const OnDemand = () => {
 };
 
 // ==========================================================================
-// About
+// About — who we are, and the three rules every Brief is held to.
 // ==========================================================================
+const PRINCIPLES = [
+  ['01', 'Allt går att belägga', 'Varje fakta i en Brief har en källa ni kan öppna själva. Finns ingen källa står det hypotes.'],
+  ['02', 'Tolkning märks som tolkning', 'Vår analys är värdefull just för att den aldrig blandas med fakta. Ni ser alltid vad som är vad.'],
+  ['03', 'Kvalitet före volym', 'Ett fåtal bolag där en affär är rimlig slår tusen namn utan skäl. Varje gång.'],
+];
+
 export const About = () => {
   const root = useRef(null);
   useEffect(() => {
@@ -468,38 +342,39 @@ export const About = () => {
       if (prefersReducedMotion()) return;
       gsap.from('[data-about]', {
         scrollTrigger: { trigger: root.current, start: 'top 78%', once: true },
-        y: 16, opacity: 0, duration: 0.9, stagger: 0.09, ease: EASE.out,
+        y: 8, opacity: 0, duration: 1.1, stagger: 0.09, ease: 'power2.out',
       });
     }, root);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="om-norrsyn" ref={root} className="bg-paper-2 border-t border-ink/8">
+    <section id="om-norrsyn" ref={root} className="on-dark bg-graphite text-white">
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-4">
-            <div data-about className="eyebrow text-ink-4 mb-6">Om Norrsyn</div>
+            <div data-about className="eyebrow text-white/55 mb-6">Om Norrsyn</div>
             <h2
               data-about
-              className="font-sans font-semibold text-ink text-[1.9rem] md:text-[2.4rem] leading-[1.12] tracking-[-0.035em]"
+              className="font-sans font-semibold text-white text-[1.9rem] md:text-[2.4rem] leading-[1.12] tracking-[-0.035em]"
             >
               Vi gör grundarbetet inför era viktigaste samtal.
             </h2>
           </div>
           <div className="md:col-span-8 md:pl-6 grid sm:grid-cols-2 gap-8 md:gap-12">
-            <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
+            <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
                 Norrsyn finns av ett enkelt skäl: säljare lägger sin bästa tid på
                 bolag som ingen har hunnit titta närmare på. Det vill vi ändra på.
               </p>
               <p data-about>
                 Vi går kontinuerligt igenom svenska bolag och ser var behov och
-                affärssituationer håller på att uppstå. Allt vi påstår går att
-                belägga, och tolkningar är alltid märkta som tolkningar.
+                affärssituationer håller på att uppstå. Underlaget kommer från
+                Bolagsverket, SCB, årsredovisningar, LinkedIn, jobbannonser,
+                pressmeddelanden och bolagens egna webbplatser.
               </p>
             </div>
-            <div className="space-y-5 text-ink-3 text-[15px] leading-[1.75]">
+            <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
                 Vi utgår från Jönköping, mitt i det Sverige vi arbetar igenom.
                 Våra kunder finns där kravbilden passar: bolag som säljer B2B på
@@ -510,12 +385,18 @@ export const About = () => {
                 genomarbetade Briefs där en affär är rimlig. Källorna följer med,
                 så att era säljare kan bedöma dem själva.
               </p>
-              <p data-about className="text-ink font-medium">
-                Målet är enkelt: mindre tid på monotont letande, mer tid med
-                rätt bolag. Kvalitet slår volym, varje gång.
-              </p>
             </div>
           </div>
+        </div>
+
+        <div data-about className="ab-principles">
+          {PRINCIPLES.map(([n, t, b]) => (
+            <div key={n} className="ab-p">
+              <span className="ab-p-n">Princip {n}</span>
+              <span className="ab-p-t">{t}</span>
+              <span className="ab-p-b">{b}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -560,14 +441,7 @@ export const Contact = () => {
     'placeholder:text-white/45 focus:outline-none focus:border-green/60 transition-colors';
 
   return (
-    <section id="kontakt" className="on-dark bg-forest text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.06] pointer-events-none" aria-hidden="true">
-        <img
-          src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1600&auto=format&fit=crop"
-          alt=""
-          className="h-full w-full object-cover grayscale"
-        />
-      </div>
+    <section id="kontakt" className="ct on-dark text-white">
 
       <div className="relative mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-12 md:gap-16">
@@ -576,14 +450,14 @@ export const Contact = () => {
             <h2 className="font-sans font-semibold text-[2.1rem] md:text-[2.9rem] leading-[1.08] tracking-[-0.035em] mb-6">
               Vi börjar med ett samtal.
             </h2>
-            <p className="text-white/60 text-[15px] leading-[1.75] max-w-sm mb-10">
+            <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm mb-10">
               Berätta kort vad ni gör, så hör vi av oss. Vi pratar igenom vad
               ni säljer och vart ni vill, och ser tillsammans om Norrsyn är
               rätt för er.
             </p>
             {/* One quiet human alternative instead of a benefits checklist.
                 Whitespace does the rest of the composition's work. */}
-            <p className="text-white/50 text-[13px] leading-[1.7] border-t border-white/8 pt-4 max-w-sm">
+            <p className="text-white/60 text-[13px] leading-[1.7] border-t border-white/10 pt-4 max-w-sm">
               Föredrar ni mejl?{' '}
               <a href="mailto:info@norrsyn.se" className="link-underline text-white/75">info@norrsyn.se</a>
             </p>
@@ -665,9 +539,8 @@ export const Footer = () => (
               line. The brand still reads as Norrsyn everywhere else. */}
           <p className="text-white/55 text-[13px] leading-[1.7] max-w-xs mb-6">
             Norrsyn är ett varumärke och en tjänst från{' '}
-            <span className="text-white/75">NRSYN AB</span>, ett självständigt
-            svenskt aktiebolag med säte i Jönköping. NRSYN AB har ingen koppling
-            till Norrsyn AI HB.
+            <span className="text-white/75">NRSYN AB</span>, Jönköping.
+            Ej att förväxla med Norrsyn AI HB.
           </p>
           <div className="font-mono text-[12.5px] text-white/55 space-y-1">
             <a href="mailto:info@norrsyn.se" className="link-underline block w-fit">info@norrsyn.se</a>

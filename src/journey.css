@@ -1,0 +1,167 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * THE JOURNEY — sketch
+ *
+ * A tall wrapper gives the scroll; a sticky, viewport-sized frame holds the
+ * story. Every layer is absolutely positioned inside the frame and only its
+ * opacity (and the copy's focus) changes with scroll. The frame's background
+ * is the hero's field, painted by the engine.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+.jy-wrap {
+  position: relative;
+  z-index: 2; /* above the tail's stacking, like the sticky hero */
+  background: #0C1310;
+}
+.jy-anchor { position: absolute; left: 0; width: 1px; height: 1px; }
+
+.jy-frame {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #0C1310;
+  color: #fff;
+}
+.jy-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The chapter layers live in a .wk box so the artefacts keep their dark
+   styling; the box is pinned to the frame (more specific than .wk itself). */
+.jy-layers.wk { position: absolute; inset: 0; z-index: 10; }
+.jy-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.jy-node {
+  position: absolute;
+  left: calc(var(--jy-gx, 163px) - 4.5px);
+  top: 11vh;
+  transform: translateY(-50%);
+}
+
+/* The copy sits clear of the chapter numeral and close to its artefact. */
+.jy-copy {
+  position: absolute;
+  left: var(--jy-left, 233px);
+  top: 20vh;
+  width: min(42rem, calc(100% - var(--jy-left, 233px) - 4rem));
+  will-change: opacity, filter;
+}
+.jy-copy .jr-head { margin-bottom: 0; max-width: none; }
+.jy-copy .jr-title { font-size: 2.5rem; margin-bottom: 0.85rem; }
+.jy-copy .jr-body { font-size: 15.5px; line-height: 1.6; }
+.jy-copy-ph { top: 21vh; width: min(52rem, calc(100% - var(--jy-left, 233px) - 4rem)); }
+.jy-copy-ph h2 { margin-bottom: 1.1rem; }
+.jy-copy-ph h2 span:first-child { font-size: 2.7rem; }
+.jy-copy-ph h2 span:last-child { font-size: 3.3rem; }
+
+.jy-art {
+  position: absolute;
+  left: var(--jy-left, 233px);
+  right: 4rem;
+  top: 50vh;
+  transform-origin: top left;
+}
+.jy-art-ph { top: 56vh; }
+.jy-art .jr-foot { margin-top: 0.9rem; }
+.jy-art .jr-intake-wrap,
+.jy-art .jr-map,
+.jy-art .jr-manifold,
+.jy-art .jr-field,
+.jy-art .cs { max-width: 56rem; }
+.jy-art .jr-bound-label { background: #0C1310; }
+.jy-art .jr-finalists { margin-bottom: 0.8rem; }
+
+/* 06: the Brief and the portal side by side; the line crosses the gap. */
+.jy-deliver {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.4rem;
+  max-width: 68rem;
+}
+.jy-deliver .jr-brief-wrap { flex: 1 1 52%; max-width: none; }
+.jy-deliver .jr-portal { flex: 1 1 48%; max-width: none; margin-top: 0; }
+.jy-art-wide { right: 3rem; }
+
+/* Short viewports: the copy sits higher so the artefact keeps its room. */
+@media (max-height: 820px) {
+  .jy-copy { top: 16vh; }
+  .jy-copy-ph { top: 17vh; }
+  .jy-node { top: 8vh; }
+  .jy-art { top: 47vh; }
+  .jy-art-ph { top: 53vh; }
+  .jy-copy .jr-title { font-size: 2.1rem; }
+  .jy-copy .jr-body { font-size: 14.5px; }
+}
+
+/* ── Where you are: the chapter, with a way back and a way on ──────────── */
+.jy-ctl {
+  position: absolute;
+  right: 2.5rem;
+  bottom: 1.5rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  opacity: 0;
+  pointer-events: none;
+}
+.jy-cur {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(12, 19, 16, 0.55);
+  backdrop-filter: blur(8px);
+}
+.jy-cur-l {
+  min-width: 9.5rem;
+  padding: 0 0.4rem;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  transition: opacity 140ms linear, transform 140ms var(--ease-out);
+}
+.jy-cur-l.is-swap { opacity: 0; transform: translateY(3px); }
+.jy-cur button {
+  width: 30px; height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 160ms linear, color 160ms linear;
+}
+.jy-cur button:hover { background: rgba(69, 165, 127, 0.18); color: #fff; }
+.jy-cur button:disabled { opacity: 0.3; cursor: default; }
+.jy-dots { display: flex; align-items: center; gap: 7px; }
+.jy-dots button {
+  width: 6px; height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: background-color 200ms linear, transform 200ms var(--ease-out);
+}
+.jy-dots button:hover { background: rgba(255, 255, 255, 0.5); }
+.jy-dots button[data-on="1"] { background: var(--green); transform: scale(1.35); }
+
+/* The ending: the next section arrives on the same paper, no hairline. */
+.jy-wrap + div #brief { border-top-color: transparent; }

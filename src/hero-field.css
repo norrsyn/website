@@ -1,0 +1,189 @@
+/* ══════════════════════════════════════════════════════════════════════════
+ * HERO FIELD — sketch
+ *
+ * No photograph. The hero is the market itself: a dark field of company
+ * marks in perspective, the brand's underscore as its vanishing point, and
+ * the line that falls from the underscore and never stops.
+ *
+ * The section is pinned for one extra viewport (a sticky child of a 200vh
+ * wrapper — no pin-spacer, no scroll hijack). Over that viewport the market
+ * collapses into the line; at the end, the line alone crosses into Problemet.
+ * ══════════════════════════════════════════════════════════════════════════ */
+
+.hf-wrap {
+  position: relative;
+  z-index: 2; /* above the walkthrough's fixed stage */
+  height: 200svh;
+  background: #0C1310;
+}
+@media (min-width: 1024px) { .hf-wrap { height: 200vh; } }
+
+.hf-hero {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: #0C1310;
+  color: #fff;
+}
+@media (min-width: 1024px) { .hf-hero { height: 100vh; } }
+
+.hf-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hf-scrim-nav {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 9rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(12, 19, 16, 0.6), transparent);
+}
+
+/* One horizontal margin for everything that sits on the field. */
+.hf-content, .hf-collapse, .hf-foot { left: 1.5rem; right: 1.5rem; }
+@media (min-width: 640px)  { .hf-content, .hf-collapse, .hf-foot { left: 2.5rem; right: 2.5rem; } }
+@media (min-width: 768px)  { .hf-content, .hf-collapse, .hf-foot { left: 4rem;   right: 4rem; } }
+@media (min-width: 1024px) { .hf-content, .hf-collapse, .hf-foot { left: 5rem;   right: 5rem; } }
+
+.hf-content {
+  position: absolute;
+  z-index: 10;
+  top: clamp(5.5rem, 15vh, 10rem);
+  max-width: 66rem;
+  will-change: transform, opacity;
+}
+
+.hf-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.17em;
+}
+.hf-eyebrow::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: rgba(69, 165, 127, 0.7);
+}
+
+/* One family, one weight, one size. The serif is kept for the collapse
+   statement, so it still appears exactly twice on the page. */
+.hf-title {
+  margin: 0 0 1.6rem;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(2.5rem, 7.6vw, 9rem);
+  line-height: 0.96;
+  letter-spacing: -0.048em;
+  color: #fff;
+  text-wrap: initial;
+}
+.hf-line {
+  display: block;
+  white-space: nowrap;
+  will-change: opacity;
+}
+
+/* The brand's underscore: the cursor after the second line, and the origin
+   of the line. Its bottom edge is where the canvas starts drawing. */
+.hf-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.075em;
+  margin-left: 0.09em;
+  vertical-align: 0;
+  background: #58B892;
+  box-shadow: 0 0 22px rgba(88, 184, 146, 0.55), 0 0 4px rgba(88, 184, 146, 0.8);
+}
+
+.hf-copy {
+  max-width: 40ch;
+  margin: 0 0 2rem;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+@media (min-width: 768px) { .hf-copy { font-size: 17px; } }
+
+.hf-ctas { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+@media (min-width: 640px) { .hf-ctas { flex-direction: row; align-items: center; } }
+
+/* The collapse statement takes the headline's place once it has gone. */
+.hf-collapse {
+  position: absolute;
+  z-index: 10;
+  top: 40vh;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.hf-collapse-a {
+  display: block;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.88);
+}
+.hf-collapse-b {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: clamp(1.6rem, 3.6vw, 3.6rem);
+  line-height: 1.04;
+  color: #E7E1D4;
+  max-width: 14em;
+}
+
+/* The baseline: three quiet mono marks along the bottom edge. */
+.hf-foot {
+  position: absolute;
+  z-index: 10;
+  bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  pointer-events: none;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+.hf-legend { text-transform: none; letter-spacing: 0.04em; }
+.hf-loc { margin-left: auto; }
+@media (max-width: 767px) { .hf-legend { display: none; } }
+@media (max-width: 639px) { .hf-loc { display: none; } }
+
+.hf-cue {
+  position: absolute;
+  z-index: 10;
+  bottom: 1.5rem;
+  left: var(--hf-ax, 62%);
+  transform: translateX(calc(-100% - 14px));
+  pointer-events: none;
+  white-space: nowrap;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(88, 184, 146, 0.75);
+}
+/* Tablet: the cue sits above the baseline so it never meets the legend. */
+@media (min-width: 640px) and (max-width: 1023px) { .hf-cue { bottom: 3.4rem; } }
+
+/* Problemet's fog apron continued the photograph. There is no photograph. */
+.hf-wrap + #varfor-norrsyn .ph-fog { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-wrap { height: auto; }
+  .hf-hero { position: relative; }
+  .hf-collapse { display: none; }
+}

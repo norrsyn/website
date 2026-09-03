@@ -51,7 +51,7 @@ const REVEAL_ATTRS = [
   'data-action', 'data-action-rail',
   'data-brief-head', 'data-brief-metric', 'data-brief-group', 'data-brief-block',
   'data-brief-dim', 'data-brief-badge', 'data-brief-src', 'data-brief-rail',
-  'data-jrv', 'data-jrz', 'data-portal', 'data-tam',
+  'data-jrv', 'data-jrz', 'data-portal', 'data-tam', 'data-rv',
 ].map((a) => `[${a}]`).join(',');
 
 export function installRevealFailsafe(gsap, ScrollTrigger, delay = 4000) {
