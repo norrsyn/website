@@ -132,7 +132,8 @@ export default function BriefExample() {
       // The document does not fly apart. It gains structure: the margin rail
       // draws, the section rules wipe in, and the annotations — confidence and
       // sources — land last, which is the order the analysis happens in.
-      tl.from('[data-brief-rail]', { scaleY: 0, transformOrigin: 'top center', duration: 1.2, ease: EASE.inOut }, 0)
+      tl.from('[data-brief-lead]', { opacity: 0, y: 10, duration: 0.9, stagger: 0.1 }, 0)
+        .from('[data-brief-rail]', { scaleY: 0, transformOrigin: 'top center', duration: 1.2, ease: EASE.inOut }, 0)
         .from('[data-brief-head]', { opacity: 0, y: 12, duration: 0.7, stagger: 0.07 }, 0.05)
         .from('[data-brief-metric]', { opacity: 0, y: 8, duration: 0.55, stagger: 0.06 }, 0.25)
         .from('[data-brief-group]', { opacity: 0, duration: 0.5, stagger: 0.07 }, 0.35)
@@ -145,31 +146,37 @@ export default function BriefExample() {
   }, []);
 
   return (
-    <section id="brief" ref={root} className="bg-mist border-t border-ink/10">
+    <section id="brief" ref={root} className="relative bg-mist border-t border-ink/10">
+      {/* The story's line, as ink, ends beside this section's first words. */}
+      <div className="brief-ink" aria-hidden="true" />
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-16 pb-24 md:pt-20 md:pb-32">
         {/* Section lead-in: the story's last words are this section's first. */}
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
           <div className="md:col-span-7">
-            <div className="eyebrow text-ink-3 mb-6">Ett komplett exempel</div>
-            <h2 className="st st-sec mb-5">
+            <div data-brief-lead className="eyebrow text-ink-3 mb-6">Ett komplett exempel</div>
+            <h2 data-brief-lead className="st st-sec mb-5">
               <span className="st-lead">Det här är vad ni får.</span>
               <span className="st-display display">Ett samtal värt att ta.</span>
             </h2>
-            <p className="text-ink-3 text-[15px] md:text-base leading-[1.7] max-w-xl">
+            <p data-brief-lead className="text-ink-3 text-[15px] md:text-base leading-[1.7] max-w-xl">
               Underlaget inför det samtalet: ett bolag, genomarbetat, i samma
               ordning som i er portal. Det som går att belägga står med sin
               källa, det som är vår tolkning är märkt som tolkning, och det
               sista avsnittet är vad ni gör härnäst.
             </p>
           </div>
-          {/* How to read it: the three tiers, stated once, before the sheet. */}
-          <div className="md:col-span-5 md:pt-14">
-            <div className="eyebrow text-ink-4 mb-3">Så läser ni en Brief</div>
+          {/* The marks, explained once before the sheet: what the three
+              levels on every claim mean, and what the grade means. */}
+          <div data-brief-lead className="md:col-span-5 md:pt-14">
+            <div className="eyebrow text-ink-4 mb-3">Så är Briefen märkt</div>
+            <p className="text-[13px] text-ink-3 leading-[1.6] mb-3 max-w-[44ch]">
+              Varje uppgift bär sin källa och en av tre nivåer:
+            </p>
             <ul className="space-y-2.5">
               {[
-                ['ok', 'Belagt av en källa ni kan öppna själva.'],
-                ['mid', 'Sannolikt, utifrån ett mönster. Värt att bekräfta i samtalet.'],
-                ['low', 'Vår tolkning. Märkt som tolkning, aldrig som fakta.'],
+                ['ok', 'belagt av en källa ni kan öppna själva.'],
+                ['mid', 'sannolikt utifrån ett mönster; värt att bekräfta i samtalet.'],
+                ['low', 'vår tolkning, märkt som tolkning och aldrig som fakta.'],
               ].map(([tier, text]) => (
                 <li key={tier} className="flex items-start gap-3 text-[13px] text-ink-3 leading-[1.6]">
                   <Badge tier={tier} />
@@ -178,8 +185,8 @@ export default function BriefExample() {
               ))}
             </ul>
             <p className="mt-4 text-[12.5px] text-ink-4 leading-[1.6] max-w-[44ch]">
-              Bedömningen A till D sammanfattar hur väl bolaget svarar mot er
-              kravbild. A är en stark match; D faller utanför den.
+              Helhetsbedömningen A till D sammanfattar hur väl bolaget svarar
+              mot er kravbild: A är en stark match, D faller utanför den.
             </p>
           </div>
         </div>

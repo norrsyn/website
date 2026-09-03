@@ -38,6 +38,7 @@ import {
 import {
   problemetScene, s1Scene, s2Scene, s3Scene, s4Scene, s5Scene, s6Scene,
 } from './scenes.js';
+import { applyCascade } from './cascade.js';
 
 /* ── The timeline, in viewport heights of wrapper travel ─────────────── */
 export const T = 0.5; // the travel between chapters, in viewports of scroll
@@ -93,6 +94,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
   };
 
   const geo = { railX: 0, desktop: true, W: 0, H: 0, dpr: 1, foldGap: 56, spindleEnd: 0 };
+  const ink = frame.querySelector('.jy-ink');
   const scenes = {};
   for (const id of CH_IDS) scenes[id] = SCENE[id](layers[id].el, R);
 
@@ -183,12 +185,12 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       const blur = `blur(${(9 * sm(0, 0.4, p)).toFixed(2)}px)`;
       hero.texts.forEach((el) => { el.style.opacity = o; el.style.filter = p > 0.001 ? blur : ''; });
       hero.block.style.pointerEvents = p > 0.3 ? 'none' : '';
-      // The statement takes the headline's place and stays: it leaves with
-      // the hero, as the hero leaves.
-      hero.collapse.style.opacity = String(sm(0.3, 0.5, p));
       hero.cue.style.opacity = String(1 - sm(0, 0.18, p));
       hero.foot.style.opacity = String(1 - sm(0, 0.3, p));
     }
+    // The cascade runs on the collapse's clock and keeps running past it,
+    // so its last lines ride up with the hero as Problemet rises.
+    applyCascade(hero.cascade, (st.u - WIN.collapse[0]) / (WIN.collapse[1] - WIN.collapse[0]));
     const key = st.dyHero.toFixed(1);
     if (key !== lastHeroDy) {
       lastHeroDy = key;
@@ -227,6 +229,9 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       frame.style.backgroundColor = `rgb(${c[0]},${c[1]},${c[2]})`;
       frame.style.setProperty('--jy-vig', (1 - k).toFixed(3));
       canvas.style.opacity = String(1 - k);
+      // The line does not fade with the field: it turns to ink on the paper
+      // and runs on into the next section, to the words it delivers.
+      if (ink) ink.style.opacity = k.toFixed(3);
     }
     // The control: where we are. Absent until the story begins, gone when
     // it ends; the label swaps with a short settle when the chapter changes.
@@ -395,6 +400,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     wrapTop = wrap.getBoundingClientRect().top + window.scrollY;
     gx = railXFor(document.documentElement.clientWidth);
     frame.style.setProperty('--jy-gx', `${gx}px`);
+    document.documentElement.style.setProperty('--jy-gx', `${gx}px`);
     frame.style.setProperty('--jy-left', `${gx + 70}px`);
 
     // Measure the hero untransformed: the travel must not leak into the geometry.

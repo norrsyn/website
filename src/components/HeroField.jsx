@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import HeroContent from './HeroContent.jsx';
 import { prefersReducedMotion, EASE } from '../lib/motion.js';
 import { createField } from '../lib/field.js';
+import { applyCascade } from '../lib/cascade.js';
 import '../hero-field.css';
 
 // ==========================================================================
@@ -53,12 +54,23 @@ export default function HeroField() {
       fades.forEach((el) => { el.style.opacity = o; });
       const blur = `blur(${(9 * s(0, 0.4)).toFixed(2)}px)`;
       texts.forEach((el) => { el.style.opacity = o; el.style.filter = p > 0.001 ? blur : ''; });
-      collapse.current.style.opacity = String(s(0.32, 0.5) * (1 - s(0.84, 0.98)));
       cue.current.style.opacity = String(1 - s(0, 0.18));
       foot.current.style.opacity = String(1 - s(0, 0.3));
     };
 
     const field = createField(canvas.current, { reduced, progress, onProgress: applyP });
+
+    // The cascade runs on the collapse's clock and keeps running as the hero
+    // scrolls out, so its last lines ride up with the frame — the same
+    // contract as the single-frame journey.
+    const casItems = Array.from(collapse.current.children);
+    const pExt = () => (span > 0 ? Math.max(0, (window.scrollY - wrapTop) / span) : 0);
+    let casRaf = 0;
+    const onCasScroll = () => {
+      if (casRaf) return;
+      casRaf = requestAnimationFrame(() => { casRaf = 0; applyCascade(casItems, pExt()); });
+    };
+    window.addEventListener('scroll', onCasScroll, { passive: true });
 
     const layout = () => {
       if (!sec) return;
@@ -81,6 +93,7 @@ export default function HeroField() {
 
     layout();
     applyP(progress());
+    applyCascade(casItems, pExt());
     const ro = new ResizeObserver(layout);
     ro.observe(sec);
     window.addEventListener('resize', layout);
@@ -117,6 +130,8 @@ export default function HeroField() {
       cancelled = true;
       ro.disconnect();
       window.removeEventListener('resize', layout);
+      window.removeEventListener('scroll', onCasScroll);
+      cancelAnimationFrame(casRaf);
       io?.disconnect();
       ctx?.revert();
       field.destroy();

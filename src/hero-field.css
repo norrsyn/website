@@ -46,10 +46,10 @@
 }
 
 /* One horizontal margin for everything that sits on the field. */
-.hf-content, .hf-collapse, .hf-foot { left: 1.5rem; right: 1.5rem; }
-@media (min-width: 640px)  { .hf-content, .hf-collapse, .hf-foot { left: 2.5rem; right: 2.5rem; } }
-@media (min-width: 768px)  { .hf-content, .hf-collapse, .hf-foot { left: 4rem;   right: 4rem; } }
-@media (min-width: 1024px) { .hf-content, .hf-collapse, .hf-foot { left: 5rem;   right: 5rem; } }
+.hf-content, .hf-cas, .hf-foot { left: 1.5rem; right: 1.5rem; }
+@media (min-width: 640px)  { .hf-content, .hf-cas, .hf-foot { left: 2.5rem; right: 2.5rem; } }
+@media (min-width: 768px)  { .hf-content, .hf-cas, .hf-foot { left: 4rem;   right: 4rem; } }
+@media (min-width: 1024px) { .hf-content, .hf-cas, .hf-foot { left: 5rem;   right: 5rem; } }
 
 .hf-content {
   position: absolute;
@@ -116,29 +116,44 @@
 .hf-ctas { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 @media (min-width: 640px) { .hf-ctas { flex-direction: row; align-items: center; } }
 
-/* The collapse statement takes the headline's place once it has gone. */
-.hf-collapse {
+/* The cascade takes the headline's place once it has gone: five lines,
+   each in its own place and its own moment, in the page's one voice. */
+.hf-cascade {
   position: absolute;
+  inset: 0;
   z-index: 10;
-  top: 40vh;
-  opacity: 0;
   pointer-events: none;
+  will-change: transform;
+}
+.hf-cas {
+  position: absolute;
+  opacity: 0;
   will-change: transform, opacity;
 }
-.hf-collapse-a {
-  display: block;
+.hf-cas-s {
   font-weight: 600;
-  font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
   letter-spacing: -0.02em;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.86);
+  max-width: 26em;
 }
-.hf-collapse-b {
-  display: block;
-  margin-top: 0.4rem;
-  font-size: clamp(1.6rem, 3.6vw, 3.6rem);
+.hf-cas-b {
+  font-size: clamp(1.7rem, 3.6vw, 3.6rem);
   line-height: 1.04;
   color: #E7E1D4;
-  max-width: 14em;
+  max-width: 12em;
+}
+.hf-cas[data-cas="1"] { top: 29vh; }
+.hf-cas[data-cas="2"] { top: 35vh; }
+.hf-cas[data-cas="3"] { top: 56vh; left: calc(var(--hf-ax, 62%) + 2.5rem); right: 1.5rem; }
+.hf-cas[data-cas="4"] { top: 36vh; }
+.hf-cas[data-cas="5"] { top: 60vh; }
+/* Narrow screens: every line wraps short of the line's x. */
+@media (max-width: 767px) {
+  .hf-cas-s { max-width: 13.5em; }
+  .hf-cas-b { max-width: 8.2em; }
+  .hf-nb { display: block; }
+  .hf-cas[data-cas="3"] { top: 62vh; left: 1.5rem; right: 1.5rem; }
 }
 
 /* The baseline: three quiet mono marks along the bottom edge. */
@@ -185,5 +200,5 @@
 @media (prefers-reduced-motion: reduce) {
   .hf-wrap { height: auto; }
   .hf-hero { position: relative; }
-  .hf-collapse { display: none; }
+  .hf-cascade { display: none; }
 }

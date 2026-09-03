@@ -72,6 +72,7 @@ export default function Journey() {
       cue: cue.current, foot: foot.current,
       fades: Array.from(fr.querySelectorAll('[data-hf-fade]')),
       texts: Array.from(fr.querySelectorAll('[data-hf-text]')),
+      cascade: Array.from(fr.querySelectorAll('[data-cas]')),
     };
     const ctlEl = ctl.current;
     const control = {
@@ -190,6 +191,10 @@ export default function Journey() {
             </div>
           </Layer>
         </div>
+
+        {/* The line, as ink: fades in on the spine's x as the field clears,
+            and continues into the next section. */}
+        <div className="jy-ink" aria-hidden="true" />
 
         {/* Where you are, with a way back and a way on. */}
         <div ref={ctl} className="jy-ctl" aria-label="Kapitel">

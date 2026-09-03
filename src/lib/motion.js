@@ -50,7 +50,7 @@ const REVEAL_ATTRS = [
   'data-fact', 'data-fact-src', 'data-signal', 'data-signal-tier',
   'data-action', 'data-action-rail',
   'data-brief-head', 'data-brief-metric', 'data-brief-group', 'data-brief-block',
-  'data-brief-dim', 'data-brief-badge', 'data-brief-src', 'data-brief-rail',
+  'data-brief-dim', 'data-brief-badge', 'data-brief-src', 'data-brief-rail', 'data-brief-lead',
   'data-jrv', 'data-jrz', 'data-portal', 'data-tam', 'data-rv',
 ].map((a) => `[${a}]`).join(',');
 

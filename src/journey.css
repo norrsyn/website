@@ -181,5 +181,35 @@
 
 /* The ending: the next section arrives on the same paper, no hairline, and
    its first words are already in the frame when the story has cleared —
-   the section starts under the last of the sticky frame. */
+   the section starts under the last of the sticky frame. The line turns to
+   ink at the spine's x, runs out of the frame and into the section, and
+   ends in a square beside the section's first words. */
+.jy-ink {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: calc(var(--jy-gx, 163px) - 1px);
+  width: 2px;
+  z-index: 6;
+  opacity: 0;
+  background: rgba(21, 24, 26, 0.55);
+  pointer-events: none;
+}
 .jy-wrap + div #brief { border-top-color: transparent; margin-top: -28vh; }
+.brief-ink { display: none; }
+.jy-wrap + div #brief .brief-ink {
+  display: block;
+  position: absolute;
+  left: calc(var(--jy-gx, 163px) - 1px);
+  top: 0;
+  width: 2px;
+  height: calc(5rem + 5px);
+  background: rgba(21, 24, 26, 0.55);
+  pointer-events: none;
+}
+.jy-wrap + div #brief .brief-ink::after {
+  content: '';
+  position: absolute;
+  left: -2px; bottom: -3px;
+  width: 6px; height: 6px;
+  background: #15181A;
+}
