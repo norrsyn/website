@@ -20,9 +20,9 @@
  *     At the end of the pin nothing is left but the line, which crosses the
  *     seam into Problemet at exactly the weight Problemet's route expects.
  *
- * Two clocks. Ambient motion runs on time. The collapse runs on scroll
- * position only, so it reverses, stops and jumps with the visitor — the
- * same contract as the thread engine that owns the line from the seam on.
+ * Two clocks. Ambient motion runs on time. The collapse — and, behind the
+ * story, the travel that flows the plane past the visitor — run on scroll
+ * position only, so they reverse, stop and jump with the visitor.
  *
  * Reduced motion: no flow, no signals, no drop; the plane and the full line
  * are drawn once. The component removes the pin.
@@ -88,6 +88,7 @@ export function createField(canvas, hooks = {}) {
   let hole = null;   // the copy block: marks thin out around it
 
   let phase = 0;
+  let scrollPhase = 0; // the story's travel, as depth: the field flows past
   let last = 0;
   let p = 0;         // collapse progress, 0..1
   let amb = 0;       // ambient: the field re-emerging, faint, after the collapse
@@ -108,7 +109,7 @@ export function createField(canvas, hooks = {}) {
   const buckets = Array.from({ length: BUCKETS }, () => []);
 
   const K = () => H - hy + 40; // z = 1 lands just under the bottom edge
-  const rowZ = (i) => Z_NEAR + ((((i * DZ + phase) % Z_RANGE) + Z_RANGE) % Z_RANGE);
+  const rowZ = (i) => Z_NEAR + ((((i * DZ + phase + scrollPhase) % Z_RANGE) + Z_RANGE) % Z_RANGE);
   // Each mark sits somewhere inside its row's depth band, so rows never
   // resolve into stripes: the field is continuous.
   const markZ = (i, j, z) => z + (hash(i + 7919, j) - 0.5) * DZ * 0.95;
@@ -393,6 +394,10 @@ export function createField(canvas, hooks = {}) {
     const np = hooks.progress ? clamp01(hooks.progress()) : 0;
     if (Math.abs(np - p) > 0.0005) { p = np; hooks.onProgress?.(p); }
     amb = hooks.ambient ? clamp01(hooks.ambient()) : 0;
+    // Scroll moves the visitor forward through the plane; time keeps drifting.
+    scrollPhase = hooks.travel ? -hooks.travel() : 0;
+    // The hero's signals belong to the hero: none may drift into the story.
+    if (amb > 0.02 && (signals.length || pulses.length)) { signals.length = 0; pulses.length = 0; }
     if (p > 0.15 && !dropDone) skipIntro();
     phase -= (BASE_SPEED * (1 + 12 * p * p) * (1 - amb) + BASE_SPEED * 0.35 * amb) * dt;
     if (now >= nextSignalAt) { spawn(now); nextSignalAt = now + 1000 + Math.random() * 800; }

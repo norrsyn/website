@@ -10,10 +10,12 @@
  * each chapter's artefact plays its choreography under a virtual reading
  * head that eases down the frame while the chapter is open.
  *
- * Rhythm. Chapters overlap by T: the outgoing chapter dissolves and lifts
- * while the incoming one dissolves in from just below — a transition, never
- * a cut, and the line never blinks. The reading head follows an S-curve so
- * each chapter eases in and settles out. At the end the frame itself
+ * Rhythm. Chapters travel. Over T viewports of scroll the outgoing chapter
+ * lifts away and the incoming one rises from below, TRAVEL apart, moving as
+ * one page — the eye follows the line down from one to the next, and the
+ * field flows past at the same time. While a chapter is read it creeps
+ * upward a little and the reading head — a comet on the spine — moves down
+ * through it at about the speed of the scroll. At the end the frame itself
  * dissolves into the paper of the next section.
  *
  * Why it is smooth: no canvas has to chase the compositor. The frame is
@@ -31,9 +33,17 @@ import {
 } from './scenes.js';
 
 /* ── The timeline, in viewport heights of wrapper travel ─────────────── */
-export const T = 0.5; // the cross-dissolve between chapters
-// Scroll per chapter: enough that one flick of the wheel is never a chapter.
-const DWELL = [['ph', 1.6], ['s1', 2.0], ['s2', 1.5], ['s3', 1.6], ['s4', 1.75], ['s5', 1.75], ['s6', 1.9]];
+export const T = 0.6; // the travel between chapters, in viewports of scroll
+// Scroll per chapter, arrival and departure included: enough that one flick
+// of the wheel is never a chapter.
+const DWELL = [['ph', 1.9], ['s1', 2.3], ['s2', 1.8], ['s3', 1.9], ['s4', 2.05], ['s5', 2.05], ['s6', 2.2]];
+// A chapter arrives from TRAVEL viewports below and leaves as far above —
+// one full frame, so two chapters never share the frame except at their
+// edges — and creeps CREEP upward while it is read. FLOW is how far the
+// field flows past the visitor, in depth, per viewport of that travel.
+const TRAVEL = 1.0;
+const CREEP = 0.05;
+const FLOW = 1.2;
 export const WIN = { hero: [0, 1], collapse: [1, 2], morph: [2, 2.5] };
 {
   let t0 = 2.3;
@@ -53,6 +63,8 @@ const SCENE = { ph: problemetScene, s1: s1Scene, s2: s2Scene, s3: s3Scene, s4: s
 
 const railXFor = (w) => (w < 640 ? 17 : Math.max(16, w / 2 - 576 + 17.6) + 1);
 const drift = (i, y) => Math.sin(y / (460 + i * 41) + i * 1.3) * 0.8;
+/** The travel's ease: still at both ends, heavy in the middle. */
+const q5 = (t) => { t = clamp01(t); return t * t * t * (t * (t * 6 - 15) + 10); };
 const FOREST = [12, 19, 16];
 const MIST = [231, 233, 230];
 
@@ -72,8 +84,8 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
   const scenes = {};
   for (const id of CH_IDS) scenes[id] = SCENE[id](layers[id].el, R);
 
-  const st = { u: 0, p: 0, amb: 0, out: 0, cur: 'hero', q: {}, o: {}, dy: {}, hv: {} };
-  for (const id of CH_IDS) { st.q[id] = 0; st.o[id] = 0; st.dy[id] = 0; st.hv[id] = 0; }
+  const st = { u: 0, p: 0, amb: 0, out: 0, flow: 0, cur: 'hero', o: {}, oi: {}, oo: {}, dy: {}, hv: {} };
+  for (const id of CH_IDS) { st.o[id] = 0; st.oi[id] = 0; st.oo[id] = 0; st.dy[id] = 0; st.hv[id] = 0; }
 
   const holes = [];
   const field = createField(canvas, {
@@ -81,6 +93,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     progress: () => st.p,
     ambient: () => st.amb,
     holes: () => holes,
+    travel: () => st.flow * FLOW,
     after: paintOverlays,
   });
   const ctx = field.ctx;
@@ -91,28 +104,44 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     st.u = Math.max(0, Math.min(TOTAL, (sy - wrapTop) / H));
     const u = st.u;
     st.p = clamp01(u - WIN.collapse[0]);
-    st.out = smooth(WIN.out[0], WIN.out[0] + 0.36, u);
+    // The ending begins while the Brief is still lifting away: the field
+    // clears to the paper the Brief lands on.
+    st.out = smooth(WIN.out[0] - 0.32, WIN.out[0] + 0.18, u);
     // The field stays as it is to the end; the canvas fade carries the ending.
     st.amb = smooth(2.05, 2.5, u);
     holes.length = 0;
     let cur = u < WIN.ph[0] + T * 0.5 ? 'hero' : 'end';
-    let best = 0;
+    let best = 0, flow = 0;
     for (const id of CH_IDS) {
       const [a, b] = WIN[id];
-      // Asymmetric dissolve: the outgoing chapter leaves in the first two
-      // thirds of the overlap, the incoming one arrives in the last two
-      // thirds — they pass each other, rather than sit on top of each other.
-      const tin = smooth(a + T * 0.3, a + T, u);
-      const tout = smooth(b - T, b - T * 0.3, u);
-      const o = tin * (1 - tout);
-      st.o[id] = o;
-      st.dy[id] = (1 - tin) * 24 - tout * 24;
       const L = layers[id];
-      // The reading head eases down the frame while the chapter is open.
-      st.hv[id] = lerp(L.headTop, L.headBot, smooth(a + T * 0.55, b - T * 0.45, u));
+      // The travel. A chapter rises from TRAVEL below over T, creeps upward
+      // while it is read, and lifts away over the next chapter's arrival;
+      // the two share one ease and move as one page, TRAVEL apart. Exposure
+      // rides on top: the incoming chapter resolves as it arrives, the
+      // outgoing one dissolves as it leaves.
+      const ti = q5((u - a) / T);
+      const to = q5((u - (b - T)) / T);
+      const dw = smooth(a + T, b - T, u);
+      const oi = smooth(a + 0.05 * T, a + 0.62 * T, u);
+      const oo = 1 - smooth(b - 0.62 * T, b - 0.08 * T, u);
+      const o = oi * oo;
+      st.o[id] = o; st.oi[id] = oi; st.oo[id] = oo;
+      const dy = (TRAVEL * (1 - ti) - CREEP * dw - TRAVEL * to) * H;
+      st.dy[id] = dy;
+      flow += TRAVEL * ti + CREEP * dw;
+      // The reading head moves down the chapter while it is read — at about
+      // the speed of the scroll — and is off the bottom before it leaves.
+      st.hv[id] = lerp(L.headTop, L.headBot, smooth(a + T * 0.45, b - T * 0.85, u));
       if (o > best && u < WIN.out[0]) { best = o; cur = id; }
-      if (o > 0.001 && L.copyR && L.artR) holes.push({ ...L.copyR, k: o }, { ...L.artR, k: o });
+      if (o > 0.001 && L.copyR && L.artR) {
+        holes.push(
+          { l: L.copyR.l, r: L.copyR.r, t: L.copyR.t + dy, b: L.copyR.b + dy, k: o },
+          { l: L.artR.l, r: L.artR.r, t: L.artR.t + dy, b: L.artR.b + dy, k: o },
+        );
+      }
     }
+    st.flow = flow;
     // Between the last chapter and the ending, "Nästa" still points onward.
     if (cur === 'end' && u < WIN.out[0] + 0.05) cur = 's6';
     st.cur = cur;
@@ -153,9 +182,9 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       L.el.style.opacity = o.toFixed(3);
       L.el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
       L.el.style.transform = `translate3d(0, ${st.dy[id].toFixed(1)}px, 0)`;
-      // The copy resolves like the hero's: exposure, not position.
-      const [a, b] = WIN[id];
-      const bl = 8 * (1 - sm(a + T * 0.3, a + T, st.u)) + 8 * sm(b - T, b - T * 0.3, st.u);
+      // The copy resolves like the hero's: exposure as well as position.
+      const [a] = WIN[id];
+      const bl = 5 * (1 - st.oi[id]) + 5 * (1 - st.oo[id]);
       const fs = bl > 0.05 ? `blur(${bl.toFixed(2)}px)` : '';
       if (L.copy.style.filter !== fs) L.copy.style.filter = fs;
       if (L.hand) L.hand.style.opacity = String(sm(a + T + 0.35, a + T + 0.55, st.u));
@@ -175,7 +204,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       const co = (sm(c0, c0 + 0.25, st.u) * (1 - sm(WIN.out[0] - 0.15, WIN.out[0] + 0.02, st.u))).toFixed(3);
       if (co !== lastCtl) {
         control.el.style.opacity = co;
-        control.el.style.pointerEvents = co === '0.000' ? 'none' : '';
+        control.el.style.pointerEvents = co === '0.000' ? 'none' : 'auto';
         lastCtl = co;
       }
       if (st.cur !== lastCur) {
@@ -245,7 +274,8 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       // During 01 the line leaves the spine at the fold and 01 draws the
       // rest itself; the plain spine below the fold crossfades away.
       const o1 = st.o.s1;
-      const foldEnd = o1 > 0 && geo.singleEndY != null ? geo.singleEndY : H + 2;
+      // 01 travels: its fold travels with it.
+      const foldEnd = o1 > 0 && geo.singleEndY != null ? geo.singleEndY + st.dy.s1 : H + 2;
       const sEnd = lengthAtY(P, foldEnd);
       const a = 0.62 * (1 - rope);
       strokeLine(ctx, P, sEnd, { alpha: a, width: 2, glow: 1 - rope, tip: false });
@@ -259,7 +289,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     if (rope > 0) {
       // The bundle: six strands, full height, until the Brief takes them.
       const o6 = st.o.s6;
-      const ropeEnd = o6 > 0 && geo.ropeEnd != null ? geo.ropeEnd : H + 2;
+      const ropeEnd = o6 > 0 && geo.ropeEnd != null ? geo.ropeEnd + st.dy.s6 : H + 2;
       ctx.lineWidth = 1.1; ctx.lineCap = 'round';
       for (let i = 0; i < 6; i++) {
         const strand = (y0, y1, alpha) => {
@@ -287,17 +317,40 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       const o = st.o[id];
       if (o <= 0.001) continue;
       const L = layers[id];
+      const hv = st.hv[id];
       const f = {
-        now, dt: 0, sy: 0, W, H, dpr, head: st.hv[id],
+        now, dt: 0, sy: 0, W, H, dpr, head: hv,
         top: -200, bot: H + 200, reduced: false, desktop: true, geo, pulse() {},
       };
       ctx.save();
       ctx.globalAlpha = o;
       ctx.translate(0, st.dy[id]);
-      if (L.node) paintNodeAt(ctx, gx, L.node.y, st.hv[id]);
+      if (L.node) paintNodeAt(ctx, gx, L.node.y, hv);
       scenes[id].paint(ctx, f);
+      // The head itself: a comet on the spine, reading down the chapter once
+      // it has arrived. Where the line has left the spine (01's fold, the
+      // Brief), the chapter's own tips carry it.
+      const [a, b] = WIN[id];
+      const ca = sm(a + T * 0.62, a + T * 0.95, st.u) * (1 - sm(b - T * 0.6, b - T * 0.42, st.u));
+      const ok = scenes[id].cometOk ? scenes[id].cometOk(hv) : true;
+      if (ca > 0.01 && ok) paintComet(ctx, gx, hv, ca);
       ctx.restore();
     }
+  }
+  function paintComet(ctx, x, y, a) {
+    const g = ctx.createLinearGradient(0, y - 60, 0, y + 4);
+    g.addColorStop(0, 'rgba(120,210,170,0)');
+    g.addColorStop(0.88, `rgba(140,225,185,${(0.9 * a).toFixed(3)})`);
+    g.addColorStop(1, 'rgba(120,210,170,0)');
+    ctx.strokeStyle = g; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y - 60); ctx.lineTo(x, y + 4); ctx.stroke();
+    const r = ctx.createRadialGradient(x, y, 0, x, y, 16);
+    r.addColorStop(0, `rgba(120,210,170,${(0.5 * a).toFixed(3)})`);
+    r.addColorStop(1, 'rgba(120,210,170,0)');
+    ctx.fillStyle = r;
+    ctx.beginPath(); ctx.arc(x, y, 16, 0, TAU); ctx.fill();
+    ctx.fillStyle = `rgba(155,227,196,${(0.95 * a).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(x, y, 2.4, 0, TAU); ctx.fill();
   }
 
   /* ── Layout ────────────────────────────────────────────────────────── */
@@ -343,7 +396,8 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       L.artR = ar;
       L.copyR = R(L.copy);
       L.headTop = (L.node ? L.node.y : ar.t) - 80;
-      L.headBot = ar.b + 260;
+      // The head leaves through the bottom of the frame, never parks in it.
+      L.headBot = Math.max(ar.b + 260, H + 90);
     }
     if (!running) { compute(); applyDOM(); field.render(performance.now()); }
   }

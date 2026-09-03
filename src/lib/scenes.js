@@ -262,6 +262,9 @@ export function s1Scene(el, R = docRect) {
       geo.ropeStart = geo.spindleEnd ?? sec.b + 2;
       labelAt = [railX + 26, neckY + 81.5];
     },
+    // The head rides the spine until the fold; from there the ledger's own
+    // tips carry it.
+    cometOk(y) { return !entry || y < foldY - 40; },
     paint(ctx, f) {
       const h = f.head;
       // The ledger is read in turn as the head physically reaches each row:
@@ -530,7 +533,7 @@ export function s4Scene(el, R = docRect) {
         const sr = R(src);
         const fr = R(find);
         return {
-          r: rr, src, rel: r.querySelector('[data-rel]'), tier: r.dataset.tier,
+          el: r, r: rr, src, rel: r.querySelector('[data-rel]'), tier: r.dataset.tier,
           wire: path([['M', sr.r + 8, rr.cy], ['L', fr.l - 8, rr.cy]]),
           end: [fr.l - 8, rr.cy],
         };
@@ -554,6 +557,10 @@ export function s4Scene(el, R = docRect) {
       });
       if (h > headY + 50) { ctx.fillStyle = green(1); ctx.fillRect(B.l - 3, headY - 3, 6, 6); }
       rows.forEach((row) => {
+        // The row comes into focus as the head reaches it: the file is read
+        // top to bottom, one finding at a time.
+        const eo = f.desktop ? (0.3 + 0.7 * band(row.r.t - 70, row.r.t + 6)(h)).toFixed(3) : '1';
+        if (row.el.style.opacity !== eo) row.el.style.opacity = eo;
         // The wire: the finding is pulled from its source as the head reaches
         // the row; the tier dot lands where the wire meets the finding.
         const t = band(row.r.t - 30, row.r.t + 26)(h);
@@ -604,7 +611,7 @@ export function s5Scene(el, R = docRect) {
         const judge = n.querySelector('[data-judge]');
         const gw = chip ? r.l - chip.r.r : 0;
         return {
-          r, judge, v: judge ? judge.dataset.v : '',
+          el: n, r, judge, v: judge ? judge.dataset.v : '',
           link: chip && geo.desktop
             ? path([['M', chip.r.r + 1, chip.r.cy], ['C', chip.r.r + gw * 0.5, chip.r.cy, r.l - gw * 0.5, r.cy, r.l - 6, r.cy, 22]])
             : null,
@@ -617,11 +624,15 @@ export function s5Scene(el, R = docRect) {
     paint(ctx, f) {
       const h = f.head;
       chips.forEach((c) => {
+        const co = f.desktop ? (0.3 + 0.7 * band(c.r.cy - 100, c.r.cy - 40)(h)).toFixed(3) : '1';
+        if (c.el.style.opacity !== co) c.el.style.opacity = co;
         if (!c.branch) return;
         const t = band(c.r.cy - 60, c.r.cy + 10)(h);
         if (t > 0) strokeLine(ctx, c.branch, c.branch.len * t, { alpha: c.used ? 0.55 : 0.3, width: 1.1, tip: t < 1, tipA: 0.6 });
       });
       finds.forEach((fd) => {
+        const fo = f.desktop ? (0.3 + 0.7 * band(fd.r.cy - 110, fd.r.cy - 50)(h)).toFixed(3) : '1';
+        if (fd.el.style.opacity !== fo) fd.el.style.opacity = fo;
         // The connection is drawn as the head reaches the finding; the
         // judgement is written only once the connection exists.
         const t = band(fd.r.cy - 70, fd.r.cy + 10)(h);
@@ -645,7 +656,7 @@ export function s5Scene(el, R = docRect) {
 
 /* ── 06: the bundle splays into the Brief; the Brief lands in the portal ── */
 export function s6Scene(el, R = docRect) {
-  let BR, splay = [], ends = [], portal = null, deliver = null, PR = null, review = null;
+  let BR, splay = [], ends = [], portal = null, deliver = null, PR = null, review = null, zones = [];
   const T = [0.09, 0.17, 0.25, 0.45, 0.62, 0.8];
   return {
     el, bg: '#15181A', t: 0, b: 0, node: null,
@@ -654,6 +665,7 @@ export function s6Scene(el, R = docRect) {
       this.t = sec.t; this.b = sec.b; this.node = nodeOf(el, R);
       BR = R(el.querySelector('[data-wk-brief]'));
       review = el.querySelector('[data-wk-review]');
+      zones = Array.from(el.querySelectorAll('.jr-zone')).map((z) => ({ el: z, r: R(z) }));
       const p = el.querySelector('[data-portal]');
       portal = p ? { el: p, r: R(p) } : null;
       const prEl = el.querySelector('[data-wk-portal-row]');
@@ -695,8 +707,15 @@ export function s6Scene(el, R = docRect) {
           ]))
         : null;
     },
+    // The head rides the bundle to the Brief; the strands carry it from there.
+    cometOk(y) { return !BR || y < BR.t - 40; },
     paint(ctx, f) {
       const h = f.head;
+      // The document is written region by region as the strands arrive.
+      zones.forEach((z) => {
+        const zo = f.desktop ? (0.22 + 0.78 * band(z.r.t - 60, z.r.t)(h)).toFixed(3) : '1';
+        if (z.el.style.opacity !== zo) z.el.style.opacity = zo;
+      });
       splay.forEach((P, i) => {
         const t = band(BR.t - 26 + i * 5, BR.t + 59 + i * 5)(h);
         if (t <= 0) return;
