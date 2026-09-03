@@ -29,6 +29,16 @@
   height: 100%;
   display: block;
 }
+/* Depth: the frame's edges fall away a little, like a lit room. */
+.jy-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--jy-vig, 1);
+  background: radial-gradient(120% 92% at 50% 38%, rgba(4, 8, 6, 0) 52%, rgba(4, 8, 6, 0.42) 100%);
+}
 
 /* The chapter layers live in a .wk box so the artefacts keep their dark
    styling; the box is pinned to the frame (more specific than .wk itself). */
@@ -58,12 +68,14 @@
   will-change: opacity, filter;
 }
 .jy-copy .jr-head { margin-bottom: 0; max-width: none; }
-.jy-copy .jr-title { font-size: 2.5rem; margin-bottom: 0.85rem; }
+.jy-copy .jr-title { margin-bottom: 1rem; }
+.jy-copy .st-lead { font-size: clamp(1rem, 1.35vw, 1.25rem); }
+.jy-copy .st-display { font-size: clamp(1.7rem, 2.95vw, 2.85rem); }
 .jy-copy .jr-body { font-size: 15.5px; line-height: 1.6; }
-.jy-copy-ph { top: 21vh; width: min(52rem, calc(100% - var(--jy-left, 233px) - 4rem)); }
-.jy-copy-ph h2 { margin-bottom: 1.1rem; }
-.jy-copy-ph h2 span:first-child { font-size: 2.7rem; }
-.jy-copy-ph h2 span:last-child { font-size: 3.3rem; }
+/* Problemet speaks in the hero's statement, in the hero's place. */
+.jy-copy-ph { top: 29vh; width: min(52rem, calc(100% - var(--jy-left, 233px) - 4rem)); }
+.jy-copy-ph .st-display { font-size: clamp(1.7rem, 3.6vw, 3.6rem); }
+.jy-copy-ph h2 { margin-bottom: 1.4rem; }
 
 .jy-art {
   position: absolute;
@@ -72,7 +84,7 @@
   top: 50vh;
   transform-origin: top left;
 }
-.jy-art-ph { top: 56vh; }
+.jy-art-ph { top: 58vh; }
 .jy-art .jr-foot { margin-top: 0.9rem; }
 .jy-art .jr-intake-wrap,
 .jy-art .jr-map,
@@ -96,11 +108,12 @@
 /* Short viewports: the copy sits higher so the artefact keeps its room. */
 @media (max-height: 820px) {
   .jy-copy { top: 16vh; }
-  .jy-copy-ph { top: 17vh; }
+  .jy-copy-ph { top: 21vh; }
   .jy-node { top: 8vh; }
   .jy-art { top: 47vh; }
   .jy-art-ph { top: 53vh; }
-  .jy-copy .jr-title { font-size: 2.1rem; }
+  .jy-copy .st-display { font-size: 2.2rem; }
+  .jy-copy-ph .st-display { font-size: 2.7rem; }
   .jy-copy .jr-body { font-size: 14.5px; }
 }
 
@@ -165,6 +178,18 @@
 .jy-dots button::before { content: ''; position: absolute; inset: -7px; }
 .jy-dots button:hover { background: rgba(255, 255, 255, 0.5); }
 .jy-dots button[data-on="1"] { background: var(--green); transform: scale(1.35); }
+
+/* The closing statement: the hero's words, on the paper the story lands on. */
+.jy-end {
+  position: absolute;
+  left: var(--jy-left, 233px);
+  top: 40vh;
+  z-index: 12;
+  opacity: 0;
+  pointer-events: none;
+}
+.jy-end .st-lead { color: rgba(21, 24, 26, 0.72); }
+.jy-end .st-display { color: #15181A; }
 
 /* The ending: the next section arrives on the same paper, no hairline. */
 .jy-wrap + div #brief { border-top-color: transparent; }

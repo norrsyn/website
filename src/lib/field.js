@@ -44,7 +44,7 @@ const MAX_SIGNALS = 3;
 const SIGNAL_DUR = 3400;
 const DROP_DUR = 850;
 const BG = '#0C1310';
-const AMBIENT_ALPHA = 0.3; // the market, faint, behind the whole story
+const AMBIENT_ALPHA = 0.24; // the market, faint, behind the whole story
 
 const SIGNALS = [
   ['Ny ekonomichef', 'LinkedIn'],
@@ -397,9 +397,9 @@ export function createField(canvas, hooks = {}) {
     // Scroll moves the visitor forward through the plane; time keeps drifting.
     scrollPhase = hooks.travel ? -hooks.travel() : 0;
     // The hero's signals belong to the hero: none may drift into the story.
-    if (amb > 0.02 && (signals.length || pulses.length)) { signals.length = 0; pulses.length = 0; }
+    if ((amb > 0.02 || p > 0.3) && (signals.length || pulses.length)) { signals.length = 0; pulses.length = 0; }
     if (p > 0.15 && !dropDone) skipIntro();
-    phase -= (BASE_SPEED * (1 + 12 * p * p) * (1 - amb) + BASE_SPEED * 0.35 * amb) * dt;
+    phase -= (BASE_SPEED * (1 + 12 * p * p) * (1 - amb) + BASE_SPEED * 0.25 * amb) * dt;
     if (now >= nextSignalAt) { spawn(now); nextSignalAt = now + 1000 + Math.random() * 800; }
     draw(now);
     hooks.after?.(ctx, now);

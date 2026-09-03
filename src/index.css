@@ -1048,6 +1048,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .jr-verdict-scale { display: inline-flex; flex-wrap: wrap; gap: 5px; }
 .jr-verdict-scale span { white-space: nowrap; }
+.jr-verdict-scale span b { font-weight: 600; margin-right: 5px; }
+.jr-brief-score b { font-weight: 600; color: var(--green-deep); }
 .jr-verdict-scale span {
   font-family: '"IBM Plex Mono"', monospace;
   font-size: 11px;

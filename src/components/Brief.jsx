@@ -13,16 +13,16 @@ gsap.registerPlugin(ScrollTrigger);
 // and it is built to read exactly like a Brief in the customer portal:
 //
 //   · the masthead leads with the RECOMMENDED CONTACT — whose inbox works
-//     today — and the verdict in words (Stark / God / Möjlig / Ej match),
-//     never a letter or a score;
+//     today — and the grade as the portal gives it: A to D, each with its
+//     words (A Stark match … D Ej match), never a numeric score;
 //   · the sections come in the document's own order: Sammanfattning →
 //     Evidensöversikt → Varför detta är en möjlighet → Ekonomi & bolagsfakta →
 //     Signaler & timing → Systemlandskap → Risk & komplexitet → Relevanta
 //     personer → Nästa steg → Slutbedömning → Källor;
 //   · the confidence ladder is the product's: Bekräftad / Trolig / Hypotes,
-//     with its colour semantics (green / amber / neutral). People are not
-//     graded — their contact details are verified or not, and that is what
-//     the card says.
+//     with its colour semantics (green / amber / neutral) — on evidence, and
+//     only on evidence. Analysis is prose. People are not graded — their
+//     contact details are verified or not, and that is what the card says.
 //
 // Everything on it is fictional and labelled as such, twice.
 // ==========================================================================
@@ -115,7 +115,7 @@ const DISCOVERY = [
   ['Vem äger systemvalet efter bytet av ekonomichef?', 'Beslutsmandatet är troligt, men inte bekräftat.', 'Vem som bör vara med i nästa möte.'],
 ];
 
-const VERDICTS = ['Stark match', 'God match', 'Möjlig match', 'Ej match'];
+const GRADES = [['A', 'Stark match'], ['B', 'God match'], ['C', 'Möjlig match'], ['D', 'Ej match']];
 
 export default function BriefExample() {
   const root = useRef(null);
@@ -155,9 +155,10 @@ export default function BriefExample() {
               Det här är vad ni får.
             </h2>
             <p className="text-ink-3 text-[15px] md:text-base leading-[1.7] max-w-xl">
-              Ett bolag, genomarbetat, i samma ordning som i er portal. Det vi
-              kan belägga står med sin källa. Det som är vår tolkning är märkt
-              som tolkning. Sista avsnittet är vad ni gör härnäst.
+              Underlaget inför det samtalet: ett bolag, genomarbetat, i samma
+              ordning som i er portal. Det som går att belägga står med sin
+              källa, det som är vår tolkning är märkt som tolkning, och det
+              sista avsnittet är vad ni gör härnäst.
             </p>
           </div>
           {/* How to read it: the three tiers, stated once, before the sheet. */}
@@ -175,6 +176,10 @@ export default function BriefExample() {
                 </li>
               ))}
             </ul>
+            <p className="mt-4 text-[12.5px] text-ink-4 leading-[1.6] max-w-[44ch]">
+              Bedömningen A till D sammanfattar hur väl bolaget svarar mot er
+              kravbild. A är en stark match; D faller utanför den.
+            </p>
           </div>
         </div>
 
@@ -205,27 +210,32 @@ export default function BriefExample() {
                 </p>
               </div>
 
-              {/* The verdict: one of four, in words. The single loudest thing on
-                  the page, and the only place it is stated. */}
+              {/* The grade: one of four, with its words. The single loudest
+                  thing on the page, and the only place it is stated. */}
               <div data-brief-head className="shrink-0 md:text-right md:pl-8 md:border-l md:border-ink/10">
                 <div className="eyebrow text-ink-4 mb-2">Bedömning</div>
-                <div className="font-sans font-semibold text-[1.6rem] leading-none text-green-deep tracking-[-0.02em]">Stark match</div>
+                <div className="flex md:justify-end items-baseline gap-3">
+                  <span className="font-sans font-semibold text-[2.5rem] leading-none text-green-deep tracking-[-0.03em]">A</span>
+                  <span className="font-sans font-semibold text-[1.05rem] text-ink tracking-[-0.01em]">Stark match</span>
+                </div>
                 <div className="mt-3 flex md:justify-end items-center gap-1.5" aria-hidden="true">
-                  {VERDICTS.map((v) => (
+                  {GRADES.map(([g, w]) => (
                     <span
-                      key={v}
-                      className={`font-mono text-[9px] uppercase tracking-[0.08em] leading-none px-1.5 py-1 rounded-sm border ${
-                        v === 'Stark match'
+                      key={g}
+                      title={w}
+                      className={`font-mono text-[9.5px] uppercase tracking-[0.08em] leading-none px-2 py-1 rounded-sm border ${
+                        g === 'A'
                           ? 'border-green-deep/40 bg-green-deep/8 text-green-deep'
                           : 'border-ink/10 text-ink-4/60'
                       }`}
                     >
-                      {v.replace(' match', '')}
+                      {g}
                     </span>
                   ))}
                 </div>
-                <p className="mt-2.5 text-[11.5px] text-ink-4 leading-[1.5] max-w-[26ch] md:ml-auto">
-                  Bolaget uppfyller er kravbild på erbjudande, storlek, systemmiljö och beslutsroller.
+                <p className="mt-2.5 text-[11.5px] text-ink-4 leading-[1.5] max-w-[28ch] md:ml-auto">
+                  Svarar mot er kravbild på erbjudande, storlek, systemmiljö och
+                  beslutsroller. Behov och tidpunkt är belagda.
                 </p>
               </div>
             </div>
@@ -277,11 +287,12 @@ export default function BriefExample() {
 
               <Group index="§01" title="Sammanfattning">
                 <Block title="Vad som har hänt, och varför det spelar roll för er">
-                  Bolaget växte 18 procent förra räkenskapsåret och öppnade ett
-                  tredje lager utan att byta system. Order, lager och fakturering
-                  hanteras fortfarande i separata flöden. Tillväxten har därmed
-                  blivit ett operativt problem snarare än ett ekonomiskt, och en
-                  ny ekonomichef har mandat att göra något åt det.
+                  Bolaget växte 18 procent förra räkenskapsåret och öppnade i
+                  januari ett tredje lager utan att byta system. Order, lager och
+                  fakturering hanteras fortfarande i separata flöden, och bolaget
+                  rekryterar nu en systemansvarig för just det. En ny ekonomichef
+                  har mandatet. Behovet är alltså redan formulerat internt, det
+                  finns en person som äger det, och fönstret är öppet just nu.
                 </Block>
               </Group>
 
@@ -306,15 +317,15 @@ export default function BriefExample() {
               </Group>
 
               <Group index="§03" title="Varför detta är en möjlighet">
-                <Block title="Smärtanalys" badge="low">
+                <Block title="Vad som skaver" badge="low">
                   Att bolaget rekryterar en systemansvarig för order och lager
                   tyder på att friktionen redan har blivit någons ansvar. Det är
                   vår tolkning. Bolaget har inte sagt det själva.
                 </Block>
-                <Block title="Koppling till erbjudandet" badge="ok">
+                <Block title="Koppling till ert erbjudande">
                   Ni säljer ett sammanhållet flöde från order till ekonomi, till
                   handels- och tillverkningsbolag som har vuxit ur sitt system.
-                  Det är exakt den situation bolaget beskriver i sin egen
+                  Det är den situation bolaget själva beskriver i sin
                   jobbannons.
                 </Block>
               </Group>
@@ -353,10 +364,12 @@ export default function BriefExample() {
                     </div>
                   ))}
                 </div>
-                <Block title="Timing" badge="mid">
-                  Tre signaler inom sex månader: nytt lager, ny ekonomichef, ny
-                  systemroll. Fönstret är öppet nu. Det stängs sannolikt när
-                  rollen är tillsatt och ett system är valt.
+                <Block title="Timing">
+                  Tre belagda händelser inom sex månader: nytt lager, ny
+                  ekonomichef, ny systemroll. Fönstret är öppet nu och stängs
+                  sannolikt när rollen är tillsatt och ett system är valt. Det
+                  är därför Briefen levereras den här veckan och inte nästa
+                  kvartal.
                 </Block>
               </Group>
 
@@ -381,18 +394,18 @@ export default function BriefExample() {
               </Group>
 
               <Group index="§07" title="Risk & komplexitet">
-                <Block title="Risker & invändningar" badge="low">
+                <Block title="Den troligaste invändningen">
                   Bolaget har klarat sig utan ett sammanhållet system i tolv år.
-                  Den troligaste invändningen är därför inte priset utan ”det
-                  fungerar ju”. Det är också därför det tredje lagret är den
-                  öppning som biter.
+                  Invändningen blir därför inte priset utan ”det fungerar ju”.
+                  Det är också därför det tredje lagret är den öppning som
+                  biter: det är där det slutade fungera.
                 </Block>
-                <Block title="Konkurrenssituation" badge="mid">
-                  Fortnox finns på plats för ekonomin. Ett byte är osannolikt.
-                  Det troliga köpet är ett komplement som kopplar order och lager
-                  till den befintliga ekonomin.
+                <Block title="Konkurrenssituation">
+                  Fortnox finns på plats för ekonomin och ett byte är
+                  osannolikt. Det rimliga köpet är ett komplement som kopplar
+                  order och lager till den ekonomi de redan har.
                 </Block>
-                <Block title="Operativ komplexitet" badge="ok">
+                <Block title="Operativ komplexitet">
                   Tre lager, en orderingång, flera leverantörsled. Tillräckligt
                   komplext för att ett manuellt flöde ska kosta, men inte så
                   komplext att ett införande blir ett projekt i sig.
@@ -403,7 +416,7 @@ export default function BriefExample() {
             {/* Decision column */}
             <aside className="lg:col-span-4 px-6 md:px-9 py-8 md:py-10 bg-paper-2 lg:bg-transparent border-t lg:border-t-0 border-ink/10">
 
-              <Group index="§08" title="Relevanta personer">
+              <Group index="§08" title="Beslutsfattare">
                 <ul className="space-y-3">
                   {CONTACTS.map((c) => (
                     <li data-brief-block key={c.name} className="border border-ink/10 rounded-lg px-3.5 py-3">
@@ -440,7 +453,12 @@ export default function BriefExample() {
                   <p className="text-[13px] text-ink-2 leading-[1.7]">
                     Öppna samtalet med det tredje lagret, inte med systemet.
                     Behovet är operativt långt innan det blir ett IT-beslut. Ta
-                    samtalet med ekonomichefen.
+                    samtalet med ekonomichefen, och låt dem beskriva flödet
+                    innan ni beskriver er lösning.
+                  </p>
+                  <p className="mt-3 text-[13px] text-ink leading-[1.65] font-serif italic border-l-2 border-green-deep/40 pl-3">
+                    ”Ni öppnade ett tredje lager i januari. Hur hänger order,
+                    lager och fakturering ihop för er i dag?”
                   </p>
                 </div>
                 <div data-brief-block>
@@ -466,24 +484,13 @@ export default function BriefExample() {
 
               <Group index="§10" title="Slutbedömning">
                 <p data-brief-block className="text-[13px] text-ink-2 leading-[1.7]">
-                  Stark match. Behovet är belagt genom bolagets egna beslut, den
-                  som äger frågan är identifierad och nåbar, och tidpunkten är så
-                  bra som den går att belägga: tidigt i en ny ekonomichefs
-                  period, innan systemrollen är tillsatt.
+                  <span className="font-semibold text-ink">A, stark match.</span>{' '}
+                  Behovet är belagt genom bolagets egna beslut, den som äger
+                  frågan är identifierad och nåbar, och tidpunkten är så bra som
+                  den går att belägga: tidigt i en ny ekonomichefs period, innan
+                  systemrollen är tillsatt. Det som återstår att bekräfta står
+                  under Nästa steg.
                 </p>
-                {/* The three things a register never knew — in the colours the
-                    page gave them at the start: need, person, timing. */}
-                <div data-brief-dim className="mt-4 flex flex-wrap items-center gap-2">
-                  {[
-                    ['Behov belagt', 'border-amber/50 bg-amber/10 text-[#8A6A22]'],
-                    ['Person identifierad', 'border-[#5C9BD6]/50 bg-[#5C9BD6]/10 text-[#2F6AA8]'],
-                    ['Timing öppen', 'border-green-deep/40 bg-green-deep/8 text-green-deep'],
-                  ].map(([t, cls]) => (
-                    <span key={t} className={`font-mono text-[9.5px] uppercase tracking-[0.1em] rounded-sm px-1.5 py-1 border ${cls}`}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
               </Group>
             </aside>
           </div>

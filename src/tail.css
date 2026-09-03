@@ -117,6 +117,13 @@
   pointer-events: none;
 }
 .ho-inner { position: relative; }
+.ho-dusk {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, var(--paper) 0%, rgba(244, 241, 233, 0.55) 30%, rgba(244, 241, 233, 0) 100%);
+  pointer-events: none;
+}
 /* The glyph that closes the visual story: a chosen company, a line, and an
    open ring — the conversation, which stays human. Drawn by scroll. */
 .ho-glyph { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 2.4rem; }
@@ -180,20 +187,9 @@
 .ab-p-t { display: block; font-weight: 600; font-size: 16px; letter-spacing: -0.015em; color: #fff; }
 .ab-p-b { display: block; margin-top: 0.45rem; font-size: 13px; line-height: 1.65; color: rgba(255, 255, 255, 0.66); }
 
-/* ── Act III · contact: the register behind the form, no photograph ─────── */
+/* ── Act III · contact: the same dark as the rest of the act, one hairline ─ */
 .ct {
   position: relative;
-  overflow: hidden;
   background: var(--forest);
-}
-.ct::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1.5px);
-  background-size: 14px 14px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent);
-  opacity: 0.55;
-  pointer-events: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }

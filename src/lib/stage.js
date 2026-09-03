@@ -231,7 +231,7 @@ export function paintNodeAt(ctx, x, y, head) {
   const a = smooth(-60, 0, d) * (1 - 0.7 * smooth(0, 420, d));
   if (a <= 0.01) return;
   const g = ctx.createRadialGradient(x, y, 0, x, y, 24);
-  g.addColorStop(0, green(0.26 * a));
+  g.addColorStop(0, green(0.2 * a));
   g.addColorStop(1, green(0));
   ctx.fillStyle = g;
   ctx.beginPath(); ctx.arc(x, y, 24, 0, TAU); ctx.fill();

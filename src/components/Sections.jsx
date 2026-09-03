@@ -40,6 +40,8 @@ export const Handoff = () => {
 
   return (
     <section id="overlamningen" ref={root} className="ho on-dark">
+      {/* Dusk: the paper of the last light section falls into the dark, once. */}
+      <div className="ho-dusk" aria-hidden="true" />
       <div className="ho-inner mx-auto max-w-3xl px-6 sm:px-10 py-28 md:py-40 text-center">
         <div className="ho-glyph" aria-hidden="true">
           <span className="ho-mark" />
@@ -117,7 +119,7 @@ export const Tam = () => {
   }, []);
 
   return (
-    <section id="fortsattningen" ref={root} className="bg-paper-2 border-t border-ink/8">
+    <section id="fortsattningen" ref={root} className="bg-mist border-t border-ink/8">
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-20 md:py-28">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-6">
@@ -277,7 +279,7 @@ export const OnDemand = () => {
               <div className="od-card-name">Skandinavisk Verkstadsteknik AB</div>
               <div className="od-card-sub">Verkstadsindustri · Eskilstuna · 46 anställda</div>
               <ul className="od-facts">
-                <li><span>Bedömning</span><span className="od-fact-v">Stark match</span></li>
+                <li><span>Bedömning</span><span className="od-fact-v">A · Stark match</span></li>
                 <li><span>Bekräftade signaler</span><span className="od-fact-v">4 <i className="jr-tier jt-ok">Bekräftad</i></span></li>
                 <li><span>Relevanta personer</span><span className="od-fact-v">3 · e-post verifierad</span></li>
                 <li><span>Timing</span><span className="od-fact-v">Öppet fönster — rekryterar systemansvarig</span></li>
@@ -330,9 +332,9 @@ export const OnDemand = () => {
 // About — who we are, and the three rules every Brief is held to.
 // ==========================================================================
 const PRINCIPLES = [
-  ['01', 'Allt går att belägga', 'Varje fakta i en Brief har en källa ni kan öppna själva. Finns ingen källa står det hypotes.'],
-  ['02', 'Tolkning märks som tolkning', 'Vår analys är värdefull just för att den aldrig blandas med fakta. Ni ser alltid vad som är vad.'],
-  ['03', 'Kvalitet före volym', 'Ett fåtal bolag där en affär är rimlig slår tusen namn utan skäl. Varje gång.'],
+  ['01', 'Allt går att belägga', 'Varje faktauppgift i en Brief har en källa ni kan öppna själva. Det som saknar källa kallar vi hypotes, aldrig fakta.'],
+  ['02', 'Tolkning märks som tolkning', 'Vår analys är värdefull för att den hålls isär från fakta. Ni ser alltid vad som är belagt, vad som är troligt och vad som är vår bedömning.'],
+  ['03', 'Kvalitet före volym', 'Ett fåtal bolag där en affär är rimlig är värda mer än tusen namn utan skäl. Vi levererar hellre färre Briefs än en enda som inte håller.'],
 ];
 
 export const About = () => {
@@ -349,7 +351,7 @@ export const About = () => {
   }, []);
 
   return (
-    <section id="om-norrsyn" ref={root} className="on-dark bg-graphite text-white">
+    <section id="om-norrsyn" ref={root} className="on-dark bg-forest text-white">
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-4">
@@ -368,21 +370,23 @@ export const About = () => {
                 bolag som ingen har hunnit titta närmare på. Det vill vi ändra på.
               </p>
               <p data-about>
-                Vi går kontinuerligt igenom svenska bolag och ser var behov och
-                affärssituationer håller på att uppstå. Underlaget kommer från
-                Bolagsverket, SCB, årsredovisningar, LinkedIn, jobbannonser,
-                pressmeddelanden och bolagens egna webbplatser.
+                Vi bevakar den svenska B2B-marknaden löpande och läser varje
+                bolag mot er kravbild: vad som har hänt, vad det betyder för
+                just ert erbjudande och vem som äger frågan. Offentliga
+                register, finansiell historik, rekryteringar, pressflöden och
+                bolagens egna kanaler vägs samman till en bedömning som en
+                analytiker står bakom.
               </p>
             </div>
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
                 Vi utgår från Jönköping, mitt i det Sverige vi arbetar igenom.
-                Våra kunder finns där kravbilden passar: bolag som säljer B2B på
-                den svenska marknaden, oavsett var de själva sitter.
+                Våra kunder säljer B2B på den svenska marknaden och vet vem de
+                vill nå, oavsett var de själva sitter.
               </p>
               <p data-about>
-                Det vi lämnar ifrån oss är aldrig listor, utan ett fåtal
-                genomarbetade Briefs där en affär är rimlig. Källorna följer med,
+                Det vi lämnar ifrån oss är aldrig listor. Det är ett fåtal
+                genomarbetade Briefs där en affär är rimlig, med källorna öppna
                 så att era säljare kan bedöma dem själva.
               </p>
             </div>
@@ -524,7 +528,7 @@ export const Contact = () => {
 // but they are stated once, quietly, without a badge that blinks.
 // ==========================================================================
 export const Footer = () => (
-  <footer className="on-dark bg-graphite text-white">
+  <footer className="on-dark bg-forest text-white border-t border-white/8">
     <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-20 pb-10">
       <div className="grid md:grid-cols-12 gap-12 md:gap-10 pb-16 md:pb-20">
         <div className="md:col-span-5">

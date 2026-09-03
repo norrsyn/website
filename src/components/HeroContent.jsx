@@ -47,8 +47,8 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
       </div>
 
       <div ref={collapseRef} className="hf-collapse" aria-hidden="true">
-        <span className="hf-collapse-a">Hela marknaden går in.</span>
-        <span className="hf-collapse-b display">Ett fåtal Briefs kommer ut.</span>
+        <span className="hf-collapse-a">Vi läser hela marknaden.</span>
+        <span className="hf-collapse-b display">Ni ringer de bolag som är redo.</span>
       </div>
 
       <div ref={footRef} className="hf-foot" aria-hidden="true">

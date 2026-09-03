@@ -25,7 +25,7 @@ import '../journey.css';
 // Walkthrough instead.
 // ==========================================================================
 
-function Layer({ id, n, tag, title, body, foot, children, wide }) {
+function Layer({ id, n, tag, lead, title, body, foot, children, wide }) {
   return (
     <div className="jy-layer" data-ch={id}>
       <div className="jy-node jr-node" aria-hidden="true">
@@ -33,7 +33,7 @@ function Layer({ id, n, tag, title, body, foot, children, wide }) {
         <span className="jr-node-num">{n}</span>
       </div>
       <div className="jy-copy">
-        <Head tag={tag} title={title}>{body}</Head>
+        <Head tag={tag} lead={lead} title={title}>{body}</Head>
       </div>
       <div className={`jy-art${wide ? ' jy-art-wide' : ''}`}>
         {children}
@@ -42,8 +42,6 @@ function Layer({ id, n, tag, title, body, foot, children, wide }) {
     </div>
   );
 }
-
-const ANCHOR_TO = { '#processen': 's1', '#varfor-norrsyn': 'ph', '#start': 'hero' };
 
 export default function Journey() {
   const wrap = useRef(null);
@@ -55,6 +53,7 @@ export default function Journey() {
   const cue = useRef(null);
   const foot = useRef(null);
   const ctl = useRef(null);
+  const endEl = useRef(null);
 
   useEffect(() => {
     const fr = frame.current;
@@ -82,7 +81,9 @@ export default function Journey() {
       prev: ctlEl.querySelector('[data-go="prev"]'),
       dots: new Map(Array.from(ctlEl.querySelectorAll('.jy-dots [data-go]')).map((d) => [d.dataset.go, d])),
     };
-    const journey = createJourney({ wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control });
+    const journey = createJourney({
+      wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control, end: { el: endEl.current },
+    });
     journey.measure();
 
     const ro = new ResizeObserver(() => journey.measure());
@@ -101,13 +102,13 @@ export default function Journey() {
       else journey.goTo(go.dataset.go);
     };
     ctlEl.addEventListener('click', onCtl);
+    // Every anchor on the page glides — into the story or down to a section.
     const onAnchor = (e) => {
       const a = e.target.closest('a[href^="#"]');
-      if (!a) return;
-      const id = ANCHOR_TO[a.getAttribute('href')];
-      if (!id) return;
-      e.preventDefault();
-      journey.goTo(id);
+      if (!a || e.defaultPrevented) return;
+      const hash = a.getAttribute('href');
+      if (!hash || hash.length < 2) return;
+      if (journey.goToAnchor(hash)) e.preventDefault();
     };
     document.addEventListener('click', onAnchor);
 
@@ -127,6 +128,13 @@ export default function Journey() {
     if (journey.progress() > 0.04) journey.skipIntro();
     else journey.scheduleIntro(2350);
 
+    // Development only: `?jy=<viewports>` opens the story at a position and
+    // `?go=<hash>` plays a glide, so a headless browser can photograph both.
+    const dbg = new URLSearchParams(window.location.search);
+    const dbgTimers = [];
+    if (dbg.has('jy')) dbgTimers.push(setTimeout(() => window.scrollTo(0, parseFloat(dbg.get('jy')) * window.innerHeight), 80));
+    if (dbg.has('go')) dbgTimers.push(setTimeout(() => journey.goToAnchor(dbg.get('go')), 400));
+
     const io = new IntersectionObserver(
       ([e]) => (e.isIntersecting ? journey.start() : journey.stop()),
       { threshold: 0 }
@@ -135,6 +143,7 @@ export default function Journey() {
 
     return () => {
       cancelled = true;
+      dbgTimers.forEach(clearTimeout);
       ro.disconnect();
       io.disconnect();
       window.removeEventListener('resize', journey.measure);
@@ -160,9 +169,8 @@ export default function Journey() {
           {/* Problemet */}
           <div className="jy-layer" data-ch="ph">
             <div className="jy-copy jy-copy-ph">
-              <div className="eyebrow text-white/55 mb-6">Problemet</div>
               <ProblemHeadline />
-              <p className="wk-ph-copy text-[15px] leading-[1.65] max-w-lg">{PH_BODY}</p>
+              <p className="wk-ph-copy text-[15.5px] leading-[1.65] max-w-lg">{PH_BODY}</p>
             </div>
             <div className="jy-art jy-art-ph">
               <ProblemGrid />
@@ -184,6 +192,12 @@ export default function Journey() {
               <PortalCard />
             </div>
           </Layer>
+        </div>
+
+        {/* The story closes with one statement, on the paper it lands on. */}
+        <div ref={endEl} className="jy-end" aria-hidden="true">
+          <span className="st-lead">Från hela marknaden.</span>
+          <span className="st-display display">Till ett samtal värt att ta.</span>
         </div>
 
         {/* Where you are, with a way back and a way on. */}

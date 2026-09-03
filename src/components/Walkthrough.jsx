@@ -27,7 +27,7 @@ function Chapter({ id, cls, dark = true, copy, children }) {
     <section id={id} className={`wk-sec jr ${cls} ${dark ? 'jr-dark' : ''} on-dark`}>
       <div className="jr-inner">
         <Node n={copy.n} />
-        <Head tag={copy.tag} title={copy.title}>{copy.body}</Head>
+        <Head tag={copy.tag} lead={copy.lead} title={copy.title}>{copy.body}</Head>
         {children}
         <Foot>{copy.foot}</Foot>
       </div>

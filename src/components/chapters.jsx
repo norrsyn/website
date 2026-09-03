@@ -23,26 +23,16 @@ export function Foot({ children }) {
   return <p data-rv className="jr-foot">{children}</p>;
 }
 
-/* Every chapter speaks: one statement, quoted. The quotation marks are set
-   in the serif and the green, hanging into the margin — a citation, not
-   punctuation. */
-function Quoted({ text }) {
-  const m = /^”(.*)”$/.exec(text);
-  if (!m) return text;
-  return (
-    <>
-      <span className="jr-q" aria-hidden="true">”</span>
-      {m[1]}
-      <span className="jr-q" aria-hidden="true">”</span>
-    </>
-  );
-}
-
-export function Head({ tag, title, children }) {
+/* Every chapter speaks in the story's one voice: a plain lead, then the
+   statement in the serif — exactly as the hero, Problemet and the ending. */
+export function Head({ tag, lead, title, children }) {
   return (
     <header className="jr-head">
       <div data-rv className="eyebrow text-green mb-4">{tag}</div>
-      <h2 data-rv className="jr-title"><Quoted text={title} /></h2>
+      <h2 data-rv className="jr-title">
+        {lead && <span className="st-lead">{lead}</span>}
+        <span className="st-display display">{title}</span>
+      </h2>
       <p data-rv className="jr-body">{children}</p>
     </header>
   );
@@ -51,21 +41,9 @@ export function Head({ tag, title, children }) {
 /* ── Problemet ──────────────────────────────────────────────────────────── */
 export function ProblemHeadline() {
   return (
-    <h2 className="max-w-4xl mb-8 md:mb-10">
-      <span
-        data-rv
-        className="block font-sans font-semibold text-white
-                   text-[2.2rem] sm:text-5xl md:text-[3.4rem] leading-[1.04] tracking-[-0.035em]"
-      >
-        Alla vet vilka bolag som finns.
-      </span>
-      <span
-        data-rv
-        className="display block text-[#E7E1D4]
-                   text-[2.6rem] sm:text-[3.6rem] md:text-[4.2rem] leading-[1.02]"
-      >
-        Få vet vilka som är redo.
-      </span>
+    <h2 className="mb-8 md:mb-9">
+      <span data-rv className="st-lead">Ett register vet vilka bolag som finns.</span>
+      <span data-rv className="st-display display">Det vet inte vilka som är redo.</span>
     </h2>
   );
 }
@@ -90,8 +68,8 @@ export function ProblemGrid() {
         <div data-rv className="eyebrow text-white/55 mb-4">Vad registret inte vet</div>
         {[
           ['behov', 'Behov', 'Finns det ett verkligt skäl att köpa?'],
-          ['person', 'Person', 'Vem äger frågan internt?'],
-          ['timing', 'Timing', 'Varför är det läge just nu?'],
+          ['person', 'Person', 'Vem äger frågan?'],
+          ['timing', 'Timing', 'Varför just nu?'],
         ].map(([kind, t, q]) => (
           <div data-ph-slot data-kind={kind} key={t} className="ph-slot">
             <span className="ph-slot-box" aria-hidden="true" />
@@ -261,16 +239,15 @@ export function Weigh() {
           ))}
         </div>
       </div>
-      {/* The verdict in the customer's own words — the four steps a Brief
-          can land on — never a letter or a score. */}
+      {/* The grade, as the portal gives it: A to D, each with its words. */}
       <div data-verdict className="wg-verdict">
         <span className="jr-verdict-scale" aria-hidden="true">
-          {['Stark match', 'God match', 'Möjlig match', 'Ej match'].map((g) => (
-            <span key={g} data-grade={g === 'Stark match' ? '1' : '0'}>{g}</span>
+          {[['A', 'Stark match'], ['B', 'God match'], ['C', 'Möjlig match'], ['D', 'Ej match']].map(([g, w]) => (
+            <span key={g} data-grade={g === 'A' ? '1' : '0'}><b>{g}</b>{w}</span>
           ))}
         </span>
         <span className="jr-verdict-text">
-          Stark match. Behovet är belagt, personen identifierad och läget öppet. Bolaget går vidare till leverans.
+          A. Behovet är belagt, personen identifierad och läget öppet. Bolaget går vidare till leverans.
         </span>
       </div>
     </div>
@@ -295,7 +272,7 @@ export function BriefCard() {
         <header className="jr-brief-head">
           <span className="eyebrow text-green-deep">Norrsyn · Brief</span>
           <span data-wk-review className="jr-brief-review">Granskad av analytiker</span>
-          <span className="jr-brief-score">Stark match</span>
+          <span className="jr-brief-score"><b>A</b> · Stark match</span>
         </header>
         <div className="jr-brief-name">Nordic Flow Distribution AB</div>
         <div className="jr-brief-sub">Partihandel · Borås · 28 anställda</div>
@@ -361,7 +338,7 @@ export function PortalCard() {
           <span className="jm" data-state="chosen" aria-hidden="true" />
           <span className="jr-portal-brief-name">Nordic Flow Distribution AB</span>
           <span className="jr-portal-state">Ny</span>
-          <span className="jr-portal-brief-grade">Stark match</span>
+          <span className="jr-portal-brief-grade">A · Stark match</span>
           <span className="jr-portal-open">Öppna →</span>
         </div>
       </div>
