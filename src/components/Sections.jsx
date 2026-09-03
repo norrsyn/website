@@ -372,11 +372,14 @@ export const OnDemand = () => {
           Redan bolag i sikte? Skicka dem till oss.
         </h2>
         <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
-          Norrsyn hittar löpande nya möjligheter i er marknad. Men ibland vet ni
-          redan vilka bolag ni vill in hos — strategiska accounts, bolag ert
-          säljteam pekat ut. Då gör vi samma djupresearch mot er kravbild på
-          just dem: läget, verifierade signaler, rätt personer och en ärlig
-          bedömning av timing.
+          Norrsyn hittar löpande nya möjligheter i er marknad. Men vissa bolag
+          vet ni redan att ni vill vinna — strategiska accounts, drömkunder,
+          bolag ert säljteam pekat ut.
+        </p>
+        <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
+          De bolagen researchar vi på djupet mot er kravbild: var de står i dag,
+          vilka signaler som går att belägga, vilka personer som är rätt att
+          tala med — och en ärlig bedömning av om läget är rätt.
         </p>
         <p data-od className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-xl mb-10">
           Vi kallar det <span className="jr-term">On-demand Account Intelligence</span>.
@@ -704,7 +707,17 @@ export const Footer = () => (
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-7 border-t border-white/10 font-mono text-[11.5px] text-white/50">
+      {/* The umbrella statement for every diagram and demo on the page: the
+          illustrations teach the ideas; the product is the larger thing. The
+          Brief demo keeps its own fictional-company clause — this covers the
+          rest, once, where fine print professionally lives. */}
+      <p className="pt-7 border-t border-white/10 font-mono text-[11px] leading-[1.8] text-white/45 max-w-3xl">
+        Illustrationer och exempel på den här webbplatsen är medvetet förenklade —
+        de finns för att förklara arbetssättet och idéerna, inte för att avbilda
+        systemet. Verkliga Briefs, portalen och analysarbetet är väsentligt mer
+        omfattande och detaljerade än vad som visas här.
+      </p>
+      <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 font-mono text-[11.5px] text-white/50">
         <p>© 2026 NRSYN AB</p>
         <a href="#start" className="link-underline flex items-center gap-1.5">
           Till toppen <ArrowUpRight size={12} />
