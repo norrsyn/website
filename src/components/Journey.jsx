@@ -53,7 +53,6 @@ export default function Journey() {
   const cue = useRef(null);
   const foot = useRef(null);
   const ctl = useRef(null);
-  const endEl = useRef(null);
 
   useEffect(() => {
     const fr = frame.current;
@@ -81,9 +80,7 @@ export default function Journey() {
       prev: ctlEl.querySelector('[data-go="prev"]'),
       dots: new Map(Array.from(ctlEl.querySelectorAll('.jy-dots [data-go]')).map((d) => [d.dataset.go, d])),
     };
-    const journey = createJourney({
-      wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control, end: { el: endEl.current },
-    });
+    const journey = createJourney({ wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control });
     journey.measure();
 
     const ro = new ResizeObserver(() => journey.measure());
@@ -192,12 +189,6 @@ export default function Journey() {
               <PortalCard />
             </div>
           </Layer>
-        </div>
-
-        {/* The story closes with one statement, on the paper it lands on. */}
-        <div ref={endEl} className="jy-end" aria-hidden="true">
-          <span className="st-lead">Från hela marknaden.</span>
-          <span className="st-display display">Till ett samtal värt att ta.</span>
         </div>
 
         {/* Where you are, with a way back and a way on. */}

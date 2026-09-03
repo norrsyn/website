@@ -53,17 +53,14 @@ export const Handoff = () => {
           <span>Briefen</span>
           <span>Samtalet</span>
         </div>
-        <h2
-          data-ho
-          className="font-sans font-semibold text-white text-[1.9rem] md:text-[2.6rem] leading-[1.12] tracking-[-0.03em] mb-6"
-        >
-          När säljaren tar över ska så lite som möjligt vara en gissning.
+        <h2 data-ho className="st st-sec st-center mb-6">
+          <span className="st-lead">Affären avgörs fortfarande mellan människor.</span>
+          <span className="st-display display">När säljaren tar över ska så lite som möjligt vara en gissning.</span>
         </h2>
         <p data-ho className="text-white/72 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
-          Affären avgörs fortfarande mellan människor. Vi avgör inte vad som
-          händer i samtalet, men vi ser till att det finns ett verkligt skäl
-          att ta det: rätt bolag, rätt personer, rätt läge och ett underlag
-          som går att använda.
+          Vi avgör inte vad som händer i samtalet, men vi ser till att det
+          finns ett verkligt skäl att ta det: rätt bolag, rätt personer, rätt
+          läge och ett underlag som går att använda.
         </p>
         <p data-ho className="text-white font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
           En Brief är inte ett löfte om en affär. Det är vårt arbete för att
@@ -124,11 +121,9 @@ export const Tam = () => {
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-6">
             <div data-tam className="eyebrow text-ink-4 mb-4">Er marknad över tid</div>
-            <h2
-              data-tam
-              className="font-sans font-semibold text-ink text-[1.6rem] md:text-[2.1rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-xl"
-            >
-              Vi fortsätter tills den relevanta marknaden är genomarbetad.
+            <h2 data-tam className="st st-sec mb-4">
+              <span className="st-lead">Vi slutar inte vid en leverans.</span>
+              <span className="st-display display">Vi fortsätter tills er marknad är genomarbetad.</span>
             </h2>
             <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-lg mb-4">
               Varje leverans arbetar igenom en del av marknaden. I portalen ser
@@ -223,11 +218,9 @@ export const OnDemand = () => {
     <section id="pa-er-radar" ref={root} className="bg-paper border-t border-ink/8">
       <div className="mx-auto max-w-5xl px-6 sm:px-10 py-20 md:py-28">
         <div data-od className="eyebrow text-green-deep mb-4">På er radar</div>
-        <h2
-          data-od
-          className="font-sans font-semibold text-ink text-[1.5rem] md:text-[1.9rem] leading-[1.15] tracking-[-0.03em] mb-4 max-w-2xl"
-        >
-          Redan bolag i sikte? Skicka dem till oss.
+        <h2 data-od className="st st-sec mb-4">
+          <span className="st-lead">Redan bolag i sikte?</span>
+          <span className="st-display display">Skicka dem till oss.</span>
         </h2>
         <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
           Norrsyn hittar löpande nya möjligheter i er marknad. Men vissa bolag
@@ -356,26 +349,23 @@ export const About = () => {
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-4">
             <div data-about className="eyebrow text-white/55 mb-6">Om Norrsyn</div>
-            <h2
-              data-about
-              className="font-sans font-semibold text-white text-[1.9rem] md:text-[2.4rem] leading-[1.12] tracking-[-0.035em]"
-            >
-              Vi gör grundarbetet inför era viktigaste samtal.
+            <h2 data-about className="st st-sec">
+              <span className="st-lead">Säljare lägger sin bästa tid på fel bolag.</span>
+              <span className="st-display display">Vi gör grundarbetet inför era viktigaste samtal.</span>
             </h2>
           </div>
           <div className="md:col-span-8 md:pl-6 grid sm:grid-cols-2 gap-8 md:gap-12">
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
-                Norrsyn finns av ett enkelt skäl: säljare lägger sin bästa tid på
-                bolag som ingen har hunnit titta närmare på. Det vill vi ändra på.
+                Norrsyn finns för att ändra på det. Vi bevakar den svenska
+                B2B-marknaden löpande och läser varje bolag mot er kravbild:
+                vad som har hänt, vad det betyder för just ert erbjudande och
+                vem som äger frågan.
               </p>
               <p data-about>
-                Vi bevakar den svenska B2B-marknaden löpande och läser varje
-                bolag mot er kravbild: vad som har hänt, vad det betyder för
-                just ert erbjudande och vem som äger frågan. Offentliga
-                register, finansiell historik, rekryteringar, pressflöden och
-                bolagens egna kanaler vägs samman till en bedömning som en
-                analytiker står bakom.
+                Offentliga register, finansiell historik, rekryteringar,
+                pressflöden och bolagens egna kanaler vägs samman till en
+                bedömning som en analytiker står bakom.
               </p>
             </div>
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
@@ -447,24 +437,29 @@ export const Contact = () => {
   return (
     <section id="kontakt" className="ct on-dark text-white">
 
-      <div className="relative mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
+      <div className="relative mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-12 pb-24 md:pt-16 md:pb-32">
         <div className="grid md:grid-cols-12 gap-12 md:gap-16">
           <div className="md:col-span-5">
             <div className="eyebrow text-white/50 mb-6">Kontakt</div>
-            <h2 className="font-sans font-semibold text-[2.1rem] md:text-[2.9rem] leading-[1.08] tracking-[-0.035em] mb-6">
-              Vi börjar med ett samtal.
+            <h2 className="st st-sec mb-6">
+              <span className="st-lead">Berätta kort vad ni gör, så hör vi av oss.</span>
+              <span className="st-display display">Vi börjar med ett samtal.</span>
             </h2>
             <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm mb-10">
-              Berätta kort vad ni gör, så hör vi av oss. Vi pratar igenom vad
-              ni säljer och vart ni vill, och ser tillsammans om Norrsyn är
-              rätt för er.
+              Vi pratar igenom vad ni säljer och vart ni vill, och ser
+              tillsammans om Norrsyn är rätt för er.
             </p>
-            {/* One quiet human alternative instead of a benefits checklist.
-                Whitespace does the rest of the composition's work. */}
-            <p className="text-white/60 text-[13px] leading-[1.7] border-t border-white/10 pt-4 max-w-sm">
-              Föredrar ni mejl?{' '}
-              <a href="mailto:info@norrsyn.se" className="link-underline text-white/75">info@norrsyn.se</a>
-            </p>
+            {/* The direct way in, set like every other label on the page. */}
+            <dl className="ct-direct">
+              <div>
+                <dt>E-post</dt>
+                <dd><a href="mailto:info@norrsyn.se" className="link-underline">info@norrsyn.se</a></dd>
+              </div>
+              <div>
+                <dt>Kontor</dt>
+                <dd>Jönköping, Sverige</dd>
+              </div>
+            </dl>
           </div>
 
           <div className="md:col-span-7">
@@ -528,7 +523,7 @@ export const Contact = () => {
 // but they are stated once, quietly, without a badge that blinks.
 // ==========================================================================
 export const Footer = () => (
-  <footer className="on-dark bg-forest text-white border-t border-white/8">
+  <footer className="on-dark bg-forest text-white border-t border-white/[0.06]">
     <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-20 pb-10">
       <div className="grid md:grid-cols-12 gap-12 md:gap-10 pb-16 md:pb-20">
         <div className="md:col-span-5">

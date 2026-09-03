@@ -146,13 +146,14 @@ export default function BriefExample() {
 
   return (
     <section id="brief" ref={root} className="bg-mist border-t border-ink/10">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
-        {/* Section lead-in */}
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-16 pb-24 md:pt-20 md:pb-32">
+        {/* Section lead-in: the story's last words are this section's first. */}
         <div className="grid md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
           <div className="md:col-span-7">
             <div className="eyebrow text-ink-3 mb-6">Ett komplett exempel</div>
-            <h2 className="font-sans font-semibold text-ink text-[2rem] md:text-[2.7rem] leading-[1.1] tracking-[-0.035em] mb-5">
-              Det här är vad ni får.
+            <h2 className="st st-sec mb-5">
+              <span className="st-lead">Det här är vad ni får.</span>
+              <span className="st-display display">Ett samtal värt att ta.</span>
             </h2>
             <p className="text-ink-3 text-[15px] md:text-base leading-[1.7] max-w-xl">
               Underlaget inför det samtalet: ett bolag, genomarbetat, i samma

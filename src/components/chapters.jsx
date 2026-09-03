@@ -23,15 +23,27 @@ export function Foot({ children }) {
   return <p data-rv className="jr-foot">{children}</p>;
 }
 
-/* Every chapter speaks in the story's one voice: a plain lead, then the
-   statement in the serif — exactly as the hero, Problemet and the ending. */
+/* Every chapter speaks one sentence, quoted, in the serif the whole page
+   speaks in. The opening mark hangs into the margin so the words align. */
+function Quoted({ text }) {
+  const m = /^”(.*)”$/.exec(text);
+  if (!m) return text;
+  return (
+    <>
+      <span className="jr-q" aria-hidden="true">”</span>
+      {m[1]}
+      <span className="jr-q" aria-hidden="true">”</span>
+    </>
+  );
+}
+
 export function Head({ tag, lead, title, children }) {
   return (
     <header className="jr-head">
       <div data-rv className="eyebrow text-green mb-4">{tag}</div>
-      <h2 data-rv className="jr-title">
+      <h2 data-rv className="jr-title st">
         {lead && <span className="st-lead">{lead}</span>}
-        <span className="st-display display">{title}</span>
+        <span className="st-display display"><Quoted text={title} /></span>
       </h2>
       <p data-rv className="jr-body">{children}</p>
     </header>
@@ -41,7 +53,7 @@ export function Head({ tag, lead, title, children }) {
 /* ── Problemet ──────────────────────────────────────────────────────────── */
 export function ProblemHeadline() {
   return (
-    <h2 className="mb-8 md:mb-9">
+    <h2 className="st mb-8 md:mb-9">
       <span data-rv className="st-lead">Ett register vet vilka bolag som finns.</span>
       <span data-rv className="st-display display">Det vet inte vilka som är redo.</span>
     </h2>

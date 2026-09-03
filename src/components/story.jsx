@@ -55,7 +55,7 @@ export const PH_HAND =
 
 export const COPY = {
   s1: {
-    n: '01', tag: '01 · Kravbilden', lead: 'Vad betyder rätt bolag för er?', title: 'Det avgör vi innan vi letar.',
+    n: '01', tag: '01 · Kravbilden', title: '”Först definierar vi vad rätt betyder.”',
     body: (
       <>
         Det gör vi tillsammans med er. Vad ni säljer, vilka som realistiskt
@@ -67,19 +67,19 @@ export const COPY = {
     foot: 'Förenklat exempel på en kravbild. Er OfferBrain byggs ut med fler kriterier och mer detalj.',
   },
   s2: {
-    n: '02', tag: '02 · Marknaden', lead: 'Hela marknaden är inte er marknad.', title: 'Kravbilden ringar in den som är.',
+    n: '02', tag: '02 · Marknaden', title: '”Hela marknaden är inte er marknad.”',
     body: (
       <>
-        Av alla bolag i Sverige är det en avgränsad del som är värd att
-        undersöka för er. I det här exemplet: 3&nbsp;120 bolag, som vi
-        följer genom resten av processen.
+        Er kravbild ringar in de bolag som är värda att undersöka. I det
+        här exemplet: 3&nbsp;120 bolag, som vi följer genom resten av
+        processen.
       </>
     ),
     foot: 'Punkterna utanför ramen är den bredare möjliga marknaden. Siffrorna är illustrativa; ett streck motsvarar tio bolag.',
   },
   s3: {
-    n: '03', tag: '03 · Granskningen', lead: 'Det mesta ska bort.', title: 'Samma regler för alla, varje gång.',
-    body: 'Sedan sorterar vi bort de bolag som inte passar: fel bransch, fel storlek, fel geografi eller något som diskvalificerar direkt. Steget är rent regelstyrt, så ingenting slinker igenom för att det låter lovande.',
+    n: '03', tag: '03 · Granskningen', title: '”Det mesta ska bort.”',
+    body: 'Sedan sorterar vi bort de bolag som inte passar: fel bransch, fel storlek, fel geografi eller något som diskvalificerar direkt. Det steget är rent regelstyrt. Samma kravbild ger alltid samma urval, och ingenting slinker igenom för att det låter lovande.',
     foot: (
       <>
         Samma bolag som i 02: <span data-count3 className="jr-count">388</span>{' '}
@@ -89,25 +89,25 @@ export const COPY = {
     ),
   },
   s4: {
-    n: '04', tag: '04 · Researchen', lead: 'De som håller granskas på djupet.', title: 'Vad har hänt, och vad betyder det för er?',
+    n: '04', tag: '04 · Researchen', title: '”Bolagen som sticker ut granskas på djupet.”',
     body: (
       <>
         Vi läser bolaget från flera håll och letar efter vad som faktiskt
-        har förändrats. Samma händelse betyder olika saker för olika
-        erbjudanden, så varje fynd läses mot er{' '}
-        <span className="jr-term">OfferBrain</span>: kravbild, behov och
-        rätt person.
+        har förändrats. Men samma händelse betyder olika saker för olika
+        erbjudanden. Därför läser vi varje fynd mot er{' '}
+        <span className="jr-term">OfferBrain</span>: passar det kravbilden,
+        stärker det behovsbilden och pekar det mot rätt personer?
       </>
     ),
     foot: 'Förenklad illustration. 96 bolag går till djupresearch. Källorna är kategorier, aldrig namngivna leverantörer. Varje fynd bär sin konfidensnivå och läses mot kravbilden, behovsbilden och rätt person.',
   },
   s5: {
-    n: '05', tag: '05 · Bedömningen', lead: 'Intressant räcker inte.', title: 'Bara det som gör bolaget rätt för er väger.',
+    n: '05', tag: '05 · Bedömningen', title: '”Intressant räcker inte.”',
     body: 'Ett bolag kan vara intressant utan att vara rätt för er. Därför prövar vi varje fynd mot kravbilden från steg 01. Ett fynd som inte gör bolaget mer relevant för ert erbjudande får inte väga tyngre bara för att det låter bra.',
     foot: 'Förenklad illustration. Varje fynd bedöms som matchar, stärker, osäkert eller väger inte. Bolaget som helhet får ett av fyra omdömen, A till D, där A är en stark match. Av 96 djupanalyserade bolag håller 24 hela vägen.',
   },
   s6: {
-    n: '06', tag: '06 · Briefen', lead: 'De starkaste fallen blir Briefs.', title: 'Fakta, tolkning och en ingång till samtalet.',
+    n: '06', tag: '06 · Briefen', title: '”De starkaste fallen blir Briefs.”',
     body: (
       <>
         För varje bolag som håller hela vägen skriver vi en{' '}

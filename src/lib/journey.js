@@ -22,7 +22,7 @@
  * up and the incoming one rises from a full frame below, moving as one page;
  * the field flows past at the same time. While a chapter is read it creeps
  * upward a little. At the end the frame dissolves into the paper of the next
- * section and the story closes with one statement.
+ * section, whose first words close the story.
  *
  * Why it is smooth: no canvas has to chase the compositor. The frame is
  * sticky (compositor-positioned); every visual is static inside it and only
@@ -50,9 +50,10 @@ export const WIN = { hero: [0, 1], collapse: [1, 1.9] };
   let t0 = WIN.collapse[1];
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
-  WIN.out = [e6, e6 + 0.4];
+  WIN.out = [e6, e6 + 0.25];
 }
-export const TOTAL = WIN.out[1] + 0.05;
+// The frame stays put exactly until it has cleared to paper, then scrolls.
+export const TOTAL = WIN.out[1];
 export const CH_IDS = DWELL.map(([id]) => id);
 export const NEXT = { hero: 'ph', ph: 's1', s1: 's2', s2: 's3', s3: 's4', s4: 's5', s5: 's6', s6: 'brief' };
 export const PREV = { ph: 'hero', s1: 'ph', s2: 's1', s3: 's2', s4: 's3', s5: 's4', s6: 's5' };
@@ -79,7 +80,7 @@ const q5 = (t) => { t = clamp01(t); return t * t * t * (t * (t * 6 - 15) + 10); 
 const FOREST = [12, 19, 16];
 const MIST = [231, 233, 230];
 
-export function createJourney({ wrap, frame, canvas, layers, hero, control, end }) {
+export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
   let W = 0, H = 0, dpr = 1, wrapTop = 0, ax = 0, oy = 0, gx = 0;
   let FR = { left: 0, top: 0 };
   let running = false, raf = 0;
@@ -118,9 +119,11 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
     st.u = Math.max(0, Math.min(TOTAL, (sy - wrapTop) / H));
     const u = st.u;
     st.p = clamp01((u - WIN.collapse[0]) / (WIN.collapse[1] - WIN.collapse[0]));
-    // The ending begins while the Brief is still lifting away: the field
-    // clears to the paper the Brief lands on.
-    st.out = smooth(WIN.out[0] - 0.32, WIN.out[0] + 0.18, u);
+    // The ending begins while the Brief is still lifting away and is complete
+    // before the next section's paper can enter the frame from below: the
+    // field clears to the paper the Brief lands on, and the two papers meet
+    // as one colour.
+    st.out = smooth(WIN.out[0] - 0.42, WIN.out[0] - 0.05, u);
     // The field re-emerges, faint, as Problemet rises out of the hero.
     st.amb = smooth(WIN.collapse[1] - 0.05, WIN.collapse[1] + 0.5, u);
     holes.length = 0;
@@ -196,7 +199,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       hero.cue.style.transform = tf;
     }
   }
-  let lastOut = -1, lastCur = null, lastCtl = null, lastEnd = null, swapToken = 0;
+  let lastOut = -1, lastCur = null, lastCtl = null, swapToken = 0;
   function applyDOM() {
     applyHero(st.p);
     for (const id of CH_IDS) {
@@ -216,8 +219,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       if (L.copy.style.filter !== fs) L.copy.style.filter = fs;
       if (L.hand) L.hand.style.opacity = String(sm(a + tin + 0.25, a + tin + 0.45, st.u));
     }
-    // The ending: the frame dissolves into the paper of the next section,
-    // and the story closes with one statement on that paper.
+    // The ending: the frame dissolves into the paper of the next section.
     if (st.out !== lastOut) {
       lastOut = st.out;
       const k = st.out;
@@ -225,10 +227,6 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       frame.style.backgroundColor = `rgb(${c[0]},${c[1]},${c[2]})`;
       frame.style.setProperty('--jy-vig', (1 - k).toFixed(3));
       canvas.style.opacity = String(1 - k);
-    }
-    if (end) {
-      const eo = sm(WIN.out[0] - 0.04, WIN.out[0] + 0.24, st.u).toFixed(3);
-      if (eo !== lastEnd) { lastEnd = eo; end.el.style.opacity = eo; }
     }
     // The control: where we are. Absent until the story begins, gone when
     // it ends; the label swaps with a short settle when the chapter changes.

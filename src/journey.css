@@ -179,17 +179,7 @@
 .jy-dots button:hover { background: rgba(255, 255, 255, 0.5); }
 .jy-dots button[data-on="1"] { background: var(--green); transform: scale(1.35); }
 
-/* The closing statement: the hero's words, on the paper the story lands on. */
-.jy-end {
-  position: absolute;
-  left: var(--jy-left, 233px);
-  top: 40vh;
-  z-index: 12;
-  opacity: 0;
-  pointer-events: none;
-}
-.jy-end .st-lead { color: rgba(21, 24, 26, 0.72); }
-.jy-end .st-display { color: #15181A; }
-
-/* The ending: the next section arrives on the same paper, no hairline. */
-.jy-wrap + div #brief { border-top-color: transparent; }
+/* The ending: the next section arrives on the same paper, no hairline, and
+   its first words are already in the frame when the story has cleared —
+   the section starts under the last of the sticky frame. */
+.jy-wrap + div #brief { border-top-color: transparent; margin-top: -28vh; }
