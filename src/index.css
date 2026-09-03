@@ -1509,6 +1509,15 @@ h1, h2, h3, h4, h5, h6 {
 .od-facts li:last-child { border-bottom: none; }
 .od-fact-v { color: var(--ink-2); font-weight: 500; text-align: right; }
 .od-fact-v .jr-tier { margin-left: 6px; }
+.od-open {
+  display: flex; align-items: center; justify-content: flex-end; gap: 7px;
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(21, 24, 26, 0.08);
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--green-deep);
+}
 .od-alt {
   display: flex; align-items: center; gap: 9px;
   margin-top: 0.7rem;

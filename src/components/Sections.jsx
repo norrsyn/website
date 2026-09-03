@@ -426,6 +426,12 @@ export const OnDemand = () => {
                 <li><span>Källor</span><span className="od-fact-v">17</span></li>
                 <li><span>Timing</span><span className="od-fact-v">Stark — rekryterar systemansvarig</span></li>
               </ul>
+              {/* The tell that this is a document, not a scoreboard: the four
+                  rows above are the masthead of a full, reviewed Brief. */}
+              <div className="od-open">
+                Öppna brief
+                <ArrowRight size={11} strokeWidth={2.25} />
+              </div>
             </article>
             {/* Honesty is part of the artifact: one of the four came back
                 with too little verified evidence, and we say so. */}
