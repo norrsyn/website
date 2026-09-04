@@ -65,7 +65,7 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
         <span className="hf-loc">NRSYN AB · Jönköping · Sverige</span>
       </div>
       <div ref={cueRef} className="hf-cue" aria-hidden="true">
-        Skrolla till botten för hela upplevelsen <span aria-hidden="true">↓</span>
+        Scrolla till botten för hela upplevelsen <span aria-hidden="true">↓</span>
       </div>
     </>
   );
