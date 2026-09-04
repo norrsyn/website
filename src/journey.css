@@ -198,6 +198,11 @@
 .jy-wrap + div #brief .brief-masthead,
 .jy-wrap + div #brief .brief-header { display: none; }
 .jy-wrap + div #brief .brief-sheet { border-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
+/* A direct jump (the navbar's Brief link) never played s6's reveal, so its
+   masthead was never shown — bring the document's own head back for it. */
+.jy-wrap + div #brief.brief-jump .brief-lead { display: grid; }
+.jy-wrap + div #brief.brief-jump .brief-masthead { display: flex; }
+.jy-wrap + div #brief.brief-jump .brief-header { display: block; }
 .jy-layer[data-ch="s6"] .jy-copy,
 .jy-layer[data-ch="s6"] .jy-node,
 .jy-layer[data-ch="s6"] .jr-foot { opacity: calc(1 - var(--pm-out, 0)); }

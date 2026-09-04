@@ -589,7 +589,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
     const fromY = window.scrollY;
     const dist = Math.abs(toY - fromY);
     if (dist < 2) return;
-    const dur = Math.max(1400, Math.min(5500, (dist / H) * 420));
+    const dur = Math.max(1400, Math.min(2400, (dist / H) * 420));
     const t0 = performance.now();
     const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
     document.documentElement.style.scrollBehavior = 'auto';
@@ -608,19 +608,28 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
 
   function goTo(id) {
     if (id === 'hero') { glideTo(0); return; }
-    if (id === 'brief') { goToAnchor('#brief'); return; }
+    // s6's own "next" hands off to the real document below the frame,
+    // masthead still hidden — the chapter's zoom just played that part.
+    if (id === 'brief') { glideToEl('#brief'); return; }
     if (!WIN[id]) return;
     glideTo(wrapTop + (WIN[id][0] + (TIN[id] || T) + 0.1) * H);
   }
-  /** An anchor anywhere on the page: into the story, or down to a section. */
-  function goToAnchor(hash) {
-    const id = ANCHOR_TO[hash];
-    if (id) { goTo(id); return true; }
+  function glideToEl(hash) {
     let el = null;
     try { el = document.querySelector(hash); } catch { el = null; }
     if (!el) return false;
     glideTo(Math.max(0, el.getBoundingClientRect().top + window.scrollY - 12));
     return true;
+  }
+  /** An anchor anywhere on the page: into the story, or down to a section. */
+  function goToAnchor(hash) {
+    // A direct jump to the Brief skips s6's own reveal, so it shows the
+    // document's real head (masthead, grade, contact) instead of assuming
+    // the visitor already watched it grow out of the chapter.
+    if (hash === '#brief') document.querySelector('#brief')?.classList.add('brief-jump');
+    const id = ANCHOR_TO[hash];
+    if (id) { goTo(id); return true; }
+    return glideToEl(hash);
   }
   function goNext() {
     const next = NEXT[st.cur];
