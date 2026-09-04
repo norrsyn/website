@@ -34,11 +34,10 @@ export const TONE_LABEL = { rekrytering: 'Rekrytering', beslut: 'Ny beslutsfatta
    mark among the 39 survivors of 03 (a fraction of the list), so the same
    companies that held in 03 are the ones that stand out here. */
 export const STANDOUTS = [
-  { at: 0.14, tone: 'expansion', cand: 'hk' },
+  { at: 0.474, tone: 'expansion', cand: 'hk' },
   { at: 0.33, tone: 'system' },
   { at: 0.58, tone: 'rekrytering', cand: 'nf', multi: ['rekrytering', 'beslut', 'expansion'] },
   { at: 0.72, tone: 'beslut', cand: 'si' },
-  { at: 0.9, tone: 'rekrytering' },
 ];
 
 /* 05: three of them, inspected against the requirement. The criteria are
