@@ -496,7 +496,7 @@
 .wk .qf-card[data-go="1"] .qf-verdict { color: var(--green); }
 .wk .qf-verdict i { font-style: normal; margin-left: 6px; }
 /* The winner's ways out of the card wear the page's green, never a signal. */
-.wk .qf-card[data-state="on"] .so-dot { background: var(--green) !important; }
+/* The winner keeps its own signal colour on the dot; the card turns green. */
 @media (max-width: 1023px) {
   .wk .qf-cards { grid-template-columns: 1fr; }
   .wk .qf-card[data-state="out"] { opacity: 0.6; }
