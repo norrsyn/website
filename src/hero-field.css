@@ -128,10 +128,19 @@
 .hf-cas { display: block; opacity: 0; will-change: transform, opacity; }
 .hf-statement .st-lead { color: rgba(255, 255, 255, 0.88); }
 .hf-statement .st-display { color: #E7E1D4; }
+/* The two bridge beats take the statement's place before it arrives. */
+.hf-cas-bridge { position: absolute; left: 0; top: 0; }
+.hf-cas-long {
+  font-size: clamp(1.4rem, 2.5vw, 2.4rem);
+  line-height: 1.12;
+  color: #E7E1D4;
+  max-width: 16.5em;
+}
 /* Narrow screens: the serif line wraps short of the line's x. */
 @media (max-width: 767px) {
-  .hf-statement { top: 36vh; }
+  .hf-statement { top: 34vh; }
   .hf-statement .st-display { max-width: 8.2em; }
+  .hf-cas-long { max-width: 10.5em; }
 }
 
 /* The baseline: three quiet mono marks along the bottom edge. */

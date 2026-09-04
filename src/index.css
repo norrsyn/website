@@ -1630,3 +1630,172 @@ h1, h2, h3, h4, h5, h6 {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(21, 24, 26, 0.3); background-clip: padding-box; }
 * { scrollbar-color: rgba(21,24,26,0.2) transparent; scrollbar-width: thin; }
+
+/* ── The portal, as it is ─────────────────────────────────────────────────
+ * Values are the product's own (app.norrsyn.se, paper theme): canvas
+ * #FAF8F3, white surfaces, the five-step ink ramp, the deep green accent,
+ * the 218px rail with the wordmark, the openable card with its arrow.
+ * Simplified for the page, never restyled. */
+.pm {
+  display: flex;
+  max-width: 62rem;
+  border: 1px solid rgba(21, 24, 26, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #FAF8F3;
+  color: #15181A;
+  text-align: left;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+.pm-rail {
+  flex: 0 0 11rem;
+  padding: 0.9rem 0.75rem 1rem;
+  border-right: 1px solid rgba(21, 24, 26, 0.07);
+}
+.pm-brand { display: flex; justify-content: space-between; align-items: center; padding: 0 0.25rem; }
+.pm-mark {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #15181A;
+}
+.pm-mark b { color: #2E6E55; }
+.pm-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #676D72;
+}
+.pm-accent { color: #2E6E55; }
+.pm-client {
+  margin: 0.55rem 0 0;
+  padding: 0 0.25rem 0.8rem;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.07);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #2A2F33;
+}
+.pm-nav { display: flex; flex-direction: column; gap: 1px; padding-top: 0.7rem; }
+.pm-nav span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #454B50;
+}
+.pm-nav span svg { color: #676D72; flex: 0 0 auto; }
+.pm-nav span[data-on="1"] { background: rgba(21, 24, 26, 0.06); color: #15181A; }
+.pm-nav span[data-on="1"] svg { color: #2A2F33; }
+.pm-nav span[data-on="1"]::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  width: 2px; height: 14px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: #2E6E55;
+}
+.pm-sep { display: block; height: 1px; margin: 8px 6px; background: rgba(21, 24, 26, 0.07); }
+.pm-main { flex: 1 1 auto; min-width: 0; padding: 0.9rem 1.1rem 1rem; }
+.pm-head { padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(21, 24, 26, 0.07); }
+.pm-title { margin-top: 4px; font-size: 17px; font-weight: 600; letter-spacing: -0.018em; color: #15181A; }
+.pm-meta { margin-top: 3px; font-size: 11.5px; color: #575D62; }
+.pm-meta b { font-weight: 500; color: #2A2F33; }
+.pm-list { border: 1px solid rgba(21, 24, 26, 0.11); border-radius: 10px; background: #fff; overflow: hidden; }
+.pm-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto;
+  align-items: center;
+  gap: 0 10px;
+  padding: 8px 12px 8px 14px;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.06);
+}
+.pm-row:last-of-type { border-bottom: 0; }
+.pm-row[data-on="1"] { background: rgba(46, 110, 85, 0.06); }
+.pm-row[data-on="1"]::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  width: 2px; height: 60%;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: #2E6E55;
+}
+.pm-name { display: block; font-size: 12.5px; font-weight: 600; letter-spacing: -0.01em; color: #15181A; }
+.pm-sub { display: block; margin-top: 1px; font-size: 11px; color: #575D62; }
+.pm-state {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #575D62;
+  border: 1px solid rgba(21, 24, 26, 0.2);
+  border-radius: 999px;
+  padding: 1px 7px;
+  opacity: 0;
+}
+.pm-grade {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border: 1px solid rgba(21, 24, 26, 0.11);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #575D62;
+  white-space: nowrap;
+}
+.pm-grade[data-g="A"] { color: #2E6E55; border-color: rgba(46, 110, 85, 0.34); }
+.pm-grade[data-g="B"] { color: #2A2F33; border-color: rgba(21, 24, 26, 0.2); }
+.pm-date { font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: #676D72; }
+.pm-chev { color: #676D72; font-size: 15px; line-height: 1; }
+.pm-more { padding: 6px 14px 7px; border-top: 1px solid rgba(21, 24, 26, 0.06); font-size: 11px; color: #676D72; }
+.pm-brief {
+  margin-top: 0.7rem;
+  padding: 0.7rem 1rem 0.8rem;
+  border: 1px solid rgba(21, 24, 26, 0.11);
+  border-radius: 10px;
+  background: #fff;
+  will-change: opacity, transform;
+}
+.pm-brief-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(21, 24, 26, 0.09);
+}
+.pm-brief-head i { width: 1px; height: 10px; background: rgba(21, 24, 26, 0.2); }
+.pm-brief-date { margin-left: auto; font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: #676D72; }
+.pm-brief-name { font-size: 15px; font-weight: 600; letter-spacing: -0.018em; color: #15181A; }
+.pm-brief-sub { margin-top: 2px; font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: #676D72; }
+.pm-brief-headline { margin: 8px 0 0; max-width: 54ch; font-size: 12.5px; font-weight: 500; line-height: 1.5; color: #15181A; }
+.pm-brief-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-top: 8px; font-size: 11.5px; color: #454B50; }
+.pm-brief-row b { font-weight: 600; color: #15181A; }
+.pm-brief-why { color: #575D62; }
+.pm-verified {
+  font-family: '"IBM Plex Mono"', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2E6E55;
+  border: 1px solid rgba(46, 110, 85, 0.3);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.pm-open { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 500; color: #454B50; }
+.pm-open i { font-style: normal; }
+@media (max-width: 767px) {
+  .pm-rail { display: none; }
+  .pm-main { padding: 0.9rem 0.9rem 1rem; }
+  .pm-row { grid-template-columns: 1fr auto; gap: 4px 8px; }
+  .pm-date, .pm-chev { display: none; }
+  .pm-state { grid-column: 1; justify-self: start; }
+}

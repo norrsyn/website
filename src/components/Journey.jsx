@@ -4,7 +4,7 @@ import HeroContent from './HeroContent.jsx';
 import { COPY, PH_BODY, PH_HAND } from './story.jsx';
 import {
   Head, Foot, ProblemHeadline, ProblemGrid,
-  Ledger, MarketMap, Screening, Board, Weigh, Finalists, BriefCard, PortalCard,
+  Ledger, MarketMap, Screening, Board, Weigh, PortalMini,
 } from './chapters.jsx';
 import { createJourney, WIN, TOTAL, CH_IDS, LABEL } from '../lib/journey.js';
 import { EASE } from '../lib/motion.js';
@@ -183,13 +183,7 @@ export default function Journey() {
           <Layer id="s3" {...COPY.s3}><Screening /></Layer>
           <Layer id="s4" {...COPY.s4}><Board /></Layer>
           <Layer id="s5" {...COPY.s5}><Weigh /></Layer>
-          <Layer id="s6" {...COPY.s6} wide>
-            <Finalists />
-            <div className="jy-deliver">
-              <BriefCard />
-              <PortalCard />
-            </div>
-          </Layer>
+          <Layer id="s6" {...COPY.s6} wide><PortalMini /></Layer>
         </div>
 
         {/* The line, as ink: fades in on the spine's x as the field clears,

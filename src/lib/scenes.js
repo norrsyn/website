@@ -526,9 +526,9 @@ export function s4Scene(el, R = docRect) {
       const board = el.querySelector('[data-wk-board]');
       B = R(board);
       headY = R(board.querySelector('.cs-head')).cy;
-      rows = Array.from(el.querySelectorAll('.cs-row')).map((r) => {
+      rows = Array.from(el.querySelectorAll('.rs-row')).map((r) => {
         const src = r.querySelector('[data-src]');
-        const find = r.querySelector('.cs-find');
+        const find = r.querySelector('.rs-find');
         const rr = R(r);
         const sr = R(src);
         const fr = R(find);
@@ -654,91 +654,77 @@ export function s5Scene(el, R = docRect) {
   };
 }
 
-/* ── 06: the bundle splays into the Brief; the Brief lands in the portal ── */
+/* ── 06: the bundle delivers the company into its row in the portal ─────── */
 export function s6Scene(el, R = docRect) {
-  let BR, splay = [], ends = [], portal = null, deliver = null, PR = null, review = null, zones = [];
-  const T = [0.09, 0.17, 0.25, 0.45, 0.62, 0.8];
+  let PT = null, row = null, rowEl = null, stateEl = null, briefEl = null, splay = [], ends = [], desktop = true;
+  const LAND = [7, 12, 17, 22, 27, 32]; // where the six strands land, down the row's edge
   return {
     el, bg: '#15181A', t: 0, b: 0, node: null,
     measure(geo) {
       const sec = R(el);
       this.t = sec.t; this.b = sec.b; this.node = nodeOf(el, R);
-      BR = R(el.querySelector('[data-wk-brief]'));
-      review = el.querySelector('[data-wk-review]');
-      zones = Array.from(el.querySelectorAll('.jr-zone')).map((z) => ({ el: z, r: R(z) }));
+      desktop = geo.desktop;
       const p = el.querySelector('[data-portal]');
-      portal = p ? { el: p, r: R(p) } : null;
-      const prEl = el.querySelector('[data-wk-portal-row]');
-      PR = prEl ? R(prEl) : null;
-      geo.ropeEnd = BR.t - 26;
-      if (!geo.desktop) geo.singleEndY = BR.t - 26;
+      PT = p ? R(p) : null;
+      rowEl = el.querySelector('[data-pm-row="1"]');
+      row = rowEl ? R(rowEl) : null;
+      stateEl = rowEl ? rowEl.querySelector('[data-pm-state]') : null;
+      briefEl = el.querySelector('[data-pm-brief]');
+      if (!PT) return;
+      geo.ropeEnd = PT.t - 26;
+      if (!desktop) geo.singleEndY = PT.t - 26;
       const { railX } = geo;
-      // The payoff: the six strands founded in 01 separate and feed the
-      // document's information regions. The document is authored by the
-      // system above it; the strands terminate inside it.
-      splay = geo.desktop
+      const ry = row ? row.t + 4 : PT.t + 60;
+      // The payoff: the six strands founded in 01 come down the spine to the
+      // company's row and turn into the portal's edge at its height.
+      splay = desktop
         ? OFFS.map((o, i) => {
-          const tyRel = Math.round(BR.h * T[i]);
-          const ty = BR.t + tyRel;
           const x = railX + o;
+          const y = ry + LAND[i];
           return path([
-            ['M', x, BR.t - 26],
-            ['L', x, BR.t + Math.round(tyRel * 0.3)],
-            ['C', x, BR.t + tyRel * 0.75, railX + (BR.l - railX) * 0.45, ty, BR.l, ty, 20],
+            ['M', x, PT.t - 26],
+            ['L', x, y - 48],
+            ['C', x, y - 16, PT.l - 28, y, PT.l, y, 20],
           ]);
         })
         : [];
-      ends = splay.map((_, i) => [BR.l, BR.t + Math.round(BR.h * T[i])]);
-      // The delivery: one line leaves the finished document's margin and
-      // lands on the company's own row in the portal.
-      const beside = portal && portal.r.t < BR.b - 40;
-      deliver = PR && geo.desktop
-        ? (beside
-          ? path([
-            // Beside: out of the Brief's verdict line, across the gap, onto the row.
-            ['M', BR.r, BR.t + 34],
-            ['C', BR.r + (portal.r.l - BR.r) * 0.55, BR.t + 34, portal.r.l - (portal.r.l - BR.r) * 0.55, PR.cy, portal.r.l - 1, PR.cy, 24],
-          ])
-          : path([
-            ['M', BR.l + 1, BR.b],
-            ['C', BR.l + 1, BR.b + 14, BR.l - 12, BR.b + 6, BR.l - 12, BR.b + 24, 12],
-            ['L', BR.l - 12, PR.cy - 16],
-            ['C', BR.l - 12, PR.cy - 5, BR.l - 8, PR.cy, portal.r.l - 1, PR.cy, 10],
-          ]))
-        : null;
+      ends = splay.map((_, i) => [PT.l, ry + LAND[i]]);
     },
-    // The head rides the bundle to the Brief; the strands carry it from there.
-    cometOk(y) { return !BR || y < BR.t - 40; },
+    // The head rides the bundle to the portal; the strands carry it from there.
+    cometOk(y) { return !PT || y < PT.t - 40; },
     paint(ctx, f) {
       const h = f.head;
-      // The document is written region by region as the strands arrive.
-      zones.forEach((z) => {
-        const zo = f.desktop ? (0.22 + 0.78 * band(z.r.t - 60, z.r.t)(h)).toFixed(3) : '1';
-        if (z.el.style.opacity !== zo) z.el.style.opacity = zo;
-      });
+      if (!PT) return;
+      let landed = 0;
       splay.forEach((P, i) => {
-        const t = band(BR.t - 26 + i * 5, BR.t + 59 + i * 5)(h);
+        const t = band(PT.t - 26 + i * 4, PT.t + 96 + i * 4)(h);
         if (t <= 0) return;
-        strokeLine(ctx, P, P.len * t, { alpha: 0.5, width: 1.1, tip: t < 1, tipA: 0.6 });
+        strokeLine(ctx, P, P.len * t, { alpha: 0.55, width: 1.1, tip: t < 1, tipA: 0.6 });
         if (t >= 1) {
+          landed++;
           ctx.fillStyle = green(0.9);
-          ctx.beginPath(); ctx.arc(ends[i][0] + 1, ends[i][1], 2, 0, TAU); ctx.fill();
+          ctx.beginPath(); ctx.arc(ends[i][0] + 1, ends[i][1], 1.8, 0, TAU); ctx.fill();
         }
       });
-      // The analyst's review: stamped once the strands have written the document.
-      if (review) {
-        const ro = String(band(BR.t + 70, BR.t + 120)(h));
-        if (review.style.opacity !== ro) review.style.opacity = ro;
+      // Delivered: the closed square at the portal's edge, the row lights,
+      // and the Brief opens as the head reads on.
+      const on = !desktop || landed === 6;
+      if (on && desktop) {
+        ctx.fillStyle = green(0.95);
+        ctx.fillRect(PT.l - 5, (row ? row.cy : PT.t + 60) - 4, 8, 8);
       }
-      if (deliver) {
-        const s = lengthAtY(deliver, h);
-        if (s > 0) {
-          strokeLine(ctx, deliver, s, { alpha: 0.62, width: 2, glow: 0.6, tipA: 0.8 });
-          if (s >= deliver.len) {
-            // The closed square: delivered.
-            ctx.fillStyle = green(0.95);
-            ctx.fillRect(portal.r.l - 5, PR.cy - 4, 8, 8);
-          }
+      const rowOn = on ? '1' : '0';
+      if (rowEl && rowEl.dataset.on !== rowOn) rowEl.dataset.on = rowOn;
+      if (stateEl) {
+        const so = desktop ? band(PT.t + 110, PT.t + 140)(h).toFixed(3) : '1';
+        if (stateEl.style.opacity !== so) stateEl.style.opacity = so;
+      }
+      if (briefEl) {
+        const bt = desktop ? band(PT.t + 150, PT.t + 250)(h) : 1;
+        const bo = (0.12 + 0.88 * bt).toFixed(3);
+        if (briefEl.style.opacity !== bo) {
+          briefEl.style.opacity = bo;
+          briefEl.style.transform = `translate3d(0, ${(8 * (1 - bt)).toFixed(1)}px, 0)`;
         }
       }
     },

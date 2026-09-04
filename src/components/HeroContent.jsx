@@ -46,11 +46,15 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
         </div>
       </div>
 
-      {/* The statement, in two beats, as the market collapses into the
-          line. Driven by lib/cascade.js. */}
+      {/* The bridge, then the statement — four beats in one place as the
+          market collapses into the line. Driven by lib/cascade.js. */}
       <div ref={collapseRef} className="hf-statement" aria-hidden="true">
-        <span data-cas="1" className="hf-cas st-lead">Hela marknaden går in.</span>
-        <span data-cas="2" className="hf-cas st-display display">Ett fåtal Briefs kommer ut.</span>
+        <span data-cas="1" className="hf-cas hf-cas-bridge hf-cas-long display">
+          Någonstans i marknaden händer något som gör ett bolag mer relevant för er just nu.
+        </span>
+        <span data-cas="2" className="hf-cas hf-cas-bridge st-display display">Vi hittar det.</span>
+        <span data-cas="3" className="hf-cas st-lead">Hela marknaden går in.</span>
+        <span data-cas="4" className="hf-cas st-display display">Ett fåtal Briefs kommer ut.</span>
       </div>
 
       <div ref={footRef} className="hf-foot" aria-hidden="true">

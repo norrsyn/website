@@ -1,6 +1,7 @@
 import React from 'react';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from '../lib/cohort.js';
-import { INTAKE, RAILS, EVIDENCE, DECOY, TIER, CRIT_NOTE } from './story.jsx';
+import { LayoutGrid, Send, Building2, ScanSearch, FileText } from 'lucide-react';
+import { INTAKE, RAILS, EVIDENCE, DECOY, TIER, CRIT_NOTE, CASE, PORTAL_ROWS } from './story.jsx';
 
 // ==========================================================================
 // THE CHAPTERS — one source of truth for the story's data, copy and
@@ -172,44 +173,48 @@ export function Case({ tag }) {
     <div className="cs-head">
       <span className="jm cs-mark" data-state="chosen" aria-hidden="true" />
       <div className="cs-id">
-        <div className="cs-name">Nordic Flow Distribution AB</div>
-        <div className="cs-sub">Partihandel · Borås · 28 anställda</div>
+        <div className="cs-name">{CASE.name}</div>
+        <div className="cs-sub">{CASE.sub}</div>
       </div>
       <div className="cs-tag">{tag}</div>
     </div>
   );
 }
 
+/* Which colour a dimension speaks in: the requirement green, the need
+   amber, the person blue — as Problemet introduced them. */
+const DIM_KIND = { Behov: 'behov', Person: 'person' };
+
+/* 04 · the dossier: evidence arrives from its source, is graded, and is
+   read to the dimensions of the requirement it bears on. */
 export function Board() {
   return (
     <div data-wk-board className="cs">
-      <Case tag="1 av 96 · djupresearch" />
-      <div className="cs-cols" aria-hidden="true">
+      <Case tag="Djupresearch · 1 av 96" />
+      <div className="rs-cols" aria-hidden="true">
         <span>Källa</span>
         <span />
         <span>Vad som hänt</span>
-        <span>Läst mot er OfferBrain</span>
+        <span>Läses mot er kravbild</span>
       </div>
-      <ul className="cs-rows">
+      <ul className="rs-rows">
         {EVIDENCE.map((ev) => (
-          <li key={ev.text} data-ev data-tier={ev.tier} className="cs-row">
-            <span data-src className="cs-src">{ev.src}</span>
-            <span className="cs-wire" aria-hidden="true" />
-            <span className="cs-find">
-              <span className="cs-find-t">{ev.text}</span>
+          <li key={ev.text} data-ev data-tier={ev.tier} className="rs-row">
+            <span data-src className="rs-src">
+              <b>{ev.src}</b>
+              {ev.when && <i>{ev.when}</i>}
+            </span>
+            <span className="rs-wire" aria-hidden="true" />
+            <span className="rs-find">
+              <span className="rs-quote">”{ev.text}”</span>
               <span className={`jr-tier ${TIER[ev.tier][1]}`}>{TIER[ev.tier][0]}</span>
             </span>
-            {/* The three questions the copy asks, answered per finding. */}
-            <span data-rel className="cs-rel">
-              <span className="cs-tag" data-k="krav" data-on={ev.read.krav ? '1' : '0'}>
-                <i>Kravbild</i>{ev.read.krav || '—'}
-              </span>
-              <span className="cs-tag" data-k="behov" data-on={ev.read.behov ? '1' : '0'}>
-                <i>Behov</i>{ev.read.behov || '—'}
-              </span>
-              <span className="cs-tag" data-k="person" data-on={ev.read.person ? '1' : '0'}>
-                <i>Person</i>{ev.read.person || '—'}
-              </span>
+            <span data-rel className="rs-dims">
+              {ev.dims.map((d) => (
+                <span key={d} className="rs-dim" data-k={DIM_KIND[d] || 'krav'}>
+                  <i>→</i>{d}
+                </span>
+              ))}
             </span>
           </li>
         ))}
@@ -218,11 +223,16 @@ export function Board() {
   );
 }
 
+/* 05 · the assessment: the requirement on the left, the findings on the
+   right in the requirement's own order, so every connection is short and
+   nothing crosses. The verdict is a count and a decision, not a score. */
 export function Weigh() {
+  const order = INTAKE.map((r) => r.norm);
+  const finds = [...EVIDENCE].sort((a, b) => order.indexOf(a.crit) - order.indexOf(b.crit));
   const used = new Set(EVIDENCE.map((e) => e.crit));
   return (
     <div data-wk-weigh className="cs">
-      <Case tag="Prövning mot kravbilden" />
+      <Case tag="Prövning mot er kravbild" />
       <div className="wg">
         <div className="wg-col">
           <div className="wg-h">Er kravbild · från 01</div>
@@ -241,140 +251,97 @@ export function Weigh() {
         <div className="wg-gutter" aria-hidden="true" />
         <div className="wg-col">
           <div className="wg-h">Vad vi hittade · från 04</div>
-          {[...EVIDENCE, DECOY].map((ev) => (
+          {[...finds, DECOY].map((ev) => (
             <div key={ev.text} data-find data-crit={ev.crit} data-decoy={ev.crit ? '0' : '1'} className="wg-find">
               <span className="wg-find-t">{ev.text}</span>
-              <span className={`jr-tier ${TIER[ev.tier][1]}`}>{TIER[ev.tier][0]}</span>
               <span data-judge data-v={ev.verdict} className="wg-judge">{ev.verdict}</span>
               {ev.note && <span className="wg-find-n">{ev.note}</span>}
             </div>
           ))}
         </div>
       </div>
-      {/* The grade, as the portal gives it: A to D, each with its words. */}
+      {/* The decision, in the analyst's words: what held, what is left to
+          confirm in the call, and whether the company goes on. */}
       <div data-verdict className="wg-verdict">
-        <span className="jr-verdict-scale" aria-hidden="true">
-          {[['A', 'Stark match'], ['B', 'God match'], ['C', 'Möjlig match'], ['D', 'Ej match']].map(([g, w]) => (
-            <span key={g} data-grade={g === 'A' ? '1' : '0'}><b>{g}</b>{w}</span>
-          ))}
+        <span className="wg-sum">
+          <b>5 av 6</b> kriterier styrkta · erbjudandet bekräftas i samtalet
         </span>
-        <span className="jr-verdict-text">
-          A. Behovet är belagt, personen identifierad och läget öppet. Bolaget går vidare till leverans.
-        </span>
+        <span className="wg-go">Går vidare <i aria-hidden="true">→</i></span>
       </div>
     </div>
   );
 }
 
-export function Finalists() {
+/* 06 · the portal, as it is: the rail, the week's delivery, the company's
+   row among the others, and its Brief opened. Simplified for the page, but
+   the same product a customer signs in to. */
+export function PortalMini() {
   return (
-    <div className="jr-finalists" aria-hidden="true">
-      {Array.from({ length: 11 }, (_, i) => (
-        <i key={i} className="jm" data-dim="1" />
-      ))}
-      <i className="jm" data-state="chosen" />
-    </div>
-  );
-}
-
-export function BriefCard() {
-  return (
-    <div className="jr-brief-wrap">
-      <article data-wk-brief className="jr-brief">
-        <header className="jr-brief-head">
-          <span className="eyebrow text-green-deep">Norrsyn · Brief</span>
-          <span data-wk-review className="jr-brief-review">Granskad av analytiker</span>
-          <span className="jr-brief-score"><b>A</b> · Stark match</span>
-        </header>
-        <div className="jr-brief-name">Nordic Flow Distribution AB</div>
-        <div className="jr-brief-sub">Partihandel · Borås · 28 anställda</div>
-
-        {/* Four regions, one per promise in the chapter's copy. */}
-        <div className="jr-zones">
-          <div className="jr-zone">
-            <div className="eyebrow text-green-deep mb-2">Fakta, med källa</div>
-            <ul>
-              {EVIDENCE.filter((e) => e.tier === 'ok').map((e) => (
-                <li key={e.text}>
-                  {e.text} <span className="jr-zone-src">{e.src}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="jr-zone">
-            <div className="eyebrow text-ink-4 mb-2">
-              Tolkning <span className="jr-tier jt-low ml-1">märkt som tolkning</span>
+    <div data-portal className="pm" aria-label="Förenklad vy av er Norrsyn-portal">
+      <aside className="pm-rail" aria-hidden="true">
+        <div className="pm-brand">
+          <span className="pm-mark">Norrsyn<b>_</b></span>
+          <span className="pm-eyebrow">Portal</span>
+        </div>
+        <div className="pm-client">Ert bolag AB</div>
+        <nav className="pm-nav">
+          <span><LayoutGrid size={13} strokeWidth={1.75} />Översikt</span>
+          <span data-on="1"><Send size={13} strokeWidth={1.75} />Leveranser</span>
+          <span><Building2 size={13} strokeWidth={1.75} />Bolag</span>
+          <i className="pm-sep" />
+          <span><ScanSearch size={13} strokeWidth={1.75} />På begäran</span>
+          <span><FileText size={13} strokeWidth={1.75} />Er profil</span>
+        </nav>
+      </aside>
+      <div className="pm-main">
+        <div className="pm-head">
+          <span className="pm-eyebrow pm-accent">Veckans leverans</span>
+          <div className="pm-title">Leverans v.12</div>
+          <div className="pm-meta"><b>6 briefs</b> · 20 mars 2026</div>
+        </div>
+        <div className="pm-list">
+          {PORTAL_ROWS.map((r) => (
+            <div key={r.name} data-pm-row={r.hero ? '1' : '0'} data-on="0" className="pm-row">
+              <span className="pm-row-id">
+                <span className="pm-name">{r.name}</span>
+                <span className="pm-sub">{r.sub}</span>
+              </span>
+              {r.hero && <span data-pm-state className="pm-state">Ny</span>}
+              <span className="pm-grade" data-g={r.grade}>{r.label}</span>
+              <span className="pm-date">20 mars</span>
+              <span className="pm-chev" aria-hidden="true">›</span>
             </div>
-            <p>
-              Tillväxten har gjort orderflödet till flaskhalsen, inte ekonomin.
-              Rekryteringen visar att friktionen redan är någons uppgift.
-            </p>
-          </div>
-          <div className="jr-zone">
-            <div className="eyebrow text-[#2F6AA8] mb-2">Rätt personer</div>
-            <ul>
-              <li>Oskar Lund · Ekonomichef <span className="jr-zone-src">e-post verifierad</span></li>
-              <li>Maria Ekström · VD <span className="jr-zone-src">e-post verifierad</span></li>
-            </ul>
-          </div>
-          <div className="jr-zone">
-            <div className="eyebrow text-ink-4 mb-2">Ingång till samtalet</div>
-            <p>
-              Öppna med det tredje lagret, inte med systemet. Fråga ekonomichefen
-              hur order, lager och ekonomi hänger ihop i dag.
-            </p>
-          </div>
+          ))}
+          <div className="pm-more">3 briefs till i leveransen</div>
         </div>
-      </article>
-    </div>
-  );
-}
-
-export function PortalCard() {
-  return (
-    <div data-portal className="jr-portal">
-      <div className="jr-portal-bar">
-        <span className="eyebrow text-ink-3">Er Norrsyn-portal</span>
-        <span className="eyebrow text-ink-4">Förenklad illustration</span>
-      </div>
-      <div className="jr-portal-nav" aria-hidden="true">
-        {['Översikt', 'Leveranser', 'Bolag', 'Er profil'].map((t) => (
-          <span key={t} data-on={t === 'Leveranser' ? '1' : '0'}>{t}</span>
-        ))}
-      </div>
-      <div className="jr-portal-feat">
-        <div className="eyebrow text-green-deep mb-1.5">Veckans leverans</div>
-        <div className="jr-portal-title">Vecka 12, 2026</div>
-        <div className="jr-portal-meta">20 mars 2026 · 6 briefs · 3 sektioner</div>
-        <div data-wk-portal-row className="jr-portal-brief">
-          <span className="jm" data-state="chosen" aria-hidden="true" />
-          <span className="jr-portal-brief-name">Nordic Flow Distribution AB</span>
-          <span className="jr-portal-state">Ny</span>
-          <span className="jr-portal-brief-grade">A · Stark match</span>
-          <span className="jr-portal-open">Öppna →</span>
+        {/* The Brief, opened: the snapshot the customer reads first. */}
+        <div data-pm-brief className="pm-brief">
+          <div className="pm-brief-head">
+            <span className="pm-mark">Norrsyn<b>_</b></span>
+            <i aria-hidden="true" />
+            <span className="pm-eyebrow">Brief</span>
+            <span className="pm-brief-date">20 mars 2026</span>
+          </div>
+          <div className="pm-brief-name">{CASE.name}</div>
+          <div className="pm-brief-sub">{CASE.sub}</div>
+          <p className="pm-brief-headline">
+            Det tredje lagret öppnades utan nytt systemstöd. Flaskhalsen är
+            orderflödet, inte ekonomin.
+          </p>
+          <div className="pm-brief-row">
+            <span className="pm-eyebrow">Bedömning</span>
+            <span className="pm-grade" data-g="A">Stark match</span>
+            <span className="pm-brief-why">Behov belagt · person identifierad · läget öppet</span>
+          </div>
+          <div className="pm-brief-row">
+            <span className="pm-eyebrow">Rekommenderad kontakt</span>
+            <b>Oskar Lund</b>
+            <span>Ekonomichef</span>
+            <span className="pm-verified">E-post verifierad</span>
+          </div>
+          <span className="pm-open">Öppna brief <i aria-hidden="true">→</i></span>
         </div>
       </div>
-      <ul className="jr-portal-list">
-        <li className="jr-portal-row">
-          <span>Vecka 11, 2026</span>
-          <span className="jr-portal-row-meta">
-            <span className="jr-portal-meta">13 mars 2026 · 5 briefs</span>
-            <span className="jr-portal-state">3 kontaktade</span>
-          </span>
-        </li>
-        <li className="jr-portal-row">
-          <span>Vecka 10, 2026</span>
-          <span className="jr-portal-row-meta">
-            <span className="jr-portal-meta">6 mars 2026 · 7 briefs</span>
-            <span className="jr-portal-state">1 möte bokat</span>
-          </span>
-        </li>
-      </ul>
-      <p className="jr-portal-note">
-        Granskade Briefs levereras i er portal, samlade per leverans. Varje
-        leverans finns kvar att gå tillbaka till, och varje bolag kan följas
-        från ny till kontaktad, möte bokat och vunnen.
-      </p>
     </div>
   );
 }

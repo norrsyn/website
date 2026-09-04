@@ -103,7 +103,7 @@
 }
 .jy-deliver .jr-brief-wrap { flex: 1 1 52%; max-width: none; }
 .jy-deliver .jr-portal { flex: 1 1 48%; max-width: none; margin-top: 0; }
-.jy-art-wide { right: 3rem; }
+.jy-art-wide { right: 3rem; top: 45vh; }
 
 /* Short viewports: the copy sits higher so the artefact keeps its room. */
 @media (max-height: 820px) {

@@ -9,7 +9,7 @@ import {
 import { COPY, PH_BODY, PH_HAND } from './story.jsx';
 import {
   Node, Head, Foot, ProblemHeadline, ProblemGrid,
-  Ledger, MarketMap, Screening, Board, Weigh, Finalists, BriefCard, PortalCard,
+  Ledger, MarketMap, Screening, Board, Weigh, PortalMini,
 } from './chapters.jsx';
 import '../walkthrough.css';
 
@@ -133,9 +133,7 @@ export default function Walkthrough() {
           </div>
         </Chapter>
         <Chapter id="briefen" cls="jr-06" dark={false} copy={COPY.s6}>
-          <Finalists />
-          <BriefCard />
-          <PortalCard />
+          <PortalMini />
         </Chapter>
       </div>
     </div>

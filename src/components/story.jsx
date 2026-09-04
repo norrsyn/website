@@ -16,25 +16,29 @@ export const INTAKE = [
 export const STRAND = { Erbjudande: 0, Bransch: 1, Storlek: 2, Systemmiljö: 3, Beslutsroller: 4, Diskvalificerare: 5 };
 export const RAILS = ['Bransch', 'Storlek', 'Geografi', 'Systemmiljö', 'Diskvalificerare'];
 
-/* Each finding, and how it reads against the OfferBrain's three questions:
-   does it fit the requirement (krav), does it strengthen the need (behov),
-   does it point to the right person (person). */
+/* Each finding: where it came from and when, how sure we are, which
+   criterion of the requirement it is tried against in 05, and which
+   dimensions of the OfferBrain it reads to (the criterion, the need, the
+   person). One company, followed from 04 to 06. */
 export const EVIDENCE = [
-  { text: 'Rekryterar systemansvarig för order och lager', src: 'Jobbannons', tier: 'ok',
-    crit: 'Systemmiljö', verdict: 'Matchar',
-    read: { krav: 'Systemmiljö', behov: 'Stärker', person: 'Ny systemroll' } },
-  { text: 'Ny ekonomichef sedan i höstas', src: 'LinkedIn', tier: 'ok',
-    crit: 'Beslutsroller', verdict: 'Matchar',
-    read: { krav: 'Beslutsroller', behov: '', person: 'Ekonomichef' } },
-  { text: 'Öppnat ett tredje lager', src: 'Pressmeddelande', tier: 'ok',
-    crit: 'Storlek', verdict: 'Stärker',
-    read: { krav: 'Storlek', behov: 'Stärker', person: '' } },
-  { text: 'Ekonomiflödet ligger i ett molnsystem', src: 'Jobbannons', tier: 'mid',
-    crit: 'Systemmiljö', verdict: 'Matchar',
-    read: { krav: 'Systemmiljö', behov: '', person: '' } },
-  { text: 'Orderflödet delvis manuellt', src: 'Vår tolkning', tier: 'low',
-    crit: 'Erbjudande', verdict: 'Osäkert',
-    read: { krav: 'Erbjudande', behov: 'Kärnan', person: '' } },
+  { text: 'Rekryterar systemansvarig för order och lager', src: 'Jobbannons', when: 'feb 2026', tier: 'ok',
+    crit: 'Systemmiljö', verdict: 'Matchar', dims: ['Systemmiljö', 'Behov'] },
+  { text: 'Ny ekonomichef sedan i höstas', src: 'LinkedIn', when: 'nov 2025', tier: 'ok',
+    crit: 'Beslutsroller', verdict: 'Matchar', dims: ['Beslutsroller', 'Person'] },
+  { text: 'Öppnat ett tredje lager', src: 'Pressmeddelande', when: 'jan 2026', tier: 'ok',
+    crit: 'Storlek', verdict: 'Stärker', dims: ['Storlek', 'Behov'] },
+  { text: 'Ekonomiflödet ligger i ett molnsystem', src: 'Jobbannons', when: 'feb 2026', tier: 'mid',
+    crit: 'Systemmiljö', verdict: 'Matchar', dims: ['Systemmiljö'] },
+  { text: 'Orderflödet delvis manuellt', src: 'Vår tolkning', when: '', tier: 'low',
+    crit: 'Erbjudande', verdict: 'Osäkert', dims: ['Erbjudande', 'Behov'] },
+];
+/* The company, as it is named everywhere it appears. */
+export const CASE = { name: 'Nordic Flow Distribution AB', sub: 'Partihandel · Borås · 28 anställda' };
+/* The delivery the company lands in, as the portal lists it. */
+export const PORTAL_ROWS = [
+  { name: 'Nordic Flow Distribution AB', sub: 'Partihandel · Borås', grade: 'A', label: 'Stark match', hero: true },
+  { name: 'Lindqvist Industrikomponenter AB', sub: 'Tillverkning · Eskilstuna', grade: 'A', label: 'Stark match' },
+  { name: 'Mälardalens Grossist AB', sub: 'Partihandel · Västerås', grade: 'B', label: 'God match' },
 ];
 /* The finding that sounds good and counts for nothing — the point of 05. */
 export const DECOY = {
@@ -99,12 +103,12 @@ export const COPY = {
         stärker det behovsbilden och pekar det mot rätt personer?
       </>
     ),
-    foot: 'Förenklad illustration. 96 bolag går till djupresearch. Källorna är kategorier, aldrig namngivna leverantörer. Varje fynd bär sin konfidensnivå och läses mot kravbilden, behovsbilden och rätt person.',
+    foot: 'Förenklad illustration. 96 bolag går till djupresearch. Källorna är kategorier, aldrig namngivna leverantörer. Varje fynd bär sin konfidensnivå och läses mot er kravbild.',
   },
   s5: {
     n: '05', tag: '05 · Bedömningen', title: '”Intressant räcker inte.”',
     body: 'Ett bolag kan vara intressant utan att vara rätt för er. Därför prövar vi varje fynd mot kravbilden från steg 01. Ett fynd som inte gör bolaget mer relevant för ert erbjudande får inte väga tyngre bara för att det låter bra.',
-    foot: 'Förenklad illustration. Varje fynd bedöms som matchar, stärker, osäkert eller väger inte. Bolaget som helhet får ett av fyra omdömen, A till D, där A är en stark match. Av 96 djupanalyserade bolag håller 24 hela vägen.',
+    foot: 'Förenklad illustration. Varje fynd bedöms som matchar, stärker, osäkert eller väger inte, och bolaget får ett av fyra omdömen, A till D. Av 96 djupanalyserade bolag går 24 vidare till leverans.',
   },
   s6: {
     n: '06', tag: '06 · Briefen', title: '”De starkaste fallen blir Briefs.”',
@@ -113,10 +117,10 @@ export const COPY = {
         För varje bolag som håller hela vägen skriver vi en{' '}
         <span className="jr-term">Brief</span>: fakta med källa, tolkning
         märkt som tolkning, rätt personer och en konkret ingång till
-        samtalet. En analytiker läser varje Brief innan den lämnar oss.
+        samtalet. En analytiker läser varje Brief innan den läggs i er portal.
       </>
     ),
-    foot: 'Förenklade illustrationer. Både Briefen och portalen är mer omfattande i verkligheten; nedan följer ett komplett exempel på hur en Brief faktiskt ser ut.',
+    foot: 'Förenklad vy av er portal. Den riktiga är mer omfattande; nedan följer ett komplett exempel på hur en Brief ser ut.',
   },
 };
 

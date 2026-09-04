@@ -48,9 +48,9 @@ export const T = 0.5; // the travel between chapters, in viewports of scroll
 const TIN = { ph: 0.65 };
 // Scroll per chapter, arrival and departure included.
 const DWELL = [['ph', 1.9], ['s1', 1.95], ['s2', 1.5], ['s3', 1.55], ['s4', 1.75], ['s5', 1.75], ['s6', 1.85]];
-export const WIN = { hero: [0, 0], collapse: [0, 0.7] };
+export const WIN = { hero: [0, 0], collapse: [0, 1.0] };
 {
-  let t0 = 0.55;
+  let t0 = 0.85;
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
   WIN.out = [e6, e6 + 0.25];
