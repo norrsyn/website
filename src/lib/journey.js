@@ -42,13 +42,15 @@ import { applyCascade } from './cascade.js';
 
 /* ── The timeline, in viewport heights of wrapper travel ─────────────── */
 export const T = 0.5; // the travel between chapters, in viewports of scroll
-// Problemet rises out of the hero slowly: the one travel that is watched.
-const TIN = { ph: 0.8 };
+// The first scroll answers at once: the market begins to fall into the line
+// on the first notch of the wheel, and Problemet has risen within a viewport
+// and a bit. Its arrival is the one travel that is watched, so it is longer.
+const TIN = { ph: 0.65 };
 // Scroll per chapter, arrival and departure included.
-const DWELL = [['ph', 1.85], ['s1', 1.95], ['s2', 1.5], ['s3', 1.55], ['s4', 1.75], ['s5', 1.75], ['s6', 1.85]];
-export const WIN = { hero: [0, 1], collapse: [1, 1.9] };
+const DWELL = [['ph', 1.9], ['s1', 1.95], ['s2', 1.5], ['s3', 1.55], ['s4', 1.75], ['s5', 1.75], ['s6', 1.85]];
+export const WIN = { hero: [0, 0], collapse: [0, 0.7] };
 {
-  let t0 = WIN.collapse[1];
+  let t0 = 0.55;
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
   WIN.out = [e6, e6 + 0.25];
@@ -127,7 +129,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     // as one colour.
     st.out = smooth(WIN.out[0] - 0.42, WIN.out[0] - 0.05, u);
     // The field re-emerges, faint, as Problemet rises out of the hero.
-    st.amb = smooth(WIN.collapse[1] - 0.05, WIN.collapse[1] + 0.5, u);
+    st.amb = smooth(WIN.collapse[1] - 0.08, WIN.collapse[1] + 0.4, u);
     holes.length = 0;
     let cur = u < WIN.ph[0] + TIN.ph * 0.5 ? 'hero' : 'end';
     let owner = 'hero', best = 0, flow = 0;

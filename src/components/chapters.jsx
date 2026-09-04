@@ -54,8 +54,8 @@ export function Head({ tag, lead, title, children }) {
 export function ProblemHeadline() {
   return (
     <h2 className="st mb-8 md:mb-9">
-      <span data-rv className="st-lead">Ett register vet vilka bolag som finns.</span>
-      <span data-rv className="st-display display">Det vet inte vilka som är redo.</span>
+      <span data-rv className="st-lead">Ett register säger vilka bolag som finns.</span>
+      <span data-rv className="st-display display">Inte vilka som behöver er just nu.</span>
     </h2>
   );
 }
