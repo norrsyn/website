@@ -46,15 +46,21 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
         </div>
       </div>
 
-      {/* The bridge, then the statement — four beats in one place as the
-          market collapses into the line. Driven by lib/cascade.js. */}
-      <div ref={collapseRef} className="hf-statement" aria-hidden="true">
-        <span data-cas="1" className="hf-cas hf-cas-bridge hf-cas-long display">
-          Någonstans i marknaden händer något som gör ett bolag mer relevant för er just nu.
-        </span>
-        <span data-cas="2" className="hf-cas hf-cas-bridge st-display display">Vi hittar det.</span>
-        <span data-cas="3" className="hf-cas st-lead">Hela marknaden går in.</span>
-        <span data-cas="4" className="hf-cas st-display display">Ett fåtal Briefs kommer ut.</span>
+      {/* The passage: one thought written down the page as the market
+          collapses into the line, then the statement that answers it.
+          Driven by lib/cascade.js. */}
+      <div ref={collapseRef} className="hf-passage" aria-hidden="true">
+        <div data-thought className="hf-thought">
+          <span data-ln className="hf-ln hf-ln-1 display">Just nu,</span>
+          <span data-ln className="hf-ln display">någonstans i marknaden,</span>
+          <span data-ln className="hf-ln display">bakom allt brus,</span>
+          <span data-ln className="hf-ln hf-ln-main display">finns ett företag som behöver er.</span>
+          <span data-ln className="hf-ln hf-ln-pay display">Vi hittar dem.</span>
+        </div>
+        <div className="hf-statement">
+          <span data-st className="hf-cas st-lead">Hela marknaden går in.</span>
+          <span data-st className="hf-cas st-display display">Ett fåtal Briefs kommer ut.</span>
+        </div>
       </div>
 
       <div ref={footRef} className="hf-foot" aria-hidden="true">

@@ -53,6 +53,7 @@ export default function Journey() {
   const cue = useRef(null);
   const foot = useRef(null);
   const ctl = useRef(null);
+  const endEl = useRef(null);
 
   useEffect(() => {
     const fr = frame.current;
@@ -70,9 +71,15 @@ export default function Journey() {
     const hero = {
       block: block.current, cursor: cursor.current, collapse: collapse.current,
       cue: cue.current, foot: foot.current,
+      scrim: fr.querySelector('.hf-scrim-nav'),
+      statement: fr.querySelector('.hf-statement'),
       fades: Array.from(fr.querySelectorAll('[data-hf-fade]')),
       texts: Array.from(fr.querySelectorAll('[data-hf-text]')),
-      cascade: Array.from(fr.querySelectorAll('[data-cas]')),
+      cascade: {
+        lines: Array.from(fr.querySelectorAll('[data-ln]')),
+        block: fr.querySelector('[data-thought]'),
+        statement: Array.from(fr.querySelectorAll('[data-st]')),
+      },
     };
     const ctlEl = ctl.current;
     const control = {
@@ -81,10 +88,19 @@ export default function Journey() {
       prev: ctlEl.querySelector('[data-go="prev"]'),
       dots: new Map(Array.from(ctlEl.querySelectorAll('.jy-dots [data-go]')).map((d) => [d.dataset.go, d])),
     };
-    const journey = createJourney({ wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control });
+    const journey = createJourney({
+      wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control, end: { el: endEl.current },
+    });
     journey.measure();
 
+    // Anything that can reflow the frame re-measures it: the frame itself,
+    // every chapter's words and artefacts (web fonts swap in late and change
+    // their height), and each batch of fonts as it lands. `fonts.ready` alone
+    // resolves before a stylesheet-loaded family has even been requested.
     const ro = new ResizeObserver(() => journey.measure());
+    fr.querySelectorAll('.jy-copy, .jy-art, .hf-content').forEach((el) => ro.observe(el));
+    const onFonts = () => journey.measure();
+    document.fonts?.addEventListener?.('loadingdone', onFonts);
     ro.observe(fr);
     window.addEventListener('resize', journey.measure);
     let cancelled = false;
@@ -145,6 +161,7 @@ export default function Journey() {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener('resize', journey.measure);
+      document.fonts?.removeEventListener?.('loadingdone', onFonts);
       ctlEl.removeEventListener('click', onCtl);
       document.removeEventListener('click', onAnchor);
       ctx.revert();
@@ -184,6 +201,19 @@ export default function Journey() {
           <Layer id="s4" {...COPY.s4}><Standouts /></Layer>
           <Layer id="s5" {...COPY.s5}><Qualify /></Layer>
           <Layer id="s6" {...COPY.s6} wide><PortalMini /></Layer>
+        </div>
+
+        {/* The document's own words arrive above the Brief as the world warms
+            to paper; the Brief below becomes the head of that document. */}
+        <div ref={endEl} className="jy-end" aria-hidden="true">
+          <div className="eyebrow">Ett komplett exempel</div>
+          <h2 className="st st-sec"><span className="st-display display">Ett samtal värt att ta.</span></h2>
+          <p>
+            Briefen som öppnades i portalen, i sin helhet och i samma ordning
+            som där. Det som går att belägga står med sin källa, det som är
+            vår tolkning är märkt som tolkning, och det sista avsnittet är
+            vad ni gör härnäst.
+          </p>
         </div>
 
         {/* Where you are, with a way back and a way on. */}

@@ -50,12 +50,13 @@ export default function HeroField() {
     const texts = Array.from(sec.querySelectorAll('[data-hf-text]'));
     const applyP = (p) => {
       const s = (a, b) => smooth(a, b, p);
-      const o = String(1 - s(0, 0.34));
+      // The hero's own words go quickly, so the passage has the frame to itself.
+      const o = String(1 - s(0, 0.12));
       fades.forEach((el) => { el.style.opacity = o; });
-      const blur = `blur(${(9 * s(0, 0.4)).toFixed(2)}px)`;
+      const blur = `blur(${(9 * s(0, 0.15)).toFixed(2)}px)`;
       texts.forEach((el) => { el.style.opacity = o; el.style.filter = p > 0.001 ? blur : ''; });
-      cue.current.style.opacity = String(1 - s(0, 0.18));
-      foot.current.style.opacity = String(1 - s(0, 0.3));
+      cue.current.style.opacity = String(1 - s(0, 0.06));
+      foot.current.style.opacity = String(1 - s(0, 0.1));
     };
 
     const field = createField(canvas.current, { reduced, progress, onProgress: applyP });
@@ -63,7 +64,11 @@ export default function HeroField() {
     // The cascade runs on the collapse's clock and keeps running as the hero
     // scrolls out, so its last lines ride up with the frame — the same
     // contract as the single-frame journey.
-    const casItems = Array.from(collapse.current.children);
+    const casItems = {
+      lines: Array.from(collapse.current.querySelectorAll('[data-ln]')),
+      block: collapse.current.querySelector('[data-thought]'),
+      statement: Array.from(collapse.current.querySelectorAll('[data-st]')),
+    };
     const pExt = () => (span > 0 ? Math.max(0, (window.scrollY - wrapTop) / span) : 0);
     let casRaf = 0;
     const onCasScroll = () => {
@@ -96,9 +101,11 @@ export default function HeroField() {
     applyCascade(casItems, pExt());
     const ro = new ResizeObserver(layout);
     ro.observe(sec);
+    ro.observe(block.current);
     window.addEventListener('resize', layout);
     let cancelled = false;
     document.fonts?.ready?.then(() => { if (!cancelled) layout(); });
+    document.fonts?.addEventListener?.('loadingdone', layout);
 
     let ctx = null;
     let io = null;
@@ -130,6 +137,7 @@ export default function HeroField() {
       cancelled = true;
       ro.disconnect();
       window.removeEventListener('resize', layout);
+      document.fonts?.removeEventListener?.('loadingdone', layout);
       window.removeEventListener('scroll', onCasScroll);
       cancelAnimationFrame(casRaf);
       io?.disconnect();

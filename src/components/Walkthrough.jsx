@@ -68,6 +68,7 @@ export default function Walkthrough() {
     window.addEventListener('norrsyn:spine', measure);
     let cancelled = false;
     document.fonts?.ready?.then(() => { if (!cancelled) measure(); });
+    document.fonts?.addEventListener?.('loadingdone', measure);
 
     const io = new IntersectionObserver(
       ([e]) => (e.isIntersecting ? stage.start() : stage.stop()),
@@ -93,6 +94,7 @@ export default function Walkthrough() {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener('resize', measure);
+      document.fonts?.removeEventListener?.('loadingdone', measure);
       window.removeEventListener('norrsyn:spine', measure);
       ctx?.revert();
       stage.destroy();

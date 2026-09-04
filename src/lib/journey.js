@@ -33,7 +33,7 @@
 import { createField } from './field.js';
 import {
   path, lengthAtY, polyPoint, strokeLine, smooth, clamp01, lerp,
-  green, greenHi, OFFS, TAU, paintNodeAt,
+  green, greenHi, TAU, paintNodeAt,
 } from './stage.js';
 import {
   problemetScene, s1Scene, s2Scene, s3Scene, s4Scene, s5Scene, s6Scene,
@@ -46,11 +46,14 @@ export const T = 0.5; // the travel between chapters, in viewports of scroll
 // on the first notch of the wheel, and Problemet has risen within a viewport
 // and a bit. Its arrival is the one travel that is watched, so it is longer.
 const TIN = { ph: 0.65 };
-// Scroll per chapter, arrival and departure included.
-const DWELL = [['ph', 1.9], ['s1', 1.95], ['s2', 1.5], ['s3', 1.55], ['s4', 1.75], ['s5', 1.75], ['s6', 1.85]];
-export const WIN = { hero: [0, 0], collapse: [0, 1.0] };
+// Scroll per chapter, arrival and departure included: every artefact gets
+// the time to be seen.
+const DWELL = [['ph', 1.9], ['s1', 2.1], ['s2', 1.7], ['s3', 1.85], ['s4', 2.0], ['s5', 2.0], ['s6', 2.0]];
+// The passage: the market collapses over 2.4 viewports of scroll while the
+// thought is written down the page; Problemet rises after a short hold.
+export const WIN = { hero: [0, 0], collapse: [0, 2.4] };
 {
-  let t0 = 0.85;
+  let t0 = 2.55;
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
   WIN.out = [e6, e6 + 0.12];
@@ -77,13 +80,12 @@ const CREEP = 0.08;
 const FLOW = 1.2;
 
 const railXFor = (w) => (w < 640 ? 17 : Math.max(16, w / 2 - 576 + 17.6) + 1);
-const drift = (i, y) => Math.sin(y / (460 + i * 41) + i * 1.3) * 0.8;
 /** The travel's ease: still at both ends, heavy in the middle. */
 const q5 = (t) => { t = clamp01(t); return t * t * t * (t * (t * 6 - 15) + 10); };
 const FOREST = [12, 19, 16];
 const MIST = [231, 233, 230];
 
-export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
+export function createJourney({ wrap, frame, canvas, layers, hero, control, end }) {
   let W = 0, H = 0, dpr = 1, wrapTop = 0, ax = 0, oy = 0, gx = 0;
   let FR = { left: 0, top: 0 };
   let running = false, raf = 0;
@@ -100,7 +102,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
   for (const id of CH_IDS) scenes[id] = SCENE[id](layers[id].el, R);
 
   const st = {
-    u: 0, p: 0, amb: 0, out: 0, flow: 0, cur: 'hero', owner: 'hero', hs: 0, dyHero: 0,
+    u: 0, p: 0, amb: 0, out: 0, chrome: 0, world: 0, flow: 0, cur: 'hero', owner: 'hero', hs: 0, dyHero: 0,
     o: {}, oi: {}, oo: {}, dy: {}, hv: {},
   };
   for (const id of CH_IDS) { st.o[id] = 0; st.oi[id] = 0; st.oo[id] = 0; st.dy[id] = 0; st.hv[id] = 0; }
@@ -126,7 +128,12 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     // before the next section's paper can enter the frame from below: the
     // field clears to the paper the Brief lands on, and the two papers meet
     // as one colour.
-    st.out = smooth(WIN.out[0] - 0.42, WIN.out[0] - 0.05, u);
+    st.out = smooth(WIN.out[0] - 0.5, WIN.out[0] - 0.05, u);
+    // In two movements: first the portal's surroundings recede and the Brief
+    // is left alone in the dark; then the world warms to paper around it and
+    // it grows into the head of the document that follows.
+    st.chrome = smooth(0, 0.42, st.out);
+    st.world = smooth(0.4, 1, st.out);
     // The field re-emerges, faint, as Problemet rises out of the hero.
     st.amb = smooth(WIN.collapse[1] - 0.08, WIN.collapse[1] + 0.4, u);
     holes.length = 0;
@@ -180,21 +187,27 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
 
   /* ── DOM ───────────────────────────────────────────────────────────── */
   const sm = (a, b, v) => smooth(a, b, v);
-  let lastP = -1, lastHeroDy = null;
+  let lastP = -1, lastHeroDy = null, lastStOp = null;
   function applyHero(p) {
     if (p !== lastP) {
       lastP = p;
-      const o = String(1 - sm(0, 0.34, p));
+      // The hero's own words go quickly, so the passage has the frame to itself.
+      const o = String(1 - sm(0, 0.12, p));
       hero.fades.forEach((el) => { el.style.opacity = o; });
-      const blur = `blur(${(9 * sm(0, 0.4, p)).toFixed(2)}px)`;
+      const blur = `blur(${(9 * sm(0, 0.15, p)).toFixed(2)}px)`;
       hero.texts.forEach((el) => { el.style.opacity = o; el.style.filter = p > 0.001 ? blur : ''; });
-      hero.block.style.pointerEvents = p > 0.3 ? 'none' : '';
-      hero.cue.style.opacity = String(1 - sm(0, 0.18, p));
-      hero.foot.style.opacity = String(1 - sm(0, 0.3, p));
+      hero.block.style.pointerEvents = p > 0.1 ? 'none' : '';
+      hero.cue.style.opacity = String(1 - sm(0, 0.06, p));
+      hero.foot.style.opacity = String(1 - sm(0, 0.1, p));
     }
-    // The cascade runs on the collapse's clock and keeps running past it,
+    // The passage runs on the collapse's clock and keeps running past it,
     // so its last lines ride up with the hero as Problemet rises.
     applyCascade(hero.cascade, (st.u - WIN.collapse[0]) / (WIN.collapse[1] - WIN.collapse[0]));
+    // The statement goes as Problemet takes the frame; the underscore stays.
+    if (hero.statement) {
+      const so = (1 - sm(0.15, 0.5, -st.dyHero / H)).toFixed(3);
+      if (so !== lastStOp) { lastStOp = so; hero.statement.style.opacity = so; }
+    }
     const key = st.dyHero.toFixed(1);
     if (key !== lastHeroDy) {
       lastHeroDy = key;
@@ -205,7 +218,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       hero.cue.style.transform = tf;
     }
   }
-  let lastOut = -1, lastCur = null, lastCtl = null, swapToken = 0;
+  let lastOut = -1, lastCur = null, lastCtl = null, lastEnd = null, swapToken = 0;
   function applyDOM() {
     applyHero(st.p);
     for (const id of CH_IDS) {
@@ -225,16 +238,34 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       if (L.copy.style.filter !== fs) L.copy.style.filter = fs;
       if (L.hand) L.hand.style.opacity = String(sm(a + tin + 0.25, a + tin + 0.45, st.u));
     }
-    // The ending: the frame dissolves into the paper of the next section.
+    // The ending. First the portal's surroundings recede; then the world
+    // warms to paper and the Brief grows to the width of the document below,
+    // ending flush with the bottom of the frame, where that document begins.
     if (st.out !== lastOut) {
       lastOut = st.out;
-      const k = st.out;
+      const k = st.world;
       const c = FOREST.map((v, i) => Math.round(lerp(v, MIST[i], k)));
       frame.style.backgroundColor = `rgb(${c[0]},${c[1]},${c[2]})`;
       frame.style.setProperty('--jy-vig', (1 - k).toFixed(3));
-      canvas.style.opacity = String(1 - k);
-      // The portal's surroundings recede with the field; its Brief stays.
-      layers.s6.el.style.setProperty('--pm-out', k.toFixed(3));
+      // The line delivered; it goes with the portal, not after it.
+      canvas.style.opacity = String(1 - st.chrome);
+      const L6 = layers.s6;
+      L6.el.style.setProperty('--pm-out', st.chrome.toFixed(3));
+      const outAttr = st.chrome >= 0.999 ? '1' : '0';
+      if (L6.el.dataset.out !== outAttr) L6.el.dataset.out = outAttr;
+      L6.el.style.setProperty('--jy-brief-end', k.toFixed(3));
+      if (L6.lift && L6.flip) {
+        const e = q5(k);
+        const { dx, dy, k: kk } = L6.flip;
+        const ty = dy - st.dy.s6 / L6.artScale;
+        L6.lift.style.transform = `translate3d(${(dx * e).toFixed(1)}px, ${(ty * e).toFixed(1)}px, 0) scale(${(1 + (kk - 1) * e).toFixed(4)})`;
+      }
+      if (end) {
+        const eo = sm(0.55, 1, k).toFixed(3);
+        if (eo !== lastEnd) { lastEnd = eo; end.el.style.opacity = eo; }
+      }
+      // The nav's shade belongs to the dark; the paper does without it.
+      if (hero.scrim) hero.scrim.style.opacity = (1 - k).toFixed(3);
     }
     // The control: where we are. Absent until the story begins, gone when
     // it ends; the label swaps with a short settle when the chapter changes.
@@ -320,48 +351,43 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       ctx.strokeStyle = green(0.62); ctx.lineWidth = 2; ctx.stroke();
       return;
     }
-    // The bundle: six strands, until the Brief takes them.
+    // One signal, from the top of the stretch to the head — and in 06 only
+    // as far as the portal, which takes it.
     const endY = Math.min(hv, fB, id === 's6' ? (geo.ropeEnd ?? fB) : fB, sB);
     const y0 = Math.max(-4, sT);
     if (endY <= y0) return;
-    const dy = st.dy[id];
-    ctx.lineWidth = 1.1; ctx.lineCap = 'round'; ctx.strokeStyle = green(0.46);
-    for (let i = 0; i < 6; i++) {
-      ctx.beginPath();
-      for (let y = y0; ; y += 18) {
-        const yy = Math.min(y, endY);
-        // The drift is a function of screen height, so two stretches meet
-        // at exactly the same x under the travel.
-        const x = gx + OFFS[i] + drift(i, yy + dy);
-        if (y === y0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
-        if (yy >= endY) break;
-      }
-      ctx.stroke();
-    }
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(gx, y0); ctx.lineTo(gx, endY);
+    ctx.strokeStyle = green(0.07); ctx.lineWidth = 9; ctx.stroke();
+    ctx.strokeStyle = green(0.62); ctx.lineWidth = 2; ctx.stroke();
   }
 
   /** The head: a comet on the line, wherever the line is being read. */
   function paintHead() {
     const ow = st.owner;
     if (ow === 'hero') return;
-    const a = sm(WIN.ph[0], WIN.ph[0] + 0.25 * TIN.ph, st.u) * (1 - st.out);
+    let a = sm(WIN.ph[0], WIN.ph[0] + 0.25 * TIN.ph, st.u) * (1 - st.out);
     if (a <= 0.01) return;
     const L = layers[ow];
     const hv = st.hv[ow];
     const sc = scenes[ow];
-    if (sc.cometOk && !sc.cometOk(hv)) return;
+    // Where the line has left the spine, the head hands over to the
+    // chapter's own tips — with a fade, never a cut.
+    const ka = sc.cometAlpha ? sc.cometAlpha(hv) : 1;
+    if (ka <= 0.01) return;
+    a *= ka;
     let x = gx;
     if (ow === 'ph' && L.sweep) x = polyPoint(L.sweep, lengthAtY(L.sweep, hv))[0];
     const y = hv + st.dy[ow];
     if (y < -70 || y > H + 70) return;
-    const g = ctx.createLinearGradient(0, y - 52, 0, y + 4);
+    const g = ctx.createLinearGradient(0, y - 46, 0, y + 4);
     g.addColorStop(0, 'rgba(120,210,170,0)');
-    g.addColorStop(0.88, `rgba(140,225,185,${(0.8 * a).toFixed(3)})`);
+    g.addColorStop(0.88, `rgba(140,225,185,${(0.7 * a).toFixed(3)})`);
     g.addColorStop(1, 'rgba(120,210,170,0)');
-    ctx.strokeStyle = g; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(x, y - 52); ctx.lineTo(x, y + 4); ctx.stroke();
-    const r = ctx.createRadialGradient(x, y, 0, x, y, 14);
-    r.addColorStop(0, `rgba(120,210,170,${(0.42 * a).toFixed(3)})`);
+    ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y - 46); ctx.lineTo(x, y + 4); ctx.stroke();
+    const r = ctx.createRadialGradient(x, y, 0, x, y, 12);
+    r.addColorStop(0, `rgba(120,210,170,${(0.34 * a).toFixed(3)})`);
     r.addColorStop(1, 'rgba(120,210,170,0)');
     ctx.fillStyle = r;
     ctx.beginPath(); ctx.arc(x, y, 14, 0, TAU); ctx.fill();
@@ -404,6 +430,11 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
     gx = railXFor(document.documentElement.clientWidth);
     frame.style.setProperty('--jy-gx', `${gx}px`);
     document.documentElement.style.setProperty('--jy-gx', `${gx}px`);
+    // The column of the document that follows the story (max-w-6xl, px-12).
+    const colW = Math.min(1152, W) - 96;
+    const colL = (W - Math.min(1152, W)) / 2 + 48;
+    frame.style.setProperty('--jy-cl', `${colL}px`);
+    frame.style.setProperty('--jy-cw', `${colW}px`);
     frame.style.setProperty('--jy-left', `${gx + 70}px`);
 
     // Measure the hero untransformed: the travel must not leak into the geometry.
@@ -435,6 +466,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       const avail = H - 40 - at;
       const sc = Math.min(1, avail / Math.max(1, natural));
       L.art.style.transform = sc < 0.999 ? `scale(${sc.toFixed(3)})` : '';
+      L.artScale = sc;
       scenes[id].measure(geo);
       const sq = L.el.querySelector('.jr-node-square');
       L.node = sq ? { y: R(sq).cy } : null;
@@ -444,6 +476,25 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       // The head waits on the node while the chapter arrives (Problemet has
       // none: its head enters at the top of its stretch, on the sweep).
       L.headTop = L.node ? L.node.y : 0;
+    }
+    // The Brief in the portal grows into the head of the document below: its
+    // flight is measured here, from where it sits to the document's column,
+    // flush with the bottom of the frame.
+    {
+      const L6 = layers.s6;
+      L6.lift = L6.el.querySelector('.pm-brief-lift');
+      if (L6.lift) {
+        L6.lift.style.transform = '';
+        const b = R(L6.lift);
+        const k = colW / b.w;
+        const th = b.h * k;
+        L6.flip = { dx: (colL - b.l) / L6.artScale, dy: (H - th - b.t) / L6.artScale, k };
+        // The document's words sit in the middle of the paper above the Brief.
+        if (end?.el) {
+          const top = Math.max(100, 0.12 * H, (H - th - end.el.offsetHeight) / 2);
+          end.el.style.top = `${top.toFixed(0)}px`;
+        }
+      }
     }
     // Each chapter's head ends exactly on the next chapter's node, one
     // stretch further down — the same point in both chapters' space.

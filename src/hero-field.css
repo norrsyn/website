@@ -5,18 +5,19 @@
  * marks in perspective, the brand's underscore as its vanishing point, and
  * the line that falls from the underscore and never stops.
  *
- * The section is pinned for one extra viewport (a sticky child of a 200vh
- * wrapper — no pin-spacer, no scroll hijack). Over that viewport the market
- * collapses into the line; at the end, the line alone crosses into Problemet.
+ * The section is pinned for two extra viewports (a sticky child of a 300vh
+ * wrapper — no pin-spacer, no scroll hijack). Over that passage the market
+ * collapses into the line while one thought is written down the page; at the
+ * end, the line alone crosses into Problemet.
  * ══════════════════════════════════════════════════════════════════════════ */
 
 .hf-wrap {
   position: relative;
   z-index: 2; /* above the walkthrough's fixed stage */
-  height: 200svh;
+  height: 300svh;
   background: #0C1310;
 }
-@media (min-width: 1024px) { .hf-wrap { height: 200vh; } }
+@media (min-width: 1024px) { .hf-wrap { height: 300vh; } }
 
 .hf-hero {
   position: sticky;
@@ -46,10 +47,10 @@
 }
 
 /* One horizontal margin for everything that sits on the field. */
-.hf-content, .hf-statement, .hf-foot { left: 1.5rem; right: 1.5rem; }
-@media (min-width: 640px)  { .hf-content, .hf-statement, .hf-foot { left: 2.5rem; right: 2.5rem; } }
-@media (min-width: 768px)  { .hf-content, .hf-statement, .hf-foot { left: 4rem;   right: 4rem; } }
-@media (min-width: 1024px) { .hf-content, .hf-statement, .hf-foot { left: 5rem;   right: 5rem; } }
+.hf-content, .hf-thought, .hf-statement, .hf-foot { left: 1.5rem; right: 1.5rem; }
+@media (min-width: 640px)  { .hf-content, .hf-thought, .hf-statement, .hf-foot { left: 2.5rem; right: 2.5rem; } }
+@media (min-width: 768px)  { .hf-content, .hf-thought, .hf-statement, .hf-foot { left: 4rem;   right: 4rem; } }
+@media (min-width: 1024px) { .hf-content, .hf-thought, .hf-statement, .hf-foot { left: 5rem;   right: 5rem; } }
 
 .hf-content {
   position: absolute;
@@ -116,31 +117,48 @@
 .hf-ctas { display: flex; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 @media (min-width: 640px) { .hf-ctas { flex-direction: row; align-items: center; } }
 
-/* The statement takes the headline's place once it has gone, in two beats,
-   in the page's one voice; it leaves with the hero. */
-.hf-statement {
-  position: absolute;
-  z-index: 10;
-  top: 40vh;
-  pointer-events: none;
-  will-change: transform;
+/* The passage. Once the headline has gone, one thought is written down the
+   page, line under line — each stays where it landed, nothing is written
+   over anything — while the market collapses in step. When the thought is
+   complete it recedes as a whole, and the statement takes the frame in two
+   beats, in the page's one voice. It leaves with the hero. */
+.hf-passage { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+.hf-thought { position: absolute; top: 22vh; will-change: opacity; }
+.hf-ln {
+  display: block;
+  opacity: 0;
+  font-size: clamp(1.5rem, 2.55vw, 2.45rem);
+  line-height: 1.16;
+  color: rgba(231, 225, 212, 0.92);
+  max-width: 15em;
+  will-change: transform, opacity;
 }
+.hf-ln-1 { color: rgba(231, 225, 212, 0.62); }
+.hf-ln-main {
+  margin-top: 0.15em;
+  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+  line-height: 1.1;
+  color: #E7E1D4;
+  max-width: 12.5em;
+}
+.hf-ln-pay {
+  margin-top: 0.7em;
+  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+  line-height: 1.1;
+  color: #fff;
+  max-width: 12.5em;
+}
+.hf-statement { position: absolute; top: 40vh; }
 .hf-cas { display: block; opacity: 0; will-change: transform, opacity; }
 .hf-statement .st-lead { color: rgba(255, 255, 255, 0.88); }
 .hf-statement .st-display { color: #E7E1D4; }
-/* The two bridge beats take the statement's place before it arrives. */
-.hf-cas-bridge { position: absolute; left: 0; top: 0; }
-.hf-cas-long {
-  font-size: clamp(1.4rem, 2.5vw, 2.4rem);
-  line-height: 1.12;
-  color: #E7E1D4;
-  max-width: 16.5em;
-}
-/* Narrow screens: the serif line wraps short of the line's x. */
+/* Narrow screens: the serif lines wrap short of the line's x. */
 @media (max-width: 767px) {
+  .hf-thought { top: 17vh; }
+  .hf-ln { max-width: 9.5em; }
+  .hf-ln-main, .hf-ln-pay { max-width: 8.4em; }
   .hf-statement { top: 34vh; }
   .hf-statement .st-display { max-width: 8.2em; }
-  .hf-cas-long { max-width: 10.5em; }
 }
 
 /* The baseline: three quiet mono marks along the bottom edge. */
@@ -187,5 +205,5 @@
 @media (prefers-reduced-motion: reduce) {
   .hf-wrap { height: auto; }
   .hf-hero { position: relative; }
-  .hf-statement { display: none; }
+  .hf-passage { display: none; }
 }

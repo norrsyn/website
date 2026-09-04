@@ -148,9 +148,10 @@ export default function BriefExample() {
   return (
     <section id="brief" ref={root} className="relative bg-mist border-t border-ink/10">
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-14 pb-24 md:pt-16 md:pb-32">
-        {/* One thought: the Brief the portal just opened is this. The marks
-            are explained in a note, not a second headline. */}
-        <div className="grid md:grid-cols-12 gap-8 md:gap-12 mb-10 md:mb-12">
+        {/* One thought. On the single-frame page these words arrive inside
+            the frame, above the Brief the portal opened; here they lead the
+            sectioned page. */}
+        <div className="brief-lead grid md:grid-cols-12 gap-8 md:gap-12 mb-10 md:mb-12">
           <div className="md:col-span-7">
             <div data-brief-lead className="eyebrow text-ink-3 mb-5">Ett komplett exempel</div>
             <h2 data-brief-lead className="st st-sec mb-4">
@@ -163,32 +164,22 @@ export default function BriefExample() {
               vad ni gör härnäst.
             </p>
           </div>
-          <div data-brief-lead className="md:col-span-5 md:pt-12">
-            <p className="text-[12.5px] text-ink-4 leading-[1.7] max-w-[46ch]">
-              Varje uppgift bär sin källa och en av tre nivåer:{' '}
-              <Badge tier="ok" /> belagt av en källa ni kan öppna själva,{' '}
-              <Badge tier="mid" /> sannolikt utifrån ett mönster och värt att
-              bekräfta i samtalet, <Badge tier="low" /> vår tolkning, aldrig
-              framställd som fakta. Bedömningen A till D sammanfattar hur väl
-              bolaget svarar mot er kravbild: A är en stark match, D faller
-              utanför den.
-            </p>
-          </div>
         </div>
 
         {/* ── The sheet ──────────────────────────────────────────────────── */}
-        <article className="bg-paper-3 border border-ink/12 rounded-2xl overflow-hidden shadow-[0_1px_1px_rgba(21,24,26,0.04),0_12px_32px_-12px_rgba(21,24,26,0.10)]">
+        <article className="brief-sheet bg-paper-3 border border-ink/12 rounded-2xl overflow-hidden shadow-[0_1px_1px_rgba(21,24,26,0.04),0_12px_32px_-12px_rgba(21,24,26,0.10)]">
 
           {/* Masthead */}
-          <div className="flex items-center justify-between gap-4 px-6 md:px-9 py-3.5 border-b border-ink/10 bg-paper-2">
+          <div className="brief-masthead flex items-center justify-between gap-4 px-6 md:px-9 py-3.5 border-b border-ink/10 bg-paper-2">
             <span className="eyebrow text-ink-4">
               Norrsyn · <span className="text-green-deep">Brief</span>
             </span>
             <span className="eyebrow text-ink-4">Demoexempel · fiktivt bolag · 2026-03-18</span>
           </div>
 
-          {/* Header: the company, the headline, the verdict. */}
-          <header className="px-6 md:px-9 pt-8 md:pt-10 pb-7 border-b border-ink/10">
+          {/* Header: the company, the headline, the verdict. On the
+              single-frame page the Brief from the portal is this header. */}
+          <header className="brief-header px-6 md:px-9 pt-8 md:pt-10 pb-7 border-b border-ink/10">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div className="max-w-2xl">
                 <h3 data-brief-head className="font-sans font-semibold text-ink text-[1.6rem] md:text-[2rem] leading-[1.12] tracking-[-0.032em] mb-2">
@@ -499,12 +490,23 @@ export default function BriefExample() {
           </footer>
         </article>
 
-        <p className="mt-6 font-mono text-[10.5px] text-ink-3 max-w-xl">
-          Illustrativt demoexempel. Bolaget, siffrorna och personerna är
-          fiktiva, och eventuella likheter med verkliga bolag eller personer
-          är en tillfällighet. Strukturen, omdömena och konfidensnivåerna är
-          produktens egna.
-        </p>
+        <div className="mt-6 grid md:grid-cols-12 gap-6">
+          <p className="md:col-span-7 text-[12.5px] text-ink-4 leading-[1.7] max-w-[52ch]">
+            Varje uppgift bär sin källa och en av tre nivåer:{' '}
+            <Badge tier="ok" /> belagt av en källa ni kan öppna själva,{' '}
+            <Badge tier="mid" /> sannolikt utifrån ett mönster och värt att
+            bekräfta i samtalet, <Badge tier="low" /> vår tolkning, aldrig
+            framställd som fakta. Bedömningen A till D sammanfattar hur väl
+            bolaget svarar mot er kravbild: A är en stark match, D faller
+            utanför den.
+          </p>
+          <p className="md:col-span-5 font-mono text-[10.5px] text-ink-3 leading-[1.7]">
+            Illustrativt demoexempel. Bolaget, siffrorna och personerna är
+            fiktiva, och eventuella likheter med verkliga bolag eller personer
+            är en tillfällighet. Strukturen, omdömena och konfidensnivåerna är
+            produktens egna.
+          </p>
+        </div>
       </div>
     </section>
   );

@@ -184,9 +184,18 @@
    the section starts under the last of the sticky frame. The line turns to
    ink at the spine's x, runs out of the frame and into the section, and
    ends in a square beside the section's first words. */
-.jy-wrap + div #brief { border-top-color: transparent; margin-top: -14vh; }
-/* 06's ending: the portal's chrome and the chapter's words recede with the
-   field, and the Brief inside the portal is what remains on the paper. */
+/* The ending, in two movements. First (--pm-out) the portal's surroundings
+   and the chapter's words recede and the Brief is alone in the dark. Then
+   (--jy-brief-end) the world warms to paper, the Brief grows to the width of
+   the document that follows and lands flush with the bottom of the frame —
+   the document below begins with its metrics, so the Brief in the frame IS
+   its head. No hairline, no overlap, no repeated masthead. */
+.jy-wrap + div #brief { border-top: 0; margin-top: 0; }
+.jy-wrap + div #brief > div { padding-top: 0; }
+.jy-wrap + div #brief .brief-lead,
+.jy-wrap + div #brief .brief-masthead,
+.jy-wrap + div #brief .brief-header { display: none; }
+.jy-wrap + div #brief .brief-sheet { border-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 .jy-layer[data-ch="s6"] .jy-copy,
 .jy-layer[data-ch="s6"] .jy-node,
 .jy-layer[data-ch="s6"] .jr-foot { opacity: calc(1 - var(--pm-out, 0)); }
@@ -198,4 +207,29 @@
 .jy-layer[data-ch="s6"] .pm-rail,
 .jy-layer[data-ch="s6"] .pm-head,
 .jy-layer[data-ch="s6"] .pm-list { opacity: calc(1 - var(--pm-out, 0)); }
-.jy-layer[data-ch="s6"] .pm-brief-lift { transform: translateY(calc(-17vh * var(--pm-out, 0))); will-change: transform; }
+.jy-layer[data-ch="s6"] .pm-brief-lift { transform-origin: top left; will-change: transform; }
+/* Once the portal's chrome has gone, its box stops clipping: the Brief may
+   grow past where the portal was. */
+.jy-layer[data-ch="s6"][data-out="1"] .pm { overflow: visible; }
+.jy-layer[data-ch="s6"] .pm-brief {
+  border-bottom-left-radius: calc(10px * (1 - var(--jy-brief-end, 0)));
+  border-bottom-right-radius: calc(10px * (1 - var(--jy-brief-end, 0)));
+  border-bottom-color: rgb(21 24 26 / calc(0.11 * (1 - var(--jy-brief-end, 0))));
+}
+/* The document's words, above the Brief, on the paper. */
+.jy-end {
+  position: absolute;
+  left: var(--jy-cl, 192px);
+  top: 12vh;
+  width: min(48rem, var(--jy-cw, 1056px));
+  z-index: 12;
+  opacity: 0;
+  pointer-events: none;
+}
+.jy-end .eyebrow { color: rgba(21, 24, 26, 0.6); margin-bottom: 1.1rem; }
+.jy-end .st-display { color: #15181A; }
+.jy-end p { margin-top: 0.9rem; max-width: 36rem; font-size: 15px; line-height: 1.7; color: #454B50; }
+@media (max-height: 820px) {
+  .jy-end { top: 10vh; }
+  .jy-end p { font-size: 14px; }
+}
