@@ -443,9 +443,12 @@ export const Contact = () => {
             <h2 className="st st-sec mb-6">
               <span className="st-display display">Vi börjar med ett samtal.</span>
             </h2>
-            <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm mb-10">
+            <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm">
               Berätta kort vad ni säljer och hur ni arbetar med prospektering
-              idag. Vi tar det därifrån.
+              idag.
+            </p>
+            <p className="text-white text-[15px] leading-[1.75] max-w-sm mt-4 mb-10">
+              Vi tar det därifrån.
             </p>
             {/* The direct way in, set like every other label on the page. */}
             <dl className="ct-direct">
