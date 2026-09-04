@@ -232,7 +232,7 @@
 .jy-end > * { opacity: 0; will-change: transform, opacity; }
 .jy-end .eyebrow { color: rgba(21, 24, 26, 0.6); margin-bottom: 1.1rem; }
 .jy-end .st-display { color: #15181A; }
-.jy-end p { margin-top: 0.9rem; max-width: 36rem; font-size: 15px; line-height: 1.7; color: #454B50; }
+.jy-end p { margin-top: 0.9rem; max-width: 34rem; font-size: 15px; line-height: 1.7; color: #454B50; }
 @media (max-height: 820px) {
   .jy-end { top: 10vh; }
   .jy-end p { font-size: 14px; }

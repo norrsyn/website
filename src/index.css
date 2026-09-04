@@ -1399,6 +1399,12 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.28);
 }
+/* PASSFORM: one shape inside another — the company inside your offer.
+   A muted rose, the same restraint as the other three. */
+.ph-slot[data-kind="passform"] .ph-slot-box { border-color: rgba(214, 96, 158, 0.55); }
+.ph-slot[data-kind="passform"] .ph-slot-box::after { inset: 3.5px; border-radius: 1px; background: rgba(214, 96, 158, 0.32); }
+.ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box { border-color: rgba(214, 96, 158, 0.9); }
+.ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box::after { background: rgba(214, 96, 158, 0.85); }
 .ph-slot[data-kind="timing"] .ph-slot-box { border-radius: 50%; }
 .ph-slot[data-kind="timing"] .ph-slot-box::after {
   inset: auto;

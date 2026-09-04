@@ -75,13 +75,28 @@
   .mp-row { grid-template-columns: 1fr; gap: 2px 0; }
 }
 
+/* ── The caption that hands the eye down into the Brief ────────────────── */
+.brief-cue {
+  margin-top: 2.4rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(21, 24, 26, 0.42);
+}
+.brief-cue span { display: inline-block; margin-left: 0.4em; }
+
 /* ── The Brief's reading note: what the marks mean, said in passing ─────── */
 .brief-legend {
-  font-size: 11.5px;
-  line-height: 2;
+  font-size: 12px;
+  line-height: 1.6;
   color: var(--ink-4);
   max-width: 60ch;
 }
+.brief-legend-list { display: grid; grid-template-columns: auto 1fr; gap: 7px 12px; align-items: baseline; margin: 6px 0 0; }
+.brief-legend-list dt { white-space: nowrap; }
+.brief-legend-list dd { margin: 0; }
 .brief-legend-k {
   display: block;
   margin-bottom: 2px;
@@ -91,13 +106,7 @@
   text-transform: uppercase;
   color: var(--ink-4);
 }
-.brief-legend-i { white-space: nowrap; }
-.brief-legend-sep { margin: 0 0.45em; color: rgba(21, 24, 26, 0.3); }
-.brief-legend b { font-weight: 600; color: var(--ink-3); }
-@media (max-width: 639px) {
-  .brief-legend-i { display: block; white-space: normal; }
-  .brief-legend-sep { display: none; }
-}
+.brief-legend b { font-weight: 600; color: var(--ink-3); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.1em; }
 
 /* ── På er radar · how it works, in three steps ────────────────────────── */
 .od-steps {

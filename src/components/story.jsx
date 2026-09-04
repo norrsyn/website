@@ -62,7 +62,7 @@ export const CANDIDATES = [
   {
     key: 'nf', name: CASE.name, sub: 'Partihandel · Borås', tone: 'rekrytering',
     signals: ['Rekryterar systemansvarig', 'Ny ekonomichef', 'Tredje lagret öppnat'],
-    rows: [['ok'], ['ok', 'tre signaler på sex månader'], ['ok', 'ny ekonomichef'], ['ok', 'molnekonomi, manuellt orderflöde'], ['ok', 'flödet är flaskhalsen']],
+    rows: [['ok'], ['ok', 'tre signaler på tre månader'], ['ok', 'ny ekonomichef'], ['ok', 'Fortnox, manuellt orderflöde'], ['ok', 'söker ägare för order- och lagerflödet']],
     verdict: 'go',
   },
 ];

@@ -266,11 +266,12 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
         L6.lift.style.transform = `translate(${(dx * e).toFixed(1)}px, ${(ty * e).toFixed(1)}px) scale(${(1 + (kk - 1) * e).toFixed(4)})`;
       }
       if (L6.open) {
-        // The click: "Öppna brief" takes the press, the Brief opens, and the
-        // link has done its job.
-        const press = o > 0.004 && o < 0.07 ? '1' : '0';
+        // The click: "Öppna brief" takes the press and holds it for as long
+        // as the portal is still leaving — click, confirmation, open. Only
+        // when the chrome is gone does the link itself go.
+        const press = o > 0.004 && st.chrome < 0.999 ? '1' : '0';
         if (L6.open.dataset.press !== press) L6.open.dataset.press = press;
-        L6.open.style.opacity = (1 - sm(0.07, 0.25, o)).toFixed(3);
+        L6.open.style.opacity = (1 - sm(0.45, 0.62, o)).toFixed(3);
       }
       if (end) {
         // The document's words rise into the paper, one after the other.
@@ -278,7 +279,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
         if (eo !== lastEnd) {
           lastEnd = eo;
           end.parts.forEach((el, i) => {
-            const t = sm(0.56 + 0.08 * i, 0.82 + 0.08 * i, o);
+            const t = sm(0.5 + 0.08 * i, 0.76 + 0.08 * i, o);
             el.style.opacity = t.toFixed(3);
             el.style.transform = `translate3d(0, ${(18 * (1 - t)).toFixed(1)}px, 0)`;
           });
@@ -523,10 +524,10 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
         const k = colW / b.w;
         const th = b.h * k;
         L6.flip = { dx: (colL - b.l) / L6.artScale, dy: (H - th - b.t) / L6.artScale, k };
-        // The document's words sit a third of the way down, above the Brief's
-        // head: paper above them like a margin, a short gap below.
+        // The document's words sit just above the Brief's head, on its column:
+        // the paper above is the margin, the words open the dossier below.
         if (end?.el) {
-          const top = Math.max(100, Math.min(H - th - end.el.offsetHeight - 36, 0.34 * H));
+          const top = Math.max(100, H - th - end.el.offsetHeight - 26);
           end.el.style.top = `${top.toFixed(0)}px`;
         }
       }

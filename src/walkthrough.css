@@ -51,6 +51,10 @@
 .wk .ph-slot[data-kind="person"] .ph-slot-box::after { background: rgba(92, 155, 214, 0.45); }
 .wk .ph-slot[data-active="1"][data-kind="person"] .ph-slot-box { border-color: rgba(92, 155, 214, 0.95); }
 .wk .ph-slot[data-active="1"][data-kind="person"] .ph-slot-box::after { background: rgba(92, 155, 214, 0.95); }
+.wk .ph-slot[data-kind="passform"] .ph-slot-box { border-color: rgba(214, 96, 158, 0.6); }
+.wk .ph-slot[data-kind="passform"] .ph-slot-box::after { background: rgba(214, 96, 158, 0.4); }
+.wk .ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box { border-color: rgba(214, 96, 158, 0.95); }
+.wk .ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box::after { background: rgba(214, 96, 158, 0.9); }
 .wk .ph-slot { border-bottom-color: rgba(255, 255, 255, 0.12); }
 .wk .wk-ph-copy { color: rgba(255, 255, 255, 0.78); }
 .wk .wk-ph-register {

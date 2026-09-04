@@ -208,11 +208,10 @@ export default function Journey() {
           <div className="eyebrow">Ett komplett exempel</div>
           <h2 className="st st-sec"><span className="st-display display">Ett samtal värt att ta.</span></h2>
           <p>
-            Briefen som öppnades i portalen, i sin helhet och i samma ordning
-            som där. Det som går att belägga står med sin källa, det som är
-            vår tolkning är märkt som tolkning, och det sista avsnittet är
-            vad ni gör härnäst.
+            Det här är en Brief, levererad direkt till er portal. Den samlar
+            det ni behöver veta för att förstå bolaget, läget och samtalet.
           </p>
+          <div className="brief-cue">Så här kan det se ut <span aria-hidden="true">↓</span></div>
         </div>
 
         {/* Where you are, with a way back and a way on. */}

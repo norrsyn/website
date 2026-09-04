@@ -538,12 +538,14 @@ export const Footer = () => (
             Vi identifierar affärsmöjligheter för B2B-bolag genom research, analys
             av affärssignaler och kontext inför första kontakt.
           </p>
-          {/* The legal entity, stated once in prose and once in the copyright
-              line. The brand still reads as Norrsyn everywhere else. */}
+          {/* The operator, stated once in prose and once in the copyright
+              line; the product leads, the entity follows. The name
+              disambiguation lives on the terms page and in the structured
+              data, where it belongs. */}
           <p className="text-white/55 text-[13px] leading-[1.7] max-w-xs mb-6">
-            Norrsyn är ett varumärke och en tjänst från{' '}
-            <span className="text-white/75">NRSYN AB</span>, Jönköping.
-            Ej att förväxla med Norrsyn AI HB.
+            Norrsyn är en tjänst för research och account intelligence inom
+            B2B-försäljning, driven av{' '}
+            <span className="text-white/75">NRSYN AB</span> i Jönköping.
           </p>
           <div className="font-mono text-[12.5px] text-white/55 space-y-1">
             <a href="mailto:info@norrsyn.se" className="link-underline block w-fit">info@norrsyn.se</a>

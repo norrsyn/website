@@ -119,7 +119,7 @@ export const Anvandarvillkor = () => (
         { label: "Cookiepolicy", path: "/cookiepolicy" }
     ]}>
         <p>Genom att använda den här webbplatsen godkänner ni villkoren nedan.</p>
-        <p>Webbplatsen beskriver Norrsyns tjänster inom research, analys och identifiering av affärsmöjligheter för B2B-företag. Norrsyn är ett varumärke och en tjänst från NRSYN AB.</p>
+        <p>Webbplatsen beskriver Norrsyns tjänster inom research, analys och identifiering av affärsmöjligheter för B2B-företag. Norrsyn är ett varumärke och en tjänst från NRSYN AB, ett självständigt svenskt aktiebolag med säte i Jönköping. NRSYN AB har ingen koppling till Norrsyn AI HB.</p>
         <p>Exempel på Briefs, bolag, personer och siffror som visas på webbplatsen är påhittade och finns här för att visa hur ett underlag är uppbyggt. De beskriver inga verkliga bolag.</p>
         <p>Att skicka in formuläret innebär inte att ett uppdrag eller avtal uppstår. Ett samarbete kommer till stånd först när vi har kommit överens skriftligen.</p>
         <p>NRSYN AB förbehåller sig rätten att uppdatera innehållet på webbplatsen utan att meddela det i förväg.</p>

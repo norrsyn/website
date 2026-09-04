@@ -102,6 +102,7 @@ export function ProblemGrid() {
           ['behov', 'Behov', 'Finns det ett verkligt skäl att köpa?'],
           ['person', 'Person', 'Vem äger frågan?'],
           ['timing', 'Timing', 'Varför just nu?'],
+          ['passform', 'Passform', 'Varför är bolaget rätt för er?'],
         ].map(([kind, t, q]) => (
           <div data-ph-slot data-kind={kind} key={t} className="ph-slot">
             <span className="ph-slot-box" aria-hidden="true" />
@@ -284,8 +285,8 @@ export function PortalMini() {
       <div className="pm-main">
         <div className="pm-head">
           <span className="pm-eyebrow pm-accent">Veckans leverans</span>
-          <div className="pm-title">Leverans v.12</div>
-          <div className="pm-meta"><b>6 briefs</b> · 20 mars 2026</div>
+          <div className="pm-title">Leverans v.36</div>
+          <div className="pm-meta"><b>6 briefs</b> · 3 september 2026</div>
         </div>
         <div className="pm-list">
           {PORTAL_ROWS.map((r) => (
@@ -296,7 +297,7 @@ export function PortalMini() {
               </span>
               {r.hero && <span data-pm-state className="pm-state">Ny</span>}
               <span className="pm-grade" data-g={r.grade}><b>{r.grade}</b>{r.label}</span>
-              <span className="pm-date">20 mars</span>
+              <span className="pm-date">3 sep</span>
               <span className="pm-chev" aria-hidden="true">›</span>
             </div>
           ))}
@@ -309,18 +310,18 @@ export function PortalMini() {
             <span className="pm-mark">Norrsyn<b>_</b></span>
             <i aria-hidden="true" />
             <span className="pm-eyebrow">Brief</span>
-            <span className="pm-brief-date">20 mars 2026</span>
+            <span className="pm-brief-date">3 september 2026</span>
           </div>
           <div className="pm-brief-name">{CASE.name}</div>
           <div className="pm-brief-sub">{CASE.sub}</div>
           <p className="pm-brief-headline">
-            Det tredje lagret öppnades utan nytt systemstöd. Flaskhalsen är
-            orderflödet, inte ekonomin.
+            Tre lager, snabb tillväxt och en ny ekonomichef. Nu söker bolaget
+            någon som ska äga order- och lagerflödet.
           </p>
           <div className="pm-brief-row">
             <span className="pm-eyebrow">Bedömning</span>
             <span className="pm-grade" data-g="A"><b>A</b>Stark match</span>
-            <span className="pm-brief-why">Behov belagt · person identifierad · läget öppet</span>
+            <span className="pm-brief-why">Behov uttalat av bolaget · person identifierad · läget öppet</span>
           </div>
           <div className="pm-brief-row">
             <span className="pm-eyebrow">Rekommenderad kontakt</span>

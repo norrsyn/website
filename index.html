@@ -6,72 +6,133 @@
     <!-- Favicon: N_ -->
     <link rel="icon" type="image/svg+xml" href="/norrsyn-icon.svg" />
     <link rel="icon" type="image/png" sizes="192x192" href="/norrsyn-icon.png" />
-    <link rel="apple-touch-icon" href="/norrsyn-icon.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/norrsyn-logo-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/norrsyn-icon.png" />
     <link rel="shortcut icon" href="/norrsyn-icon.png" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- SEO -->
+    <!-- SEO. The title is the brand's line; the description says what
+         Norrsyn does, in one breath, so the search snippet is the product
+         and not the legal entity. -->
     <title>Norrsyn – Rätt kunder. Bättre affärer.</title>
-    <meta name="description" content="Norrsyn går igenom den svenska B2B-marknaden åt er och levererar Briefs: rätt bolag, rätt personer, bekräftade affärssignaler och en färdig ingång till första samtalet. Skicka era egna strategiska accounts för fördjupad analys." />
-    <meta name="robots" content="index, follow" />
+    <meta name="description" content="Norrsyn hittar rätt kunder åt svenska B2B-bolag: vi går igenom marknaden, bekräftar behov, person och tidpunkt och levererar färdiga Briefs inför första samtalet." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="language" content="Swedish" />
+    <meta name="application-name" content="Norrsyn" />
+    <meta name="theme-color" content="#0C1310" />
     <link rel="canonical" href="https://norrsyn.se/" />
 
-    <!-- OpenGraph (LinkedIn / Slack / Social) -->
+    <!-- OpenGraph (LinkedIn / Slack / Social). The landscape card first; a
+         square brand mark second, for surfaces that crop to a square. -->
     <meta property="og:title" content="Norrsyn – Rätt kunder. Bättre affärer." />
-    <meta property="og:description" content="Norrsyn går igenom den svenska B2B-marknaden åt er och levererar Briefs: rätt bolag, rätt personer, bekräftade affärssignaler och en färdig ingång till första samtalet. Skicka era egna strategiska accounts för fördjupad analys." />
+    <meta property="og:description" content="Norrsyn hittar rätt kunder åt svenska B2B-bolag: vi går igenom marknaden, bekräftar behov, person och tidpunkt och levererar färdiga Briefs inför första samtalet." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://norrsyn.se/" />
     <meta property="og:image" content="https://norrsyn.se/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Norrsyn – Rätt kunder. Bättre affärer." />
+    <meta property="og:image" content="https://norrsyn.se/og-square.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="og:image:alt" content="Norrsyn" />
     <meta property="og:site_name" content="Norrsyn" />
     <meta property="og:locale" content="sv_SE" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Norrsyn – Rätt kunder. Bättre affärer." />
-    <meta name="twitter:description" content="Norrsyn går igenom den svenska B2B-marknaden åt er och levererar Briefs: rätt bolag, rätt personer, bekräftade affärssignaler och en färdig ingång till första samtalet. Skicka era egna strategiska accounts för fördjupad analys." />
+    <meta name="twitter:description" content="Norrsyn hittar rätt kunder åt svenska B2B-bolag: vi går igenom marknaden, bekräftar behov, person och tidpunkt och levererar färdiga Briefs inför första samtalet." />
     <meta name="twitter:image" content="https://norrsyn.se/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Norrsyn – Rätt kunder. Bättre affärer." />
 
-    <!-- Structured Data (Schema Markup) -->
+    <!-- Structured data. Norrsyn is the brand, the service and this website;
+         NRSYN AB is the Swedish company that operates it. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": "https://norrsyn.se/#organization",
-      "name": "Norrsyn",
-      "legalName": "NRSYN AB",
-      "alternateName": "NRSYN AB",
-      "url": "https://norrsyn.se",
-      "description": "Norrsyn går igenom den svenska B2B-marknaden åt er och levererar Briefs: rätt bolag, rätt personer, bekräftade affärssignaler och en färdig ingång till första samtalet. Skicka era egna strategiska accounts för fördjupad analys. Norrsyn är ett varumärke och en tjänst från NRSYN AB.",
-      "disambiguatingDescription": "NRSYN AB, Jönköping. Ej att förväxla med Norrsyn AI HB.",
-      "logo": "https://norrsyn.se/norrsyn-icon.png",
-      "email": "info@norrsyn.se",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Jönköping",
-        "addressCountry": "SE"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "sales",
-        "email": "info@norrsyn.se",
-        "areaServed": "SE",
-        "availableLanguage": ["sv"]
-      },
-      "slogan": "Rätt kunder. Bättre affärer.",
-      "knowsAbout": [
-        "Account Intelligence",
-        "Account-Based Marketing",
-        "Account-Based Sales",
-        "Sales Intelligence",
-        "Market Intelligence",
-        "B2B-prospektering"
-      ],
-      "sameAs": []
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://norrsyn.se/#organization",
+          "name": "NRSYN AB",
+          "alternateName": "Norrsyn",
+          "url": "https://norrsyn.se/",
+          "logo": {
+            "@type": "ImageObject",
+            "@id": "https://norrsyn.se/#logo",
+            "url": "https://norrsyn.se/norrsyn-logo-512.png",
+            "contentUrl": "https://norrsyn.se/norrsyn-logo-512.png",
+            "width": 512,
+            "height": 512,
+            "caption": "Norrsyn"
+          },
+          "image": { "@id": "https://norrsyn.se/#logo" },
+          "brand": {
+            "@type": "Brand",
+            "@id": "https://norrsyn.se/#brand",
+            "name": "Norrsyn",
+            "slogan": "Rätt kunder. Bättre affärer.",
+            "logo": { "@id": "https://norrsyn.se/#logo" }
+          },
+          "description": "NRSYN AB är det svenska aktiebolag i Jönköping som driver Norrsyn: research och account intelligence för B2B-försäljning.",
+          "disambiguatingDescription": "Norrsyn (norrsyn.se) drivs av NRSYN AB i Jönköping. NRSYN AB har ingen koppling till Norrsyn AI HB.",
+          "email": "info@norrsyn.se",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Jönköping",
+            "addressCountry": "SE"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "email": "info@norrsyn.se",
+            "areaServed": "SE",
+            "availableLanguage": ["sv"]
+          },
+          "areaServed": { "@type": "Country", "name": "Sverige" }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://norrsyn.se/#website",
+          "url": "https://norrsyn.se/",
+          "name": "Norrsyn",
+          "description": "Norrsyn hittar rätt kunder åt svenska B2B-bolag: vi går igenom marknaden, bekräftar behov, person och tidpunkt och levererar färdiga Briefs inför första samtalet.",
+          "publisher": { "@id": "https://norrsyn.se/#organization" },
+          "inLanguage": "sv-SE"
+        },
+        {
+          "@type": "Service",
+          "@id": "https://norrsyn.se/#service",
+          "name": "Norrsyn",
+          "serviceType": "Account intelligence och research för B2B-försäljning",
+          "provider": { "@id": "https://norrsyn.se/#organization" },
+          "brand": { "@id": "https://norrsyn.se/#brand" },
+          "url": "https://norrsyn.se/",
+          "areaServed": { "@type": "Country", "name": "Sverige" },
+          "availableLanguage": ["sv"],
+          "description": "Norrsyn går igenom den svenska B2B-marknaden åt er, bekräftar behov, rätt person och rätt tidpunkt bolag för bolag, och levererar Briefs med en färdig ingång till första samtalet. Ni kan också skicka in egna accounts för fördjupad analys."
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://norrsyn.se/#webpage",
+          "url": "https://norrsyn.se/",
+          "name": "Norrsyn – Rätt kunder. Bättre affärer.",
+          "description": "Norrsyn hittar rätt kunder åt svenska B2B-bolag: vi går igenom marknaden, bekräftar behov, person och tidpunkt och levererar färdiga Briefs inför första samtalet.",
+          "isPartOf": { "@id": "https://norrsyn.se/#website" },
+          "about": { "@id": "https://norrsyn.se/#service" },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://norrsyn.se/og-image.jpg",
+            "width": 1200,
+            "height": 630
+          },
+          "inLanguage": "sv-SE"
+        }
+      ]
     }
     </script>
 
