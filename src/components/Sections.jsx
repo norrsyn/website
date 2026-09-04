@@ -79,21 +79,25 @@ export const Handoff = () => {
 // through — investigated, qualified, remaining — with the remaining share in
 // a muted violet that appears nowhere else on the site, so "not yet worked"
 // reads as its own category rather than another green state. Proportions
-// echo the demo cohort (3 120 of an 18 400-company relevant market) and are
+// echo the demo cohort (3 120 of a 31 000-company industry universe) and are
 // labelled illustrative. No fake live data.
 // ==========================================================================
 /* The portal's own market story, five stages, in the portal's own words.
-   Proportions echo the demo cohort (3 120 searched of 5 900 estimated to match,
-   inside an 18 400-company industry universe) and are labelled illustrative.
+   The numbers are the page's one funnel (FUNNEL in story.jsx): 31 000 in the
+   industry universe, 3 120 matching the requirement profile, 388 held, 96
+   deep-researched so far, 24 delivered — and are labelled illustrative.
    No fake live data. */
 const STAGES = [
   {
-    v: '18 400', l: 'Ert branschuniversum', n: 'Aktiva bolag i de branscher ni säljer till.', k: 'universe',
+    v: '31\u00a0000', l: 'Ert branschuniversum', n: 'Aktiva bolag i de branscher ni säljer till. Bolagsverket och SCB.', k: 'universe',
     // The estimate belongs to the universe, as it does in the portal.
-    ext: { v: '5 900', l: 'uppskattas matcha er profil', n: 'Statistisk uppskattning — inte en namnlista.' },
   },
-  { v: '3 120', l: 'Genomsökta av Norrsyn', n: 'Hittills. Vi fortsätter tills hela uppskattningen är genomgången.', k: 'searched' },
-  { v: '96', l: 'Har hittills kvalificerat sig', n: 'Djupresearch mot er kravbild.', k: 'qualified' },
+  { v: '3\u00a0120', l: 'Matchar er kravbild', n: 'Avgränsade av er OfferBrain: en namnlista, inte en uppskattning.', k: 'cohort' },
+  { v: '388', l: 'Håller i granskningen', n: 'Rätt bransch, storlek, geografi och systemmiljö. Regelstyrt.', k: 'held' },
+  {
+    v: '96', l: 'Djupresearchade hittills', n: 'Vi fortsätter tills alla 388 är genomgångna.', k: 'searched',
+    ext: { v: '292', l: 'återstår', n: 'Det som redan är undersökt kommer inte tillbaka som nytt.' },
+  },
   { v: '24', l: 'Levererade i briefs', n: 'Granskade av analytiker.', k: 'delivered' },
 ];
 
@@ -128,8 +132,8 @@ export const Tam = () => {
             <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-lg mb-4">
               Varje leverans arbetar igenom en del av marknaden. I portalen ser
               ni hela vägen: hur stort ert branschuniversum är, hur många som
-              uppskattas matcha er profil, hur mycket vi har gått igenom, vad
-              som har kvalificerat sig och vad som har levererats.
+              matchar er kravbild, hur många som håller, hur långt researchen
+              har kommit och vad som har levererats.
             </p>
             <p data-tam className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-lg">
               Det som redan är undersökt kommer inte tillbaka som nytt, och det

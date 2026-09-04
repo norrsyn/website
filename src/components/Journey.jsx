@@ -25,7 +25,7 @@ import '../journey.css';
 // Walkthrough instead.
 // ==========================================================================
 
-function Layer({ id, n, tag, lead, title, body, foot, children, wide }) {
+function Layer({ id, n, tag, lead, title, tally, body, foot, children, wide }) {
   return (
     <div className="jy-layer" data-ch={id}>
       <div className="jy-node jr-node" aria-hidden="true">
@@ -33,7 +33,7 @@ function Layer({ id, n, tag, lead, title, body, foot, children, wide }) {
         <span className="jr-node-num">{n}</span>
       </div>
       <div className="jy-copy">
-        <Head tag={tag} lead={lead} title={title}>{body}</Head>
+        <Head tag={tag} lead={lead} title={title} tally={tally}>{body}</Head>
       </div>
       <div className={`jy-art${wide ? ' jy-art-wide' : ''}`}>
         {children}
@@ -72,13 +72,11 @@ export default function Journey() {
       block: block.current, cursor: cursor.current, collapse: collapse.current,
       cue: cue.current, foot: foot.current,
       scrim: fr.querySelector('.hf-scrim-nav'),
-      statement: fr.querySelector('.hf-statement'),
       fades: Array.from(fr.querySelectorAll('[data-hf-fade]')),
       texts: Array.from(fr.querySelectorAll('[data-hf-text]')),
       cascade: {
         lines: Array.from(fr.querySelectorAll('[data-ln]')),
         block: fr.querySelector('[data-thought]'),
-        statement: Array.from(fr.querySelectorAll('[data-st]')),
       },
     };
     const ctlEl = ctl.current;
@@ -89,7 +87,8 @@ export default function Journey() {
       dots: new Map(Array.from(ctlEl.querySelectorAll('.jy-dots [data-go]')).map((d) => [d.dataset.go, d])),
     };
     const journey = createJourney({
-      wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control, end: { el: endEl.current },
+      wrap: wrap.current, frame: fr, canvas: canvas.current, layers, hero, control,
+      end: { el: endEl.current, parts: Array.from(endEl.current.children) },
     });
     journey.measure();
 

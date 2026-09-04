@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from '../lib/cohort.js';
 import { LayoutGrid, Send, Building2, ScanSearch, FileText } from 'lucide-react';
-import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS } from './story.jsx';
+import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS, FUNNEL } from './story.jsx';
 
 // ==========================================================================
 // THE CHAPTERS — one source of truth for the story's data, copy and
@@ -38,10 +38,29 @@ function Quoted({ text }) {
   );
 }
 
-export function Head({ tag, lead, title, children }) {
+/** The funnel, one line: the current count lit, what came before settled,
+ *  what remains ahead faint — so every chapter says how many are left. */
+export function Tally({ step, note }) {
+  return (
+    <div className="jr-tally" aria-label={`${FUNNEL[step].v} bolag ${note}`}>
+      {FUNNEL.map((f, i) => (
+        <Fragment key={f.k}>
+          {i > 0 && <span className="jr-tally-sep" aria-hidden="true">›</span>}
+          <span className="jr-tally-n" data-state={i < step ? 'past' : i === step ? 'now' : 'next'}>{f.v}</span>
+        </Fragment>
+      ))}
+      <span className="jr-tally-note">{note}</span>
+    </div>
+  );
+}
+
+export function Head({ tag, lead, title, tally, children }) {
   return (
     <header className="jr-head">
-      <div data-rv className="eyebrow text-green mb-4">{tag}</div>
+      <div data-rv className="jr-head-row">
+        <div className="eyebrow text-green">{tag}</div>
+        {tally && <Tally step={tally.step} note={tally.note} />}
+      </div>
       <h2 data-rv className="jr-title st">
         {lead && <span className="st-lead">{lead}</span>}
         <span className="st-display display"><Quoted text={title} /></span>
@@ -119,7 +138,7 @@ export function Ledger() {
 export function MarketMap() {
   return (
     <div data-wk-map className="jr-map">
-      <span className="jr-map-label" aria-hidden="true">Den möjliga marknaden</span>
+      <span className="jr-map-label" aria-hidden="true">Branschuniversum · 31{'\u00a0'}000 bolag</span>
       <div data-wk-bound className="jr-bound">
         <span className="jr-bound-label">Kravbilden avgränsar</span>
         <div

@@ -207,7 +207,10 @@
 .jy-layer[data-ch="s6"] .pm-rail,
 .jy-layer[data-ch="s6"] .pm-head,
 .jy-layer[data-ch="s6"] .pm-list { opacity: calc(1 - var(--pm-out, 0)); }
-.jy-layer[data-ch="s6"] .pm-brief-lift { transform-origin: top left; will-change: transform; }
+/* No will-change and no 3D transform on the growing Brief: a promoted layer
+   is rasterised once at its small size and upscaled blurry; painted in
+   place, its type is rasterised at the size it is shown. */
+.jy-layer[data-ch="s6"] .pm-brief-lift { transform-origin: top left; }
 /* Once the portal's chrome has gone, its box stops clipping: the Brief may
    grow past where the portal was. */
 .jy-layer[data-ch="s6"][data-out="1"] .pm { overflow: visible; }
@@ -223,9 +226,10 @@
   top: 12vh;
   width: min(48rem, var(--jy-cw, 1056px));
   z-index: 12;
-  opacity: 0;
   pointer-events: none;
 }
+/* Its eyebrow, heading and paragraph rise into place one after the other. */
+.jy-end > * { opacity: 0; will-change: transform, opacity; }
 .jy-end .eyebrow { color: rgba(21, 24, 26, 0.6); margin-bottom: 1.1rem; }
 .jy-end .st-display { color: #15181A; }
 .jy-end p { margin-top: 0.9rem; max-width: 36rem; font-size: 15px; line-height: 1.7; color: #454B50; }

@@ -33,7 +33,7 @@
 import { createField } from './field.js';
 import {
   path, lengthAtY, polyPoint, strokeLine, smooth, clamp01, lerp,
-  green, greenHi, TAU, paintNodeAt,
+  green, greenHi, OFFS, TAU, paintNodeAt,
 } from './stage.js';
 import {
   problemetScene, s1Scene, s2Scene, s3Scene, s4Scene, s5Scene, s6Scene,
@@ -45,15 +45,18 @@ export const T = 0.5; // the travel between chapters, in viewports of scroll
 // The first scroll answers at once: the market begins to fall into the line
 // on the first notch of the wheel, and Problemet has risen within a viewport
 // and a bit. Its arrival is the one travel that is watched, so it is longer.
-const TIN = { ph: 0.65 };
+// Problemet rises slowly, while the market is still settling into the line:
+// the passage lands inside it rather than cutting to it.
+const TIN = { ph: 0.8 };
 // Scroll per chapter, arrival and departure included: every artefact gets
-// the time to be seen.
-const DWELL = [['ph', 1.9], ['s1', 2.1], ['s2', 1.7], ['s3', 1.85], ['s4', 2.0], ['s5', 2.0], ['s6', 2.0]];
+// the time to be seen; 06 has room for the Brief to open before the ending.
+const DWELL = [['ph', 1.9], ['s1', 2.1], ['s2', 1.7], ['s3', 1.85], ['s4', 2.0], ['s5', 2.0], ['s6', 2.2]];
 // The passage: the market collapses over 2.4 viewports of scroll while the
-// thought is written down the page; Problemet rises after a short hold.
+// thought is written down the page and holds; Problemet begins to rise
+// before the collapse is quite over.
 export const WIN = { hero: [0, 0], collapse: [0, 2.4] };
 {
-  let t0 = 2.55;
+  let t0 = 2.25;
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
   WIN.out = [e6, e6 + 0.12];
@@ -80,6 +83,7 @@ const CREEP = 0.08;
 const FLOW = 1.2;
 
 const railXFor = (w) => (w < 640 ? 17 : Math.max(16, w / 2 - 576 + 17.6) + 1);
+const drift = (i, y) => Math.sin(y / (460 + i * 41) + i * 1.3) * 0.8;
 /** The travel's ease: still at both ends, heavy in the middle. */
 const q5 = (t) => { t = clamp01(t); return t * t * t * (t * (t * 6 - 15) + 10); };
 const FOREST = [12, 19, 16];
@@ -128,12 +132,13 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
     // before the next section's paper can enter the frame from below: the
     // field clears to the paper the Brief lands on, and the two papers meet
     // as one colour.
-    st.out = smooth(WIN.out[0] - 0.5, WIN.out[0] - 0.05, u);
-    // In two movements: first the portal's surroundings recede and the Brief
-    // is left alone in the dark; then the world warms to paper around it and
-    // it grows into the head of the document that follows.
-    st.chrome = smooth(0, 0.42, st.out);
-    st.world = smooth(0.4, 1, st.out);
+    st.out = smooth(WIN.out[0] - 0.7, WIN.out[0] - 0.05, u);
+    // Two overlapping movements: the portal's surroundings recede and the
+    // signal drains into the Brief, which starts growing at once; the world
+    // warms to paper around it as it becomes the head of the document.
+    st.chrome = smooth(0, 0.45, st.out);
+    st.world = smooth(0.3, 0.85, st.out);
+    geo.drain = st.chrome;
     // The field re-emerges, faint, as Problemet rises out of the hero.
     st.amb = smooth(WIN.collapse[1] - 0.08, WIN.collapse[1] + 0.4, u);
     holes.length = 0;
@@ -187,7 +192,7 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
 
   /* ── DOM ───────────────────────────────────────────────────────────── */
   const sm = (a, b, v) => smooth(a, b, v);
-  let lastP = -1, lastHeroDy = null, lastStOp = null;
+  let lastP = -1, lastHeroDy = null;
   function applyHero(p) {
     if (p !== lastP) {
       lastP = p;
@@ -200,14 +205,10 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       hero.cue.style.opacity = String(1 - sm(0, 0.06, p));
       hero.foot.style.opacity = String(1 - sm(0, 0.1, p));
     }
-    // The passage runs on the collapse's clock and keeps running past it,
-    // so its last lines ride up with the hero as Problemet rises.
-    applyCascade(hero.cascade, (st.u - WIN.collapse[0]) / (WIN.collapse[1] - WIN.collapse[0]));
-    // The statement goes as Problemet takes the frame; the underscore stays.
-    if (hero.statement) {
-      const so = (1 - sm(0.15, 0.5, -st.dyHero / H)).toFixed(3);
-      if (so !== lastStOp) { lastStOp = so; hero.statement.style.opacity = so; }
-    }
+    // The passage runs on the collapse's clock; the thought leaves only as
+    // Problemet takes the frame — riding up with the hero, fading from the
+    // top down — so the descent is one movement. The underscore stays.
+    applyCascade(hero.cascade, (st.u - WIN.collapse[0]) / (WIN.collapse[1] - WIN.collapse[0]), clamp01(-st.dyHero / H));
     const key = st.dyHero.toFixed(1);
     if (key !== lastHeroDy) {
       lastHeroDy = key;
@@ -238,31 +239,50 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       if (L.copy.style.filter !== fs) L.copy.style.filter = fs;
       if (L.hand) L.hand.style.opacity = String(sm(a + tin + 0.25, a + tin + 0.45, st.u));
     }
-    // The ending. First the portal's surroundings recede; then the world
-    // warms to paper and the Brief grows to the width of the document below,
-    // ending flush with the bottom of the frame, where that document begins.
+    // The ending. The portal's surroundings recede and the signal drains into
+    // the Brief, which begins to grow at once; the world warms to paper and
+    // the Brief lands at the width of the document below, flush with the
+    // bottom of the frame, where that document begins; its words rise above.
     if (st.out !== lastOut) {
       lastOut = st.out;
+      const o = st.out;
       const k = st.world;
       const c = FOREST.map((v, i) => Math.round(lerp(v, MIST[i], k)));
       frame.style.backgroundColor = `rgb(${c[0]},${c[1]},${c[2]})`;
       frame.style.setProperty('--jy-vig', (1 - k).toFixed(3));
-      // The line delivered; it goes with the portal, not after it.
-      canvas.style.opacity = String(1 - st.chrome);
+      // The market's dust stays in the dark and goes with the paper.
+      canvas.style.opacity = String(1 - k);
       const L6 = layers.s6;
       L6.el.style.setProperty('--pm-out', st.chrome.toFixed(3));
-      const outAttr = st.chrome >= 0.999 ? '1' : '0';
+      // The box stops clipping the moment the Brief starts to move.
+      const outAttr = o > 0.001 ? '1' : '0';
       if (L6.el.dataset.out !== outAttr) L6.el.dataset.out = outAttr;
       L6.el.style.setProperty('--jy-brief-end', k.toFixed(3));
       if (L6.lift && L6.flip) {
-        const e = q5(k);
+        // The Brief grows the whole way through — never a small card alone.
+        const e = q5(sm(0.06, 0.92, o));
         const { dx, dy, k: kk } = L6.flip;
         const ty = dy - st.dy.s6 / L6.artScale;
-        L6.lift.style.transform = `translate3d(${(dx * e).toFixed(1)}px, ${(ty * e).toFixed(1)}px, 0) scale(${(1 + (kk - 1) * e).toFixed(4)})`;
+        L6.lift.style.transform = `translate(${(dx * e).toFixed(1)}px, ${(ty * e).toFixed(1)}px) scale(${(1 + (kk - 1) * e).toFixed(4)})`;
+      }
+      if (L6.open) {
+        // The click: "Öppna brief" takes the press, the Brief opens, and the
+        // link has done its job.
+        const press = o > 0.004 && o < 0.07 ? '1' : '0';
+        if (L6.open.dataset.press !== press) L6.open.dataset.press = press;
+        L6.open.style.opacity = (1 - sm(0.07, 0.25, o)).toFixed(3);
       }
       if (end) {
-        const eo = sm(0.55, 1, k).toFixed(3);
-        if (eo !== lastEnd) { lastEnd = eo; end.el.style.opacity = eo; }
+        // The document's words rise into the paper, one after the other.
+        const eo = o.toFixed(3);
+        if (eo !== lastEnd) {
+          lastEnd = eo;
+          end.parts.forEach((el, i) => {
+            const t = sm(0.56 + 0.08 * i, 0.82 + 0.08 * i, o);
+            el.style.opacity = t.toFixed(3);
+            el.style.transform = `translate3d(0, ${(18 * (1 - t)).toFixed(1)}px, 0)`;
+          });
+        }
       }
       // The nav's shade belongs to the dark; the paper does without it.
       if (hero.scrim) hero.scrim.style.opacity = (1 - k).toFixed(3);
@@ -351,15 +371,28 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       ctx.strokeStyle = green(0.62); ctx.lineWidth = 2; ctx.stroke();
       return;
     }
-    // One signal, from the top of the stretch to the head — and in 06 only
-    // as far as the portal, which takes it.
+    // The bundle: six strands, six criteria wide, from the top of the stretch
+    // to the head — and in 06 only as far as the portal, which takes them.
     const endY = Math.min(hv, fB, id === 's6' ? (geo.ropeEnd ?? fB) : fB, sB);
-    const y0 = Math.max(-4, sT);
+    let y0 = Math.max(-4, sT);
+    // 06's ending: the signal drains into the Brief — the bundle's top end
+    // runs down to the portal as the chrome recedes, and is gone with it.
+    if (id === 's6' && st.chrome > 0) y0 = lerp(y0, endY, st.chrome);
     if (endY <= y0) return;
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(gx, y0); ctx.lineTo(gx, endY);
-    ctx.strokeStyle = green(0.07); ctx.lineWidth = 9; ctx.stroke();
-    ctx.strokeStyle = green(0.62); ctx.lineWidth = 2; ctx.stroke();
+    const dy = st.dy[id];
+    ctx.lineWidth = 1.1; ctx.lineCap = 'round'; ctx.strokeStyle = green(0.46);
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath();
+      for (let y = y0; ; y += 18) {
+        const yy = Math.min(y, endY);
+        // The drift is a function of screen height, so two stretches meet
+        // at exactly the same x under the travel.
+        const x = gx + OFFS[i] + drift(i, yy + dy);
+        if (y === y0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+        if (yy >= endY) break;
+      }
+      ctx.stroke();
+    }
   }
 
   /** The head: a comet on the line, wherever the line is being read. */
@@ -483,15 +516,17 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
     {
       const L6 = layers.s6;
       L6.lift = L6.el.querySelector('.pm-brief-lift');
+      L6.open = L6.el.querySelector('.pm-open');
       if (L6.lift) {
         L6.lift.style.transform = '';
         const b = R(L6.lift);
         const k = colW / b.w;
         const th = b.h * k;
         L6.flip = { dx: (colL - b.l) / L6.artScale, dy: (H - th - b.t) / L6.artScale, k };
-        // The document's words sit in the middle of the paper above the Brief.
+        // The document's words sit a third of the way down, above the Brief's
+        // head: paper above them like a margin, a short gap below.
         if (end?.el) {
-          const top = Math.max(100, 0.12 * H, (H - th - end.el.offsetHeight) / 2);
+          const top = Math.max(100, Math.min(H - th - end.el.offsetHeight - 36, 0.34 * H));
           end.el.style.top = `${top.toFixed(0)}px`;
         }
       }

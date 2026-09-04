@@ -57,10 +57,6 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
           <span data-ln className="hf-ln hf-ln-main display">finns ett företag som behöver er.</span>
           <span data-ln className="hf-ln hf-ln-pay display">Vi hittar dem.</span>
         </div>
-        <div className="hf-statement">
-          <span data-st className="hf-cas st-lead">Hela marknaden går in.</span>
-          <span data-st className="hf-cas st-display display">Ett fåtal Briefs kommer ut.</span>
-        </div>
       </div>
 
       <div ref={footRef} className="hf-foot" aria-hidden="true">

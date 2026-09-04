@@ -80,9 +80,21 @@ export const PH_BODY =
 export const PH_HAND =
   'Därför börjar vi inte med en lista. Vi börjar med vad rätt betyder för er.';
 
+// The funnel: ONE set of numbers used everywhere on the page — the six
+// chapters, the market-over-time view and the Brief. Illustrative, and the
+// same in every place so the reader can follow how many are left.
+export const FUNNEL = [
+  { k: 'universe', v: '31\u00a0000', l: 'i ert branschuniversum' },
+  { k: 'cohort', v: '3\u00a0120', l: 'matchar er kravbild' },
+  { k: 'held', v: '388', l: 'håller i granskningen' },
+  { k: 'deep', v: '96', l: 'går till djupresearch' },
+  { k: 'qualified', v: '24', l: 'kvalificerade' },
+];
+
 export const COPY = {
   s1: {
     n: '01', tag: '01 · Kravbilden', title: '”Först definierar vi vad rätt betyder.”',
+    tally: { step: 0, note: 'aktiva bolag i ert branschuniversum' },
     body: (
       <>
         Det gör vi tillsammans med er. Vad ni säljer, vilka som realistiskt
@@ -95,17 +107,19 @@ export const COPY = {
   },
   s2: {
     n: '02', tag: '02 · Marknaden', title: '”Hela marknaden är inte er marknad.”',
+    tally: { step: 1, note: 'kvar efter kravbilden' },
     body: (
       <>
-        Er kravbild ringar in de bolag som är värda att undersöka. I det
-        här exemplet: 3&nbsp;120 bolag, som vi följer genom resten av
-        processen.
+        Er kravbild ringar in de bolag som är värda att undersöka: i det
+        här exemplet 3&nbsp;120 av de 31&nbsp;000 bolagen i ert
+        branschuniversum. Dem följer vi genom resten av processen.
       </>
     ),
-    foot: 'Punkterna utanför ramen är den bredare möjliga marknaden. Siffrorna är illustrativa; ett streck motsvarar tio bolag.',
+    foot: 'Punkterna utanför ramen är branschuniversumet: 31\u00a0000 aktiva bolag i de branscher ni säljer till. Siffrorna är illustrativa; ett streck motsvarar tio bolag.',
   },
   s3: {
     n: '03', tag: '03 · Granskningen', title: '”Det mesta ska bort.”',
+    tally: { step: 2, note: 'kvar efter granskningen' },
     body: 'Sedan sorterar vi bort de bolag som inte passar: fel bransch, fel storlek, fel geografi eller något som diskvalificerar direkt. Det steget är rent regelstyrt. Samma kravbild ger alltid samma urval, och ingenting slinker igenom för att det låter lovande.',
     foot: (
       <>
@@ -117,16 +131,19 @@ export const COPY = {
   },
   s4: {
     n: '04', tag: '04 · Researchen', title: '”Bolagen som sticker ut granskas på djupet.”',
+    tally: { step: 3, note: 'går till djupresearch' },
     body: 'Förändringar lämnar spår: en ny beslutsfattare, en rekrytering, ett nytt lager, ett systembyte. Vi bevakar bolagen som håller, och när något börjar hända går vi närmare.',
     foot: 'Förenklad illustration. Samma bolag som höll i 03; färgerna markerar olika slags signaler. Bolagen och signalerna är fiktiva.',
   },
   s5: {
     n: '05', tag: '05 · Bedömningen', title: '”Men intressant räcker inte.”',
+    tally: { step: 4, note: 'kvalificerade av 96' },
     body: 'Ett bolag kan vara intressant utan att vara rätt för er. Varje kandidat prövas mot er kravbild från 01, och den avgörande frågan är alltid densamma: gör det som hänt bolaget relevant för det ni säljer?',
-    foot: 'Förenklad illustration. Bolagen som håller får ett av fyra omdömen, A till D. Av 96 djupanalyserade bolag går 24 vidare till leverans; resten faller på kravbilden.',
+    foot: 'Förenklad illustration. Bolagen som håller får ett av fyra omdömen, A till D. Av 96 djupresearchade bolag går 24 vidare till leverans; resten faller på kravbilden.',
   },
   s6: {
     n: '06', tag: '06 · Briefen', title: '”De starkaste fallen blir Briefs.”',
+    tally: { step: 4, note: 'levererade i briefs · 6 den här veckan' },
     body: (
       <>
         För varje bolag som håller hela vägen skriver vi en{' '}

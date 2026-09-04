@@ -139,7 +139,7 @@ export default function BriefExample() {
         .from('[data-brief-group]', { opacity: 0, duration: 0.5, stagger: 0.07 }, 0.35)
         .from('[data-brief-block]', { opacity: 0, y: 8, duration: 0.55, stagger: 0.04 }, 0.4)
         .from('[data-brief-dim]', { opacity: 0, duration: 0.4, stagger: 0.04 }, 0.5)
-        .from('[data-brief-badge]', { opacity: 0, duration: 0.5, stagger: 0.04 }, 0.85)
+        .from('.brief-sheet [data-brief-badge]', { opacity: 0, duration: 0.5, stagger: 0.04 }, 0.85)
         .from('[data-brief-src]', { opacity: 0, duration: 0.4, stagger: 0.03 }, 0.95);
     }, root);
     return () => ctx.revert();
@@ -491,14 +491,16 @@ export default function BriefExample() {
         </article>
 
         <div className="mt-6 grid md:grid-cols-12 gap-6">
-          <p className="md:col-span-7 text-[12.5px] text-ink-4 leading-[1.7] max-w-[52ch]">
-            Varje uppgift bär sin källa och en av tre nivåer:{' '}
-            <Badge tier="ok" /> belagt av en källa ni kan öppna själva,{' '}
-            <Badge tier="mid" /> sannolikt utifrån ett mönster och värt att
-            bekräfta i samtalet, <Badge tier="low" /> vår tolkning, aldrig
-            framställd som fakta. Bedömningen A till D sammanfattar hur väl
-            bolaget svarar mot er kravbild: A är en stark match, D faller
-            utanför den.
+          {/* A reading note, not a rule: what the marks mean, in passing. */}
+          <p className="md:col-span-7 brief-legend">
+            <span className="brief-legend-k">Så läser ni markeringarna</span>
+            <span className="brief-legend-i"><Badge tier="ok" /> källa ni kan öppna själva</span>
+            <span className="brief-legend-sep" aria-hidden="true">·</span>
+            <span className="brief-legend-i"><Badge tier="mid" /> mönster, värt att bekräfta i samtalet</span>
+            <span className="brief-legend-sep" aria-hidden="true">·</span>
+            <span className="brief-legend-i"><Badge tier="low" /> vår tolkning</span>
+            <span className="brief-legend-sep" aria-hidden="true">·</span>
+            <span className="brief-legend-i"><b>A–D</b> hur väl bolaget svarar mot er kravbild</span>
           </p>
           <p className="md:col-span-5 font-mono text-[10.5px] text-ink-3 leading-[1.7]">
             Illustrativt demoexempel. Bolaget, siffrorna och personerna är

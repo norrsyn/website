@@ -1791,12 +1791,43 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 3px;
   padding: 1px 5px;
 }
-.pm-open { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 500; color: #454B50; }
-.pm-open i { font-style: normal; }
+.pm-open { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 500; color: #454B50; border-radius: 4px; }
+.pm-open i { font-style: normal; display: inline-block; }
+/* The click: on the single-frame page the link takes the press just before
+   the Brief opens (a box-shadow, so nothing reflows), then it has done its
+   job and goes. */
+.pm-open[data-press="1"] { color: #2E6E55; background: rgba(46, 110, 85, 0.12); box-shadow: 0 0 0 5px rgba(46, 110, 85, 0.12); }
+.pm-open[data-press="1"] i { transform: translateX(2px); }
 @media (max-width: 767px) {
   .pm-rail { display: none; }
   .pm-main { padding: 0.9rem 0.9rem 1rem; }
   .pm-row { grid-template-columns: 1fr auto; gap: 4px 8px; }
   .pm-date, .pm-chev { display: none; }
   .pm-state { grid-column: 1; justify-self: start; }
+}
+
+/* ── The tally: the funnel in one line, in every chapter head ───────────
+   The current count lit, what came before settled, what remains ahead
+   faint — so each step says how many are left, quietly. */
+.jr-head-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; margin-bottom: 1rem; }
+.jr-tally {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 7px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.3);
+  font-variant-numeric: tabular-nums;
+}
+.jr-tally-n { white-space: nowrap; }
+.jr-tally-n[data-state="past"] { color: rgba(255, 255, 255, 0.5); }
+.jr-tally-n[data-state="now"] { color: #58B892; font-weight: 500; }
+.jr-tally-n[data-state="next"] { color: rgba(255, 255, 255, 0.24); }
+.jr-tally-sep { color: rgba(255, 255, 255, 0.2); }
+.jr-tally-note { margin-left: 5px; letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.42); }
+@media (max-width: 639px) {
+  .jr-head-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .jr-tally-note { flex-basis: 100%; margin-left: 0; }
 }

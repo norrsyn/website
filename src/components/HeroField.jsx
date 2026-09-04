@@ -67,13 +67,14 @@ export default function HeroField() {
     const casItems = {
       lines: Array.from(collapse.current.querySelectorAll('[data-ln]')),
       block: collapse.current.querySelector('[data-thought]'),
-      statement: Array.from(collapse.current.querySelectorAll('[data-st]')),
     };
     const pExt = () => (span > 0 ? Math.max(0, (window.scrollY - wrapTop) / span) : 0);
+    // Past the pin the hero scrolls away; the thought fades as it goes.
+    const runCascade = () => { const pe = pExt(); applyCascade(casItems, pe, smooth(1, 1.3, pe)); };
     let casRaf = 0;
     const onCasScroll = () => {
       if (casRaf) return;
-      casRaf = requestAnimationFrame(() => { casRaf = 0; applyCascade(casItems, pExt()); });
+      casRaf = requestAnimationFrame(() => { casRaf = 0; runCascade(); });
     };
     window.addEventListener('scroll', onCasScroll, { passive: true });
 
@@ -98,7 +99,7 @@ export default function HeroField() {
 
     layout();
     applyP(progress());
-    applyCascade(casItems, pExt());
+    runCascade();
     const ro = new ResizeObserver(layout);
     ro.observe(sec);
     ro.observe(block.current);
