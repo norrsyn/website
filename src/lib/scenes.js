@@ -197,6 +197,7 @@ export function s1Scene(el, R = docRect) {
   const TURN = (i) => 13 + i * 2.2;      // nested right corner
   const FOLD = (i) => 26 - i * 2.2;      // nested left corner
   const NECK = (i) => -2.75 + i * 1.1;   // spindle entry offsets
+  const lag = (h) => (h > hb ? Math.min(h, y0 + 2.5 * (h - hb)) : -Infinity);
 
   return {
     el, bg: '#0C1310', t: 0, b: 0, node: null,
@@ -275,6 +276,17 @@ export function s1Scene(el, R = docRect) {
     // The head rides the spine until the fold; from there the ledger's own
     // tips carry it — with a fade, never a cut.
     cometAlpha(y) { return !entry ? 1 : smooth(foldY - 40, foldY - 110, y); },
+    /** The spindle: six strands from the neck down into the bundle. */
+    paintLine(ctx, f) {
+      if (!desktop || !entry) return;
+      const hl = lag(f.head);
+      if (hl <= neckY) return;
+      C.forEach((P) => {
+        const s = lengthAtY(P, hl);
+        if (s > 0) strokeLine(ctx, P, s, { alpha: 0.55, width: 1.1, tip: false, yTop: f.top, yBot: f.bot });
+      });
+      if (hl < (f.geo.spindleEnd ?? sec.b)) drawTip(ctx, f.geo.railX, hl, 0.8, 9);
+    },
     paint(ctx, f) {
       const h = f.head;
       // The ledger is read in turn as the head physically reaches each row:
@@ -311,7 +323,7 @@ export function s1Scene(el, R = docRect) {
       if (lanesGrowing) drawTip(ctx, LANE(0) + (lanesLive - 1) * 1.1, Math.min(h, home[0] - TURN(0)), 0.85, 8);
       // The lagged head: parked at the fold's end while the ribbon runs home,
       // then catching the real head at two and a half times its speed.
-      const hl = h > hb ? Math.min(h, y0 + 2.5 * (h - hb)) : -Infinity;
+      const hl = lag(h);
       B.forEach((P, i) => {
         const b0 = home[i] - TURN(i) + 40;
         const bt = band(b0, b0 + 110)(h);
@@ -320,13 +332,10 @@ export function s1Scene(el, R = docRect) {
         if (bt >= 1) s = Math.max(s, lengthAtY(P, hl));
         strokeLine(ctx, P, s, { alpha: 0.5, width: 1, tip: false, yTop: yT, yBot: yB });
       });
-      if (hl > neckY) {
-        C.forEach((P) => {
-          const s = lengthAtY(P, hl);
-          if (s > 0) strokeLine(ctx, P, s, { alpha: 0.55, width: 1.1, tip: false, yTop: yT, yBot: yB });
-        });
-        if (hl < (f.geo.spindleEnd ?? sec.b)) drawTip(ctx, f.geo.railX, hl, 0.8, 9);
-      }
+      // The spindle belongs to the line: on the single-frame page it is
+      // painted with the line, at the line's own alpha, so it meets 02's
+      // bundle without a step.
+      if (!f.lineSeparate) this.paintLine(ctx, f);
       const la = band(neckY + 120, neckY + 180)(h);
       if (la > 0 && labelAt) {
         ctx.beginPath();

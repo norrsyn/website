@@ -446,13 +446,18 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       const dy = st.dy[id];
       const f = {
         now, dt: 0, sy: 0, W, H, dpr, head: hv,
-        top: -dy - 200, bot: H - dy + 200, reduced: false, desktop: true, geo, pulse() {},
+        top: -dy - 200, bot: H - dy + 200, reduced: false, desktop: true, geo, pulse() {}, lineSeparate: true,
       };
       ctx.save();
-      ctx.globalAlpha = o;
       ctx.translate(0, dy);
+      // The line is one line: its stretches are painted at full strength
+      // whatever the chapter's own opacity, so two stretches meet under the
+      // travel without a step. The chapter's marks fade with the chapter.
+      ctx.globalAlpha = 1;
       paintSpine(id, L, hv, -dy - 4, H - dy + 4);
       if (L.node) paintNodeAt(ctx, gx, L.node.y, hv);
+      if (scenes[id].paintLine) scenes[id].paintLine(ctx, f);
+      ctx.globalAlpha = o;
       scenes[id].paint(ctx, f);
       ctx.restore();
     }

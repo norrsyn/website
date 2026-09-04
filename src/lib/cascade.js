@@ -13,7 +13,7 @@ import { smooth, lerp } from './stage.js';
 
 // Where each line of the thought resolves, in collapse progress; each takes
 // 0.08 to arrive. The first waits until the hero's own words have gone.
-export const THOUGHT = [0.12, 0.22, 0.32, 0.42, 0.56];
+export const THOUGHT = [0.12, 0.22, 0.32, 0.42, 0.56, 0.66];
 
 function set(el, o, dy) {
   const key = `${o.toFixed(3)}|${dy.toFixed(1)}`;

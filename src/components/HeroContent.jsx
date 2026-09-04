@@ -55,7 +55,8 @@ export default function HeroContent({ blockRef, cursorRef, collapseRef, footRef,
           <span data-ln className="hf-ln display">någonstans i marknaden,</span>
           <span data-ln className="hf-ln display">bakom allt brus,</span>
           <span data-ln className="hf-ln hf-ln-main display">finns ett företag som behöver er.</span>
-          <span data-ln className="hf-ln hf-ln-pay display">Vi hittar dem.</span>
+          <span data-ln className="hf-ln hf-ln-pay display">Vi hittar dem,</span>
+          <span data-ln className="hf-ln hf-ln-tail display">och ger er nycklarna till att leda samtalet i mål.</span>
         </div>
       </div>
 

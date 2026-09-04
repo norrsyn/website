@@ -141,7 +141,7 @@
   color: #E7E1D4;
   max-width: 12.5em;
 }
-/* The answer: lower, larger, and the last to leave. */
+/* The answer: lower, larger, and among the last to leave. */
 .hf-ln-pay {
   margin-top: 0.85em;
   font-size: clamp(2rem, 3.7vw, 3.6rem);
@@ -150,11 +150,20 @@
   color: #fff;
   max-width: 11.5em;
 }
+/* And what follows from it, in a quieter voice, hung under the answer. */
+.hf-ln-tail {
+  margin-top: 0.55em;
+  font-size: clamp(1.3rem, 2.15vw, 2.05rem);
+  line-height: 1.22;
+  color: rgba(231, 225, 212, 0.74);
+  max-width: 17.5em;
+}
 /* Narrow screens: the serif lines wrap short of the line's x. */
 @media (max-width: 767px) {
   .hf-thought { top: 17vh; }
   .hf-ln { max-width: 9.5em; }
   .hf-ln-main, .hf-ln-pay { max-width: 8.4em; }
+  .hf-ln-tail { max-width: 12em; }
 }
 
 /* The baseline: three quiet mono marks along the bottom edge. */

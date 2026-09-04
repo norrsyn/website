@@ -1375,13 +1375,20 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.012em;
   color: #fff;
 }
+/* The four in one: behov (amber), person (blue), timing (green), passform
+   (rose), as the quadrants of a single mark. */
 .ph-hand-mark {
   flex: 0 0 auto;
   width: 13px; height: 13px;
   margin-top: 5px;
   border-radius: 2px;
-  background: rgba(214, 96, 158, 0.82);
-  box-shadow: 0 0 0 1.5px rgba(214, 96, 158, 0.28);
+  background: conic-gradient(
+    rgba(92, 155, 214, 0.85) 0 25%,
+    rgba(69, 165, 127, 0.85) 25% 50%,
+    rgba(214, 96, 158, 0.85) 50% 75%,
+    rgba(201, 160, 74, 0.85) 75% 100%
+  );
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.1);
 }
 .ph-slot {
   display: flex;
