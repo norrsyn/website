@@ -16,6 +16,7 @@ import {
   lengthAtY, green, greenHi, white, OFFS, TAU,
 } from './stage.js';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from './cohort.js';
+import { TONES, STANDOUTS, CANDIDATES } from '../components/story.jsx';
 
 const PHASE = [0, 4, 8, 2, 6, 10]; // per-strand breathing offsets
 
@@ -509,146 +510,211 @@ export function s3Scene(el, R = docRect) {
   };
 }
 
-/* ── 04: evidence is wired from its source and read against the model ─── */
-const TIER_COLOR = {
-  ok: (a) => green(a),
-  mid: (a) => `rgba(201,160,74,${a.toFixed(3)})`,
-  low: (a) => white(0.5 * a),
-};
+/* ── 04: the same field as 03; a few companies begin to stand out ────────── */
+const hexRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+const tone = (hex, a) => { const c = hexRgb(hex); return `rgba(${c[0]},${c[1]},${c[2]},${a.toFixed(3)})`; };
 
 export function s4Scene(el, R = docRect) {
-  let B, headY = 0, rows = [], fans = [];
+  let B = null, F = null, barY = 0, marks = [], stand = [], cands = [], fans = [], desktop = true;
   return {
     el, bg: '#15181A', t: 0, b: 0, node: null,
     measure(geo) {
       const sec = R(el);
       this.t = sec.t; this.b = sec.b; this.node = nodeOf(el, R);
-      const board = el.querySelector('[data-wk-board]');
-      B = R(board);
-      headY = R(board.querySelector('.cs-head')).cy;
-      rows = Array.from(el.querySelectorAll('.rs-row')).map((r) => {
-        const src = r.querySelector('[data-src]');
-        const find = r.querySelector('.rs-find');
-        const rr = R(r);
-        const sr = R(src);
-        const fr = R(find);
-        return {
-          el: r, r: rr, src, rel: r.querySelector('[data-rel]'), tier: r.dataset.tier,
-          wire: path([['M', sr.r + 8, rr.cy], ['L', fr.l - 8, rr.cy]]),
-          end: [fr.l - 8, rr.cy],
-        };
-      });
+      desktop = geo.desktop;
+      const box = el.querySelector('[data-wk-standouts]');
+      B = R(box);
+      barY = R(box.querySelector('.so-bar')).cy;
+      const fEl = el.querySelector('[data-so-field]');
+      F = R(fEl);
+      marks = Array.from(fEl.children).map(R);
+      // The standouts are survivors of 03, chosen by their place in the list
+      // of survivors, so the same companies that held are the ones that
+      // light up.
+      const survivors = [];
+      for (let i = 0; i < MARKS; i++) if (RANKS[i] < ALIVE_AFTER_03) survivors.push(i);
+      stand = STANDOUTS.map((sd) => ({ ...sd, i: survivors[Math.round(sd.at * (survivors.length - 1))] }));
+      cands = Array.from(el.querySelectorAll('[data-cand]')).map((c) => ({ el: c, key: c.dataset.cand }));
       const { railX } = geo;
-      // The model opens the file: six filaments peel off the bundle into the
-      // masthead's edge.
-      fans = geo.desktop
+      fans = desktop
         ? OFFS.map((o, i) => {
-          const y = headY - 70 + 4 * i;
-          return path([['M', railX + o, y], ['C', railX + o, y + 34, B.l - 36, headY, B.l, headY, 18]]);
+          const y = barY - 70 + 4 * i;
+          return path([['M', railX + o, y], ['C', railX + o, y + 34, B.l - 36, barY, B.l, barY, 18]]);
         })
-        : [path([['M', railX, headY - 40], ['C', railX, headY - 8, B.l - 20, headY, B.l, headY, 12]])];
+        : [path([['M', railX, barY - 40], ['C', railX, barY - 8, B.l - 20, barY, B.l, barY, 12]])];
     },
     paint(ctx, f) {
       const h = f.head;
+      if (!F) return;
       fans.forEach((P, i) => {
-        const y = f.desktop ? headY - 70 + 4 * i : headY - 40;
+        const y = desktop ? barY - 70 + 4 * i : barY - 40;
         const t = band(y, y + 100)(h);
         if (t > 0) strokeLine(ctx, P, P.len * t, { alpha: 0.55, width: 0.85, tip: false });
       });
-      if (h > headY + 50) { ctx.fillStyle = green(1); ctx.fillRect(B.l - 3, headY - 3, 6, 6); }
-      rows.forEach((row) => {
-        // The row comes into focus as the head reaches it: the file is read
-        // top to bottom, one finding at a time.
-        const eo = f.desktop ? (0.3 + 0.7 * band(row.r.t - 70, row.r.t + 6)(h)).toFixed(3) : '1';
-        if (row.el.style.opacity !== eo) row.el.style.opacity = eo;
-        // The wire: the finding is pulled from its source as the head reaches
-        // the row; the tier dot lands where the wire meets the finding.
-        const t = band(row.r.t - 30, row.r.t + 26)(h);
-        const so = String(0.45 + 0.55 * t);
-        if (row.src.style.opacity !== so) row.src.style.opacity = so;
-        if (f.desktop && t > 0) {
-          strokeLine(ctx, row.wire, row.wire.len * t, { alpha: 0.5, width: 1, tip: t < 1, tipA: 0.6 });
-          if (t >= 1) {
-            ctx.fillStyle = TIER_COLOR[row.tier](0.95);
-            ctx.beginPath(); ctx.arc(row.end[0], row.end[1], 2.6, 0, TAU); ctx.fill();
-          }
+      if (h > barY + 50) { ctx.fillStyle = green(1); ctx.fillRect(B.l - 3, barY - 3, 6, 6); }
+      // 03's struck marks leave; the survivors stay and quieten as the few
+      // light up; the camera moves toward the ones that matter.
+      const gone = band(F.t - 80, F.t + 30)(h);
+      const lit = stand.map((sd, k) => band(F.t + 10 + k * 30, F.t + 60 + k * 30)(h));
+      const quiet = band(F.t + 40, F.b + 40)(h);
+      const zoom = band(F.t + 90, F.b + 160)(h);
+      const named = stand.filter((sd) => sd.cand);
+      let cx = 0, cy = 0;
+      named.forEach((sd) => { cx += marks[sd.i].cx; cy += marks[sd.i].cy; });
+      cx /= named.length; cy /= named.length;
+      const sc = 1 + 0.1 * zoom;
+      const map = (x, y) => [cx + (x - cx) * sc, cy + (y - cy) * sc];
+      ctx.save();
+      ctx.beginPath(); ctx.rect(F.l - 6, F.t - 6, F.w + 12, F.h + 12); ctx.clip();
+      const standAt = new Map(stand.map((sd, k) => [sd.i, k]));
+      for (let i = 0; i < marks.length; i++) {
+        const m = marks[i];
+        const [x, y] = map(m.l, m.t);
+        const w = m.w * sc, hh = m.h * sc;
+        if (RANKS[i] >= ALIVE_AFTER_03) {
+          const a = 0.1 * (1 - gone);
+          if (a <= 0.005) continue;
+          ctx.strokeStyle = white(a); ctx.lineWidth = 1;
+          ctx.strokeRect(x + 0.5, y + 0.5, w - 1, hh - 1);
+          continue;
         }
-        // The reading against the model arrives only after the fact is there.
-        const ro = String(f.desktop ? band(row.r.t + 26, row.r.t + 70)(h) : 1);
-        if (row.rel && row.rel.style.opacity !== ro) row.rel.style.opacity = ro;
+        const k = standAt.get(i);
+        if (k === undefined) {
+          ctx.fillStyle = white(0.55 - 0.33 * quiet);
+          ctx.fillRect(x, y, w, hh);
+          continue;
+        }
+        const sd = stand[k];
+        const t = lit[k];
+        ctx.fillStyle = white(0.55 * (1 - t) + 0.1 * t);
+        ctx.fillRect(x, y, w, hh);
+        if (t <= 0) continue;
+        // The halo first, then the mark takes the colour of its signal.
+        const mcx = x + w / 2, mcy = y + hh / 2;
+        const r = (sd.multi ? 30 : 20) * (0.6 + 0.4 * t);
+        const g = ctx.createRadialGradient(mcx, mcy, 0, mcx, mcy, r);
+        g.addColorStop(0, tone(TONES[sd.tone], 0.42 * t));
+        g.addColorStop(1, tone(TONES[sd.tone], 0));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(mcx, mcy, r, 0, TAU); ctx.fill();
+        ctx.fillStyle = tone(TONES[sd.tone], 0.95 * t);
+        ctx.fillRect(x, y, w, hh);
+        // A company with several signals wears them as small marks beside it.
+        if (sd.multi) {
+          sd.multi.forEach((tn, j) => {
+            if (j === 0) return;
+            const a = band(0.5 + j * 0.2, 0.8 + j * 0.2)(t);
+            if (a <= 0) return;
+            ctx.fillStyle = tone(TONES[tn], 0.95 * a);
+            ctx.fillRect(x + w + 3 + (j - 1) * 6, y + hh / 2 - 2, 4, 4);
+          });
+        }
+      }
+      ctx.restore();
+      // The names, in the margin beside the field at their marks' height —
+      // a tick at the field's edge, never a line across other companies.
+      if (desktop) {
+        ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = '0.04em';
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'left';
+        let lastY = -Infinity;
+        stand.filter((sd) => sd.cand).map((sd) => ({ sd, k: stand.indexOf(sd), y: map(0, marks[sd.i].cy)[1] }))
+          .sort((a, b) => a.y - b.y)
+          .forEach(({ sd, k, y: my }) => {
+            const t = band(0.55, 1)(lit[k]);
+            if (t <= 0) return;
+            const c = CANDIDATES.find((cc) => cc.key === sd.cand);
+            const y = Math.max(my, lastY + 28);
+            lastY = y;
+            const x0 = F.r + 6, tx = F.r + 22;
+            ctx.strokeStyle = tone(TONES[sd.tone], 0.8 * t); ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(x0, y - 1); ctx.lineTo(x0 + 9, y - 1); ctx.stroke();
+            ctx.fillStyle = white(0.88 * t);
+            ctx.fillText(c.name, tx, y + 2);
+            ctx.fillStyle = tone(TONES[sd.tone], 0.95 * t);
+            ctx.fillText(c.signals.length > 1 ? `${c.signals.length} signaler` : c.signals[0], tx, y + 15);
+          });
+      }
+      // The three named, listed as they light.
+      cands.forEach((cd) => {
+        const k = stand.findIndex((sd) => sd.cand === cd.key);
+        const o = (k < 0 ? 1 : band(0.6, 1)(lit[k])).toFixed(3);
+        if (cd.el.style.opacity !== o) cd.el.style.opacity = o;
       });
     },
   };
 }
 
-/* ── 05: the six strands become the six criteria; findings are tried ───── */
-const JUDGE_COLOR = (v, a) => (v === 'Osäkert' ? white(0.5 * a) : green(a));
-
+/* ── 05: the three, inspected; one goes on and rejoins the rail ─────────── */
 export function s5Scene(el, R = docRect) {
-  let chips = new Map(), finds = [], vb = null;
+  let B = null, barY = 0, cards = [], fans = [], back = null, backY = 0, desktop = true, lastRowB = 0;
   return {
     el, bg: '#0C1310', t: 0, b: 0, node: null,
     measure(geo) {
       const sec = R(el);
       this.t = sec.t; this.b = sec.b; this.node = nodeOf(el, R);
+      desktop = geo.desktop;
+      const box = el.querySelector('[data-wk-qualify]');
+      B = R(box);
+      barY = R(box.querySelector('.qf-bar')).cy;
+      cards = Array.from(el.querySelectorAll('[data-cand]')).map((c) => ({
+        el: c, r: R(c), go: c.dataset.go === '1',
+        rows: Array.from(c.querySelectorAll('[data-row]')).map((rw) => ({ el: rw, r: R(rw) })),
+        verdict: c.querySelector('[data-verdict]'),
+      }));
+      lastRowB = Math.max(...cards.map((c) => c.rows[c.rows.length - 1].r.b));
       const { railX } = geo;
-      chips = new Map();
-      Array.from(el.querySelectorAll('[data-crit].wg-chip')).forEach((c, i) => {
-        const r = R(c);
-        chips.set(c.dataset.crit, {
-          el: c, r, i,
-          // Each criterion sits on its own strand: the branch peels off the
-          // bundle at the chip's height and lands on the chip's left edge.
-          branch: geo.desktop
-            ? path([['M', railX + OFFS[i], r.cy - 60], ['C', railX + OFFS[i], r.cy - 22, r.l - 30, r.cy, r.l - 1, r.cy, 16]])
-            : null,
-          used: c.dataset.used === '1',
-        });
-      });
-      finds = Array.from(el.querySelectorAll('[data-find]')).map((n) => {
-        const r = R(n);
-        const chip = chips.get(n.dataset.crit);
-        const judge = n.querySelector('[data-judge]');
-        const gw = chip ? r.l - chip.r.r : 0;
-        return {
-          el: n, r, judge, v: judge ? judge.dataset.v : '',
-          link: chip && geo.desktop
-            ? path([['M', chip.r.r + 1, chip.r.cy], ['C', chip.r.r + gw * 0.5, chip.r.cy, r.l - gw * 0.5, r.cy, r.l - 6, r.cy, 22]])
-            : null,
-          end: [r.l - 6, r.cy],
-        };
-      });
-      const v = el.querySelector('[data-verdict]');
-      vb = v ? { el: v, r: R(v) } : null;
+      fans = desktop
+        ? OFFS.map((o, i) => {
+          const y = barY - 70 + 4 * i;
+          return path([['M', railX + o, y], ['C', railX + o, y + 34, B.l - 36, barY, B.l, barY, 18]]);
+        })
+        : [path([['M', railX, barY - 40], ['C', railX, barY - 8, B.l - 20, barY, B.l, barY, 12]])];
+      // The winner rejoins the rail: down out of its card, under the
+      // artefact's last words, then home to the spine, tangent to it — the
+      // bundle carries it on to 06.
+      const w = cards.find((c) => c.go);
+      const foot = el.querySelector('.jr-foot');
+      const under = (foot ? R(foot).b : B.b) + 18;
+      backY = w ? w.r.b : B.b;
+      back = w && desktop
+        ? path([
+          ['M', w.r.cx, w.r.b],
+          ['L', w.r.cx, under - 30],
+          ['C', w.r.cx, under, w.r.cx - 60, under, w.r.cx - 90, under, 12],
+          ['L', railX + 70, under],
+          ['C', railX + 30, under, railX, under, railX, under + 44, 16],
+        ])
+        : null;
     },
     paint(ctx, f) {
       const h = f.head;
-      chips.forEach((c) => {
-        const co = f.desktop ? (0.3 + 0.7 * band(c.r.cy - 100, c.r.cy - 40)(h)).toFixed(3) : '1';
-        if (c.el.style.opacity !== co) c.el.style.opacity = co;
-        if (!c.branch) return;
-        const t = band(c.r.cy - 60, c.r.cy + 10)(h);
-        if (t > 0) strokeLine(ctx, c.branch, c.branch.len * t, { alpha: c.used ? 0.55 : 0.3, width: 1.1, tip: t < 1, tipA: 0.6 });
+      if (!B) return;
+      fans.forEach((P, i) => {
+        const y = desktop ? barY - 70 + 4 * i : barY - 40;
+        const t = band(y, y + 100)(h);
+        if (t > 0) strokeLine(ctx, P, P.len * t, { alpha: 0.55, width: 0.85, tip: false });
       });
-      finds.forEach((fd) => {
-        const fo = f.desktop ? (0.3 + 0.7 * band(fd.r.cy - 110, fd.r.cy - 50)(h)).toFixed(3) : '1';
-        if (fd.el.style.opacity !== fo) fd.el.style.opacity = fo;
-        // The connection is drawn as the head reaches the finding; the
-        // judgement is written only once the connection exists.
-        const t = band(fd.r.cy - 70, fd.r.cy + 10)(h);
-        if (fd.link && t > 0) {
-          strokeLine(ctx, fd.link, fd.link.len * t, { alpha: 0.5, width: 1.1, tip: t < 1, tipA: 0.6 });
-          if (t >= 1) {
-            ctx.fillStyle = JUDGE_COLOR(fd.v, 0.95);
-            ctx.beginPath(); ctx.arc(fd.end[0], fd.end[1], 2.6, 0, TAU); ctx.fill();
-          }
+      if (h > barY + 50) { ctx.fillStyle = green(1); ctx.fillRect(B.l - 3, barY - 3, 6, 6); }
+      // Criterion by criterion, across all three at once; the verdicts last;
+      // then the two that fall recede and the one that holds is lit.
+      const decided = band(lastRowB + 20, lastRowB + 70)(h);
+      cards.forEach((c) => {
+        c.rows.forEach((rw) => {
+          const o = (desktop ? 0.18 + 0.82 * band(rw.r.t - 50, rw.r.t + 4)(h) : 1).toFixed(3);
+          if (rw.el.style.opacity !== o) rw.el.style.opacity = o;
+        });
+        if (c.verdict) {
+          const vo = (desktop ? band(lastRowB + 10, lastRowB + 50)(h) : 1).toFixed(3);
+          if (c.verdict.style.opacity !== vo) c.verdict.style.opacity = vo;
         }
-        const jo = String(f.desktop ? band(fd.r.cy + 10, fd.r.cy + 50)(h) : 1);
-        if (fd.judge && fd.judge.style.opacity !== jo) fd.judge.style.opacity = jo;
+        const state = decided >= 1 ? (c.go ? 'on' : 'out') : '';
+        if (c.el.dataset.state !== state) c.el.dataset.state = state;
       });
-      if (vb) {
-        const o = String(band(vb.r.t - 60, vb.r.t - 10)(h));
-        if (vb.el.style.opacity !== o) vb.el.style.opacity = o;
+      if (back && decided >= 1) {
+        const t = band(backY + 20, backY + 120)(h);
+        if (t > 0) strokeLine(ctx, back, back.len * t, { alpha: 0.62, width: 1.6, glow: 0.4, tip: t < 1, tipA: 0.7 });
       }
     },
   };

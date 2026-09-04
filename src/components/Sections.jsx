@@ -132,8 +132,8 @@ export const Tam = () => {
               som har kvalificerat sig och vad som har levererats.
             </p>
             <p data-tam className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-lg">
-              Vi håller reda på vad som är undersökt, vad som har kvalificerat
-              sig och vad som återstår. Ingenting försvinner mellan leveranserna.
+              Det som redan är undersökt kommer inte tillbaka som nytt, och det
+              som återstår är alltid synligt.
             </p>
           </div>
           <div className="md:col-span-6 md:pt-1">
@@ -223,14 +223,14 @@ export const OnDemand = () => {
           <span className="st-display display">Skicka dem till oss.</span>
         </h2>
         <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
-          Norrsyn hittar löpande nya möjligheter i er marknad. Men vissa bolag
-          vet ni redan att ni vill vinna — strategiska accounts, drömkunder,
-          bolag ert säljteam pekat ut.
+          Vanligtvis är det vi som hittar bolagen. Men ibland vet ni redan
+          vilka ni vill vinna: strategiska kunder, bolag ert säljteam har
+          pekat ut.
         </p>
         <p data-od className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-xl mb-3">
-          De bolagen researchar vi på djupet mot er kravbild: var de står i dag,
-          vilka signaler som går att belägga, vilka personer som är rätt att
-          tala med — och en ärlig bedömning av om läget är rätt.
+          Dem researchar vi med samma disciplin och mot samma kravbild: var de
+          står i dag, vilka signaler som går att belägga, vem som är rätt att
+          tala med och om läget är rätt.
         </p>
         <p data-od className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-xl mb-10">
           Vi kallar det <span className="jr-term">On-demand Account Intelligence</span>.
@@ -347,14 +347,14 @@ export const About = () => {
     <section id="om-norrsyn" ref={root} className="on-dark bg-forest text-white">
       <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
-          <div className="md:col-span-4">
+          <div className="md:col-span-5">
             <div data-about className="eyebrow text-white/55 mb-6">Om Norrsyn</div>
             <h2 data-about className="st st-sec">
               <span className="st-lead">Säljare lägger sin bästa tid på fel bolag.</span>
               <span className="st-display display">Vi gör grundarbetet inför era viktigaste samtal.</span>
             </h2>
           </div>
-          <div className="md:col-span-8 md:pl-6 grid sm:grid-cols-2 gap-8 md:gap-12">
+          <div className="md:col-span-7 md:pl-4 grid sm:grid-cols-2 gap-8 md:gap-12">
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
                 Norrsyn finns för att ändra på det. Vi bevakar den svenska
@@ -456,7 +456,7 @@ export const Contact = () => {
                 <dd><a href="mailto:info@norrsyn.se" className="link-underline">info@norrsyn.se</a></dd>
               </div>
               <div>
-                <dt>Kontor</dt>
+                <dt>Plats</dt>
                 <dd>Jönköping, Sverige</dd>
               </div>
             </dl>

@@ -4,7 +4,7 @@ import HeroContent from './HeroContent.jsx';
 import { COPY, PH_BODY, PH_HAND } from './story.jsx';
 import {
   Head, Foot, ProblemHeadline, ProblemGrid,
-  Ledger, MarketMap, Screening, Board, Weigh, PortalMini,
+  Ledger, MarketMap, Screening, Standouts, Qualify, PortalMini,
 } from './chapters.jsx';
 import { createJourney, WIN, TOTAL, CH_IDS, LABEL } from '../lib/journey.js';
 import { EASE } from '../lib/motion.js';
@@ -181,14 +181,10 @@ export default function Journey() {
           <Layer id="s1" {...COPY.s1}><Ledger /></Layer>
           <Layer id="s2" {...COPY.s2}><MarketMap /></Layer>
           <Layer id="s3" {...COPY.s3}><Screening /></Layer>
-          <Layer id="s4" {...COPY.s4}><Board /></Layer>
-          <Layer id="s5" {...COPY.s5}><Weigh /></Layer>
+          <Layer id="s4" {...COPY.s4}><Standouts /></Layer>
+          <Layer id="s5" {...COPY.s5}><Qualify /></Layer>
           <Layer id="s6" {...COPY.s6} wide><PortalMini /></Layer>
         </div>
-
-        {/* The line, as ink: fades in on the spine's x as the field clears,
-            and continues into the next section. */}
-        <div className="jy-ink" aria-hidden="true" />
 
         {/* Where you are, with a way back and a way on. */}
         <div ref={ctl} className="jy-ctl" aria-label="Kapitel">

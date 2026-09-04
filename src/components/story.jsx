@@ -16,40 +16,63 @@ export const INTAKE = [
 export const STRAND = { Erbjudande: 0, Bransch: 1, Storlek: 2, Systemmiljö: 3, Beslutsroller: 4, Diskvalificerare: 5 };
 export const RAILS = ['Bransch', 'Storlek', 'Geografi', 'Systemmiljö', 'Diskvalificerare'];
 
-/* Each finding: where it came from and when, how sure we are, which
-   criterion of the requirement it is tried against in 05, and which
-   dimensions of the OfferBrain it reads to (the criterion, the need, the
-   person). One company, followed from 04 to 06. */
-export const EVIDENCE = [
-  { text: 'Rekryterar systemansvarig för order och lager', src: 'Jobbannons', when: 'feb 2026', tier: 'ok',
-    crit: 'Systemmiljö', verdict: 'Matchar', dims: ['Systemmiljö', 'Behov'] },
-  { text: 'Ny ekonomichef sedan i höstas', src: 'LinkedIn', when: 'nov 2025', tier: 'ok',
-    crit: 'Beslutsroller', verdict: 'Matchar', dims: ['Beslutsroller', 'Person'] },
-  { text: 'Öppnat ett tredje lager', src: 'Pressmeddelande', when: 'jan 2026', tier: 'ok',
-    crit: 'Storlek', verdict: 'Stärker', dims: ['Storlek', 'Behov'] },
-  { text: 'Ekonomiflödet ligger i ett molnsystem', src: 'Jobbannons', when: 'feb 2026', tier: 'mid',
-    crit: 'Systemmiljö', verdict: 'Matchar', dims: ['Systemmiljö'] },
-  { text: 'Orderflödet delvis manuellt', src: 'Vår tolkning', when: '', tier: 'low',
-    crit: 'Erbjudande', verdict: 'Osäkert', dims: ['Erbjudande', 'Behov'] },
-];
 /* The company, as it is named everywhere it appears. */
 export const CASE = { name: 'Nordic Flow Distribution AB', sub: 'Partihandel · Borås · 28 anställda' };
+
+/* The signals: a small, controlled set of colours for the different reasons
+   a company attracts attention. They live only in 04 and 05; from the
+   verdict on, everything returns to the page's green and neutrals. */
+export const TONES = {
+  rekrytering: '#E08A3C',
+  beslut: '#D6609E',
+  expansion: '#4FB3C9',
+  system: '#45A57F',
+};
+export const TONE_LABEL = { rekrytering: 'Rekrytering', beslut: 'Ny beslutsfattare', expansion: 'Expansion', system: 'Systembyte' };
+
+/* 04: which of the survivors light up, in order, and why. `at` picks the
+   mark among the 39 survivors of 03 (a fraction of the list), so the same
+   companies that held in 03 are the ones that stand out here. */
+export const STANDOUTS = [
+  { at: 0.14, tone: 'expansion', cand: 'hk' },
+  { at: 0.33, tone: 'system' },
+  { at: 0.58, tone: 'rekrytering', cand: 'nf', multi: ['rekrytering', 'beslut', 'expansion'] },
+  { at: 0.72, tone: 'beslut', cand: 'si' },
+  { at: 0.9, tone: 'rekrytering' },
+];
+
+/* 05: three of them, inspected against the requirement. The criteria are
+   the OfferBrain's: fit that 03 already settled, the change, the person,
+   the system environment — and the one that decides: whether what happened
+   makes the company relevant for what the customer sells. */
+export const CHECKS = ['Rätt storlek och geografi', 'Relevant förändring', 'Beslutsroll som går att nå', 'Systemmiljö som passar', 'Relevant för det ni säljer'];
+export const CANDIDATES = [
+  {
+    key: 'hk', name: 'Hallands Kyl & Frys AB', sub: 'Partihandel · Falkenberg', tone: 'expansion',
+    signals: ['Ny anläggning i Halmstad'],
+    rows: [['ok'], ['ok', 'ny anläggning'], ['ok', 'operativ chef'], ['mid', 'okänd'], ['no', 'expansionen rör kyla, inte orderflödet']],
+    verdict: 'stop',
+  },
+  {
+    key: 'si', name: 'Svealands Industripartner AB', sub: 'Tillverkning · Örebro', tone: 'beslut',
+    signals: ['Ny VD sedan i våras'],
+    rows: [['ok'], ['mid', 'ledningsbyte, inget mer belagt'], ['no', 'ingen ekonomi- eller systemroll att nå'], ['mid', 'okänd'], ['no', 'inget belagt behov']],
+    verdict: 'stop',
+  },
+  {
+    key: 'nf', name: CASE.name, sub: 'Partihandel · Borås', tone: 'rekrytering',
+    signals: ['Rekryterar systemansvarig', 'Ny ekonomichef', 'Tredje lagret öppnat'],
+    rows: [['ok'], ['ok', 'tre signaler på sex månader'], ['ok', 'ny ekonomichef'], ['ok', 'molnekonomi, manuellt orderflöde'], ['ok', 'flödet är flaskhalsen']],
+    verdict: 'go',
+  },
+];
+
 /* The delivery the company lands in, as the portal lists it. */
 export const PORTAL_ROWS = [
   { name: 'Nordic Flow Distribution AB', sub: 'Partihandel · Borås', grade: 'A', label: 'Stark match', hero: true },
   { name: 'Lindqvist Industrikomponenter AB', sub: 'Tillverkning · Eskilstuna', grade: 'A', label: 'Stark match' },
   { name: 'Mälardalens Grossist AB', sub: 'Partihandel · Västerås', grade: 'B', label: 'God match' },
 ];
-/* The finding that sounds good and counts for nothing — the point of 05. */
-export const DECOY = {
-  text: 'Utsedd till Årets grossist 2025', src: 'Pressmeddelande', tier: 'ok',
-  crit: '', verdict: 'Väger inte', note: 'Låter bra. Ingen koppling till er kravbild.',
-};
-export const TIER = { ok: ['Bekräftat', 'jt-ok'], mid: ['Troligt', 'jt-mid'], low: ['Hypotes', 'jt-low'] };
-export const CRIT_NOTE = {
-  Bransch: 'Prövad i 03 · uppfylld',
-  Diskvalificerare: 'Prövad i 03 · ingen träff',
-};
 
 /* ── Copy ───────────────────────────────────────────────────────────────── */
 export const PH_BODY =
@@ -94,21 +117,13 @@ export const COPY = {
   },
   s4: {
     n: '04', tag: '04 · Researchen', title: '”Bolagen som sticker ut granskas på djupet.”',
-    body: (
-      <>
-        Vi läser bolaget från flera håll och letar efter vad som faktiskt
-        har förändrats. Men samma händelse betyder olika saker för olika
-        erbjudanden. Därför läser vi varje fynd mot er{' '}
-        <span className="jr-term">OfferBrain</span>: passar det kravbilden,
-        stärker det behovsbilden och pekar det mot rätt personer?
-      </>
-    ),
-    foot: 'Förenklad illustration. 96 bolag går till djupresearch. Källorna är kategorier, aldrig namngivna leverantörer. Varje fynd bär sin konfidensnivå och läses mot er kravbild.',
+    body: 'Förändringar lämnar spår: en ny beslutsfattare, en rekrytering, ett nytt lager, ett systembyte. Vi bevakar bolagen som håller, och när något börjar hända går vi närmare.',
+    foot: 'Förenklad illustration. Samma bolag som höll i 03; färgerna markerar olika slags signaler. Bolagen och signalerna är fiktiva.',
   },
   s5: {
-    n: '05', tag: '05 · Bedömningen', title: '”Intressant räcker inte.”',
-    body: 'Ett bolag kan vara intressant utan att vara rätt för er. Därför prövar vi varje fynd mot kravbilden från steg 01. Ett fynd som inte gör bolaget mer relevant för ert erbjudande får inte väga tyngre bara för att det låter bra.',
-    foot: 'Förenklad illustration. Varje fynd bedöms som matchar, stärker, osäkert eller väger inte, och bolaget får ett av fyra omdömen, A till D. Av 96 djupanalyserade bolag går 24 vidare till leverans.',
+    n: '05', tag: '05 · Bedömningen', title: '”Men intressant räcker inte.”',
+    body: 'Ett bolag kan vara intressant utan att vara rätt för er. Varje kandidat prövas mot er kravbild från 01, och den avgörande frågan är alltid densamma: gör det som hänt bolaget relevant för det ni säljer?',
+    foot: 'Förenklad illustration. Bolagen som håller får ett av fyra omdömen, A till D. Av 96 djupanalyserade bolag går 24 vidare till leverans; resten faller på kravbilden.',
   },
   s6: {
     n: '06', tag: '06 · Briefen', title: '”De starkaste fallen blir Briefs.”',
@@ -120,7 +135,7 @@ export const COPY = {
         samtalet. En analytiker läser varje Brief innan den läggs i er portal.
       </>
     ),
-    foot: 'Förenklad vy av er portal. Den riktiga är mer omfattande; nedan följer ett komplett exempel på hur en Brief ser ut.',
+    foot: 'Förenklad vy av er portal. Den riktiga är mer omfattande.',
   },
 };
 

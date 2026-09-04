@@ -9,7 +9,7 @@ import {
 import { COPY, PH_BODY, PH_HAND } from './story.jsx';
 import {
   Node, Head, Foot, ProblemHeadline, ProblemGrid,
-  Ledger, MarketMap, Screening, Board, Weigh, PortalMini,
+  Ledger, MarketMap, Screening, Standouts, Qualify, PortalMini,
 } from './chapters.jsx';
 import '../walkthrough.css';
 
@@ -123,15 +123,8 @@ export default function Walkthrough() {
         <Chapter id="kravbilden" cls="jr-01" copy={COPY.s1}><Ledger /></Chapter>
         <Chapter id="marknaden" cls="jr-02" copy={COPY.s2}><MarketMap /></Chapter>
         <Chapter id="granskningen" cls="jr-03" copy={COPY.s3}><Screening /></Chapter>
-        <Chapter id="researchen" cls="jr-04" copy={COPY.s4}><Board /></Chapter>
-        <Chapter id="bedomningen" cls="jr-05" copy={COPY.s5}>
-          <Weigh />
-          <div className="jr-strip" aria-hidden="true">
-            {Array.from({ length: 10 }, (_, i) => (
-              <i key={i} className="jm" data-state={i < 2 ? 'solid' : 'struck'} />
-            ))}
-          </div>
-        </Chapter>
+        <Chapter id="researchen" cls="jr-04" copy={COPY.s4}><Standouts /></Chapter>
+        <Chapter id="bedomningen" cls="jr-05" copy={COPY.s5}><Qualify /></Chapter>
         <Chapter id="briefen" cls="jr-06" dark={false} copy={COPY.s6}>
           <PortalMini />
         </Chapter>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from '../lib/cohort.js';
 import { LayoutGrid, Send, Building2, ScanSearch, FileText } from 'lucide-react';
-import { INTAKE, RAILS, EVIDENCE, DECOY, TIER, CRIT_NOTE, CASE, PORTAL_ROWS } from './story.jsx';
+import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS } from './story.jsx';
 
 // ==========================================================================
 // THE CHAPTERS — one source of truth for the story's data, copy and
@@ -167,55 +167,36 @@ export function Screening() {
   );
 }
 
-/* ── The case file: 04, 05 and 06 follow one company ────────────────────── */
-export function Case({ tag }) {
+/* ── 04 · the standouts: the same field as 03, and a few companies that
+   begin to stand out from it. Painted by the stage; the DOM lays out the
+   marks and names the three we will follow. ─────────────────────────────── */
+export function Standouts() {
   return (
-    <div className="cs-head">
-      <span className="jm cs-mark" data-state="chosen" aria-hidden="true" />
-      <div className="cs-id">
-        <div className="cs-name">{CASE.name}</div>
-        <div className="cs-sub">{CASE.sub}</div>
+    <div data-wk-standouts className="so">
+      <div className="so-bar">
+        <span className="eyebrow text-white/55">Bolagen som höll i 03 · 388 stycken</span>
+        <span className="so-legend" aria-hidden="true">
+          {Object.entries(TONE_LABEL).map(([k, l]) => (
+            <span key={k}><i style={{ background: TONES[k] }} />{l}</span>
+          ))}
+        </span>
       </div>
-      <div className="cs-tag">{tag}</div>
-    </div>
-  );
-}
-
-/* Which colour a dimension speaks in: the requirement green, the need
-   amber, the person blue — as Problemet introduced them. */
-const DIM_KIND = { Behov: 'behov', Person: 'person' };
-
-/* 04 · the dossier: evidence arrives from its source, is graded, and is
-   read to the dimensions of the requirement it bears on. */
-export function Board() {
-  return (
-    <div data-wk-board className="cs">
-      <Case tag="Djupresearch · 1 av 96" />
-      <div className="rs-cols" aria-hidden="true">
-        <span>Källa</span>
-        <span />
-        <span>Vad som hänt</span>
-        <span>Läses mot er kravbild</span>
+      <div
+        data-so-field
+        className="jr-field so-field"
+        style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0,1fr))` }}
+        aria-hidden="true"
+      >
+        {Array.from({ length: MARKS }, (_, i) => (
+          <i key={i} data-state={RANKS[i] < ALIVE_AFTER_03 ? 'solid' : 'struck'} className="jm" />
+        ))}
       </div>
-      <ul className="rs-rows">
-        {EVIDENCE.map((ev) => (
-          <li key={ev.text} data-ev data-tier={ev.tier} className="rs-row">
-            <span data-src className="rs-src">
-              <b>{ev.src}</b>
-              {ev.when && <i>{ev.when}</i>}
-            </span>
-            <span className="rs-wire" aria-hidden="true" />
-            <span className="rs-find">
-              <span className="rs-quote">”{ev.text}”</span>
-              <span className={`jr-tier ${TIER[ev.tier][1]}`}>{TIER[ev.tier][0]}</span>
-            </span>
-            <span data-rel className="rs-dims">
-              {ev.dims.map((d) => (
-                <span key={d} className="rs-dim" data-k={DIM_KIND[d] || 'krav'}>
-                  <i>→</i>{d}
-                </span>
-              ))}
-            </span>
+      <ul className="so-cands">
+        {CANDIDATES.map((c) => (
+          <li key={c.key} data-cand={c.key} className="so-cand">
+            <i className="so-dot" style={{ background: TONES[c.tone] }} aria-hidden="true" />
+            <b>{c.name}</b>
+            <span className="so-sig">{c.signals.join(' · ')}</span>
           </li>
         ))}
       </ul>
@@ -223,50 +204,38 @@ export function Board() {
   );
 }
 
-/* 05 · the assessment: the requirement on the left, the findings on the
-   right in the requirement's own order, so every connection is short and
-   nothing crosses. The verdict is a count and a decision, not a score. */
-export function Weigh() {
-  const order = INTAKE.map((r) => r.norm);
-  const finds = [...EVIDENCE].sort((a, b) => order.indexOf(a.crit) - order.indexOf(b.crit));
-  const used = new Set(EVIDENCE.map((e) => e.crit));
+/* ── 05 · the inspection: the three that lit up, tried against the
+   requirement, criterion by criterion. One goes on. ────────────────────── */
+const GLYPH = { ok: '✓', mid: '~', no: '✕' };
+export function Qualify() {
   return (
-    <div data-wk-weigh className="cs">
-      <Case tag="Prövning mot er kravbild" />
-      <div className="wg">
-        <div className="wg-col">
-          <div className="wg-h">Er kravbild · från 01</div>
-          {INTAKE.map((r) => (
-            <div
-              key={r.norm}
-              data-crit={r.norm}
-              data-used={used.has(r.norm) ? '1' : '0'}
-              className="wg-chip"
-            >
-              <span className="wg-chip-t">{r.norm}</span>
-              {CRIT_NOTE[r.norm] && <span className="wg-chip-n">{CRIT_NOTE[r.norm]}</span>}
-            </div>
-          ))}
-        </div>
-        <div className="wg-gutter" aria-hidden="true" />
-        <div className="wg-col">
-          <div className="wg-h">Vad vi hittade · från 04</div>
-          {[...finds, DECOY].map((ev) => (
-            <div key={ev.text} data-find data-crit={ev.crit} data-decoy={ev.crit ? '0' : '1'} className="wg-find">
-              <span className="wg-find-t">{ev.text}</span>
-              <span data-judge data-v={ev.verdict} className="wg-judge">{ev.verdict}</span>
-              {ev.note && <span className="wg-find-n">{ev.note}</span>}
-            </div>
-          ))}
-        </div>
+    <div data-wk-qualify className="qf">
+      <div className="qf-bar">
+        <span className="eyebrow text-white/55">Prövning mot er kravbild</span>
+        <span className="eyebrow text-white/35">3 kandidater från 04</span>
       </div>
-      {/* The decision, in the analyst's words: what held, what is left to
-          confirm in the call, and whether the company goes on. */}
-      <div data-verdict className="wg-verdict">
-        <span className="wg-sum">
-          <b>5 av 6</b> kriterier styrkta · erbjudandet bekräftas i samtalet
-        </span>
-        <span className="wg-go">Går vidare <i aria-hidden="true">→</i></span>
+      <div className="qf-cards">
+        {CANDIDATES.map((c) => (
+          <div key={c.key} data-cand={c.key} data-go={c.verdict === 'go' ? '1' : '0'} className="qf-card">
+            <div className="qf-head">
+              <i className="so-dot" style={{ background: TONES[c.tone] }} aria-hidden="true" />
+              <span className="qf-name">{c.name}</span>
+              <span className="qf-sub">{c.sub}</span>
+            </div>
+            <ul className="qf-rows">
+              {CHECKS.map((label, i) => (
+                <li key={label} data-row data-s={c.rows[i][0]} className="qf-row">
+                  <i className="qf-g" aria-hidden="true">{GLYPH[c.rows[i][0]]}</i>
+                  <span className="qf-l">{label}</span>
+                  {c.rows[i][1] && <span className="qf-n">{c.rows[i][1]}</span>}
+                </li>
+              ))}
+            </ul>
+            <div data-verdict className="qf-verdict">
+              {c.verdict === 'go' ? <>Går vidare <i aria-hidden="true">→</i></> : 'Går inte vidare'}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -307,15 +276,16 @@ export function PortalMini() {
                 <span className="pm-sub">{r.sub}</span>
               </span>
               {r.hero && <span data-pm-state className="pm-state">Ny</span>}
-              <span className="pm-grade" data-g={r.grade}>{r.label}</span>
+              <span className="pm-grade" data-g={r.grade}><b>{r.grade}</b>{r.label}</span>
               <span className="pm-date">20 mars</span>
               <span className="pm-chev" aria-hidden="true">›</span>
             </div>
           ))}
           <div className="pm-more">3 briefs till i leveransen</div>
         </div>
-        {/* The Brief, opened: the snapshot the customer reads first. */}
-        <div data-pm-brief className="pm-brief">
+        {/* The Brief, opened: the snapshot the customer reads first. It is
+            also what carries the page into the full Brief below. */}
+        <div className="pm-brief-lift"><div data-pm-brief className="pm-brief">
           <div className="pm-brief-head">
             <span className="pm-mark">Norrsyn<b>_</b></span>
             <i aria-hidden="true" />
@@ -330,7 +300,7 @@ export function PortalMini() {
           </p>
           <div className="pm-brief-row">
             <span className="pm-eyebrow">Bedömning</span>
-            <span className="pm-grade" data-g="A">Stark match</span>
+            <span className="pm-grade" data-g="A"><b>A</b>Stark match</span>
             <span className="pm-brief-why">Behov belagt · person identifierad · läget öppet</span>
           </div>
           <div className="pm-brief-row">
@@ -340,7 +310,7 @@ export function PortalMini() {
             <span className="pm-verified">E-post verifierad</span>
           </div>
           <span className="pm-open">Öppna brief <i aria-hidden="true">→</i></span>
-        </div>
+        </div></div>
       </div>
     </div>
   );

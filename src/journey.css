@@ -184,32 +184,18 @@
    the section starts under the last of the sticky frame. The line turns to
    ink at the spine's x, runs out of the frame and into the section, and
    ends in a square beside the section's first words. */
-.jy-ink {
-  position: absolute;
-  top: 0; bottom: 0;
-  left: calc(var(--jy-gx, 163px) - 1px);
-  width: 2px;
-  z-index: 6;
-  opacity: 0;
-  background: rgba(21, 24, 26, 0.55);
-  pointer-events: none;
+.jy-wrap + div #brief { border-top-color: transparent; margin-top: -14vh; }
+/* 06's ending: the portal's chrome and the chapter's words recede with the
+   field, and the Brief inside the portal is what remains on the paper. */
+.jy-layer[data-ch="s6"] .jy-copy,
+.jy-layer[data-ch="s6"] .jy-node,
+.jy-layer[data-ch="s6"] .jr-foot { opacity: calc(1 - var(--pm-out, 0)); }
+.jy-layer[data-ch="s6"] .pm {
+  background: rgb(250 248 243 / calc(1 - var(--pm-out, 0)));
+  border-color: rgb(21 24 26 / calc(0.12 * (1 - var(--pm-out, 0))));
+  box-shadow: 0 24px 60px -28px rgb(0 0 0 / calc(0.65 * (1 - var(--pm-out, 0))));
 }
-.jy-wrap + div #brief { border-top-color: transparent; margin-top: -28vh; }
-.brief-ink { display: none; }
-.jy-wrap + div #brief .brief-ink {
-  display: block;
-  position: absolute;
-  left: calc(var(--jy-gx, 163px) - 1px);
-  top: 0;
-  width: 2px;
-  height: calc(5rem + 5px);
-  background: rgba(21, 24, 26, 0.55);
-  pointer-events: none;
-}
-.jy-wrap + div #brief .brief-ink::after {
-  content: '';
-  position: absolute;
-  left: -2px; bottom: -3px;
-  width: 6px; height: 6px;
-  background: #15181A;
-}
+.jy-layer[data-ch="s6"] .pm-rail,
+.jy-layer[data-ch="s6"] .pm-head,
+.jy-layer[data-ch="s6"] .pm-list { opacity: calc(1 - var(--pm-out, 0)); }
+.jy-layer[data-ch="s6"] .pm-brief-lift { transform: translateY(calc(-17vh * var(--pm-out, 0))); will-change: transform; }

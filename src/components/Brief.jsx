@@ -38,7 +38,7 @@ function Badge({ tier }) {
   return (
     <span
       data-brief-badge
-      className={`shrink-0 self-start font-mono text-[9px] uppercase tracking-[0.12em] leading-none px-1.5 py-1 rounded-sm border ${c.cls}`}
+      className={`inline-block shrink-0 self-start align-middle font-mono text-[9px] uppercase tracking-[0.12em] leading-none px-1.5 py-1 rounded-sm border ${c.cls}`}
     >
       {c.label}
     </span>
@@ -147,46 +147,31 @@ export default function BriefExample() {
 
   return (
     <section id="brief" ref={root} className="relative bg-mist border-t border-ink/10">
-      {/* The story's line, as ink, ends beside this section's first words. */}
-      <div className="brief-ink" aria-hidden="true" />
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-16 pb-24 md:pt-20 md:pb-32">
-        {/* Section lead-in: the story's last words are this section's first. */}
-        <div className="grid md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
+      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pt-14 pb-24 md:pt-16 md:pb-32">
+        {/* One thought: the Brief the portal just opened is this. The marks
+            are explained in a note, not a second headline. */}
+        <div className="grid md:grid-cols-12 gap-8 md:gap-12 mb-10 md:mb-12">
           <div className="md:col-span-7">
-            <div data-brief-lead className="eyebrow text-ink-3 mb-6">Ett komplett exempel</div>
-            <h2 data-brief-lead className="st st-sec mb-5">
-              <span className="st-lead">Det här är vad ni får.</span>
+            <div data-brief-lead className="eyebrow text-ink-3 mb-5">Ett komplett exempel</div>
+            <h2 data-brief-lead className="st st-sec mb-4">
               <span className="st-display display">Ett samtal värt att ta.</span>
             </h2>
             <p data-brief-lead className="text-ink-3 text-[15px] md:text-base leading-[1.7] max-w-xl">
-              Underlaget inför det samtalet: ett bolag, genomarbetat, i samma
-              ordning som i er portal. Det som går att belägga står med sin
-              källa, det som är vår tolkning är märkt som tolkning, och det
-              sista avsnittet är vad ni gör härnäst.
+              Briefen som öppnades i portalen, i sin helhet och i samma ordning
+              som där. Det som går att belägga står med sin källa, det som är
+              vår tolkning är märkt som tolkning, och det sista avsnittet är
+              vad ni gör härnäst.
             </p>
           </div>
-          {/* The marks, explained once before the sheet: what the three
-              levels on every claim mean, and what the grade means. */}
-          <div data-brief-lead className="md:col-span-5 md:pt-14">
-            <div className="eyebrow text-ink-4 mb-3">Så är Briefen märkt</div>
-            <p className="text-[13px] text-ink-3 leading-[1.6] mb-3 max-w-[44ch]">
-              Varje uppgift bär sin källa och en av tre nivåer:
-            </p>
-            <ul className="space-y-2.5">
-              {[
-                ['ok', 'belagt av en källa ni kan öppna själva.'],
-                ['mid', 'sannolikt utifrån ett mönster; värt att bekräfta i samtalet.'],
-                ['low', 'vår tolkning, märkt som tolkning och aldrig som fakta.'],
-              ].map(([tier, text]) => (
-                <li key={tier} className="flex items-start gap-3 text-[13px] text-ink-3 leading-[1.6]">
-                  <Badge tier={tier} />
-                  <span>{text}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-4 text-[12.5px] text-ink-4 leading-[1.6] max-w-[44ch]">
-              Helhetsbedömningen A till D sammanfattar hur väl bolaget svarar
-              mot er kravbild: A är en stark match, D faller utanför den.
+          <div data-brief-lead className="md:col-span-5 md:pt-12">
+            <p className="text-[12.5px] text-ink-4 leading-[1.7] max-w-[46ch]">
+              Varje uppgift bär sin källa och en av tre nivåer:{' '}
+              <Badge tier="ok" /> belagt av en källa ni kan öppna själva,{' '}
+              <Badge tier="mid" /> sannolikt utifrån ett mönster och värt att
+              bekräfta i samtalet, <Badge tier="low" /> vår tolkning, aldrig
+              framställd som fakta. Bedömningen A till D sammanfattar hur väl
+              bolaget svarar mot er kravbild: A är en stark match, D faller
+              utanför den.
             </p>
           </div>
         </div>

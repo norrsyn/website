@@ -1751,6 +1751,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #575D62;
   white-space: nowrap;
 }
+.pm-grade b { font-weight: 700; font-size: 11px; letter-spacing: 0; margin-right: 6px; }
 .pm-grade[data-g="A"] { color: #2E6E55; border-color: rgba(46, 110, 85, 0.34); }
 .pm-grade[data-g="B"] { color: #2A2F33; border-color: rgba(21, 24, 26, 0.2); }
 .pm-date { font-family: '"IBM Plex Mono"', monospace; font-size: 10px; color: #676D72; }

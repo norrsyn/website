@@ -53,7 +53,7 @@ export const WIN = { hero: [0, 0], collapse: [0, 1.0] };
   let t0 = 0.85;
   for (const [id, d] of DWELL) { WIN[id] = [t0, t0 + d]; t0 += d - T; }
   const e6 = WIN.s6[1];
-  WIN.out = [e6, e6 + 0.25];
+  WIN.out = [e6, e6 + 0.12];
 }
 // The frame stays put exactly until it has cleared to paper, then scrolls.
 export const TOTAL = WIN.out[1];
@@ -96,7 +96,6 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
   };
 
   const geo = { railX: 0, desktop: true, W: 0, H: 0, dpr: 1, foldGap: 56, spindleEnd: 0 };
-  const ink = frame.querySelector('.jy-ink');
   const scenes = {};
   for (const id of CH_IDS) scenes[id] = SCENE[id](layers[id].el, R);
 
@@ -143,10 +142,13 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       // (TRAVEL + CREEP) apart. Exposure rides on top: the incoming chapter
       // resolves as it arrives, the outgoing one dissolves as it leaves.
       const ti = q5((u - a) / tin);
-      const to = q5((u - (b - T)) / T);
+      // The last chapter does not leave: the portal's Brief stays where it
+      // is while the frame clears to paper, and the next section carries it on.
+      const last = id === 's6';
+      const to = last ? 0 : q5((u - (b - T)) / T);
       const dw = smooth(a + tin, b - T, u);
       const oi = smooth(a + 0.05 * tin, a + 0.62 * tin, u);
-      const oo = 1 - smooth(b - 0.62 * T, b - 0.08 * T, u);
+      const oo = last ? 1 : 1 - smooth(b - 0.62 * T, b - 0.08 * T, u);
       const o = oi * oo;
       st.o[id] = o; st.oi[id] = oi; st.oo[id] = oo;
       const dy = (TRAVEL * (1 - ti) - CREEP * dw - TRAVEL * to) * H;
@@ -231,9 +233,8 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control }) {
       frame.style.backgroundColor = `rgb(${c[0]},${c[1]},${c[2]})`;
       frame.style.setProperty('--jy-vig', (1 - k).toFixed(3));
       canvas.style.opacity = String(1 - k);
-      // The line does not fade with the field: it turns to ink on the paper
-      // and runs on into the next section, to the words it delivers.
-      if (ink) ink.style.opacity = k.toFixed(3);
+      // The portal's surroundings recede with the field; its Brief stays.
+      layers.s6.el.style.setProperty('--pm-out', k.toFixed(3));
     }
     // The control: where we are. Absent until the story begins, gone when
     // it ends; the label swaps with a short settle when the chapter changes.

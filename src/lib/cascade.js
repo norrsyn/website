@@ -14,18 +14,18 @@ import { smooth, lerp } from './stage.js';
 // Windows in collapse progress. The first waits until the hero's own words
 // have gone (they fade by 0.34).
 export const BEATS = [
-  { a: 0.24, b: 0.5 },
-  { a: 0.48, b: 0.68 },
-  { a: 0.66 },
-  { a: 0.8 },
+  { a: 0.26, b: 0.5 },
+  { a: 0.54, b: 0.74 },
+  { a: 0.76 },
+  { a: 0.88 },
 ];
 
 export function applyCascade(items, p) {
   for (let i = 0; i < items.length; i++) {
     const el = items[i];
     const { a, b } = BEATS[i] || { a: 0 };
-    const tIn = smooth(a, a + 0.12, p);
-    const tOut = b == null ? 0 : smooth(b - 0.1, b, p);
+    const tIn = smooth(a, a + 0.1, p);
+    const tOut = b == null ? 0 : smooth(b - 0.08, b, p);
     const o = tIn * (1 - tOut);
     const dy = lerp(14, 0, tIn) - 10 * tOut;
     const key = `${o.toFixed(3)}|${dy.toFixed(1)}`;
