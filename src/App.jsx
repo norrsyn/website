@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
-import { Tam, OnDemand, Handoff, About, Contact, Footer } from './components/Sections.jsx';
+import { Tam, OnDemand, About, Contact, Footer } from './components/Sections.jsx';
 import HeroField from './components/HeroField.jsx';
 import Walkthrough from './components/Walkthrough.jsx';
 import Journey from './components/Journey.jsx';
@@ -126,9 +126,8 @@ function App() {
         <Tam />
         {/* The second door: the market is worked through continuously (Tam),
             AND the accounts the customer already knows can be sent in. Placed
-            before the Handoff so the exhale still closes the whole story. */}
+            before About so the exhale still closes the whole story. */}
         <OnDemand />
-        <Handoff />
         <About />
         <Contact />
         <Footer />

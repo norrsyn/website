@@ -8,69 +8,6 @@ import '../tail.css';
 gsap.registerPlugin(ScrollTrigger);
 
 // ==========================================================================
-// Handoff — the exhale after the Brief. Act III opens.
-//
-// One truth, stated positively: Norrsyn does not do the deal; it removes the
-// guessing from the way in. The glyph closes the visual story and is drawn
-// by the visitor's own scroll: the chosen company, the line (the Brief), and
-// the open ring — the conversation, which stays human.
-// ==========================================================================
-export const Handoff = () => {
-  const root = useRef(null);
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (prefersReducedMotion()) return;
-      // Played once on arrival, never scrubbed: a scrubbed glyph reverses on
-      // every flick of the wheel.
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: root.current, start: 'top 70%', once: true },
-        defaults: { ease: 'power2.out' },
-      });
-      tl.from('.ho-mark', { opacity: 0, duration: 0.5 }, 0)
-        .from('.ho-line', { scaleX: 0, duration: 0.9, ease: 'power2.inOut' }, 0.3)
-        .from('.ho-ring', { opacity: 0, duration: 0.5 }, 1.1)
-        .from('.ho-cap span', { opacity: 0, duration: 0.5, stagger: 0.15 }, 0.5);
-      gsap.from('[data-ho]', {
-        scrollTrigger: { trigger: root.current, start: 'top 72%', once: true },
-        y: 8, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'power2.out',
-      });
-    }, root);
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section id="overlamningen" ref={root} className="ho on-dark">
-      {/* Dusk: the paper of the last light section falls into the dark, once. */}
-      <div className="ho-dusk" aria-hidden="true" />
-      <div className="ho-inner mx-auto max-w-3xl px-6 sm:px-10 py-28 md:py-40 text-center">
-        <div className="ho-glyph" aria-hidden="true">
-          <span className="ho-mark" />
-          <span className="ho-line" />
-          <span className="ho-ring" />
-        </div>
-        <div className="ho-cap" aria-hidden="true">
-          <span>Rätt bolag</span>
-          <span>Briefen</span>
-          <span>Samtalet</span>
-        </div>
-        <h2 data-ho className="st st-sec st-center mb-6">
-          <span className="st-display display">När säljaren tar över ska så lite som möjligt vara en gissning.</span>
-        </h2>
-        <p data-ho className="text-white/72 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
-          Vi avgör inte vad som händer i samtalet. Vi ser till att säljaren
-          går in med rätt bolag, rätt person, rätt läge och ett underlag som
-          går att använda.
-        </p>
-        <p data-ho className="text-white font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
-          En Brief är inte ett löfte om en affär. Det är arbetet för att lämna
-          så lite som möjligt åt slumpen innan första kontakten.
-        </p>
-      </div>
-    </section>
-  );
-};
-
-// ==========================================================================
 // Fortsättningen — the market over time.
 //
 // A compact addendum after the Brief: the work does not stop at one delivery.
@@ -324,7 +261,14 @@ export const OnDemand = () => {
 };
 
 // ==========================================================================
-// About — who we are, and the three rules every Brief is held to.
+// About — Act III: the exhale after the Brief, then who we are.
+//
+// One truth, stated positively: Norrsyn does not do the deal; it removes the
+// guessing from the way in. The glyph closes the visual story and is drawn
+// by the visitor's own scroll: the chosen company, the line (the Brief), and
+// the open ring — the conversation, which stays human. That statement and
+// the credibility section beneath it are one continuous thought, so they
+// share one dark section instead of a seam between two.
 // ==========================================================================
 const PRINCIPLES = [
   ['01', 'Allt går att belägga', 'Varje faktauppgift i en Brief har en källa ni kan öppna själva. Det som saknar källa kallar vi hypotes, aldrig fakta.'],
@@ -334,11 +278,26 @@ const PRINCIPLES = [
 
 export const About = () => {
   const root = useRef(null);
+  const body = useRef(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (prefersReducedMotion()) return;
+      // Played once on arrival, never scrubbed: a scrubbed glyph reverses on
+      // every flick of the wheel.
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: root.current, start: 'top 70%', once: true },
+        defaults: { ease: 'power2.out' },
+      });
+      tl.from('.ho-mark', { opacity: 0, duration: 0.5 }, 0)
+        .from('.ho-line', { scaleX: 0, duration: 0.9, ease: 'power2.inOut' }, 0.3)
+        .from('.ho-ring', { opacity: 0, duration: 0.5 }, 1.1)
+        .from('.ho-cap span', { opacity: 0, duration: 0.5, stagger: 0.15 }, 0.5);
+      gsap.from('[data-ho]', {
+        scrollTrigger: { trigger: root.current, start: 'top 72%', once: true },
+        y: 8, opacity: 0, duration: 1.1, stagger: 0.12, ease: 'power2.out',
+      });
       gsap.from('[data-about]', {
-        scrollTrigger: { trigger: root.current, start: 'top 78%', once: true },
+        scrollTrigger: { trigger: body.current, start: 'top 78%', once: true },
         y: 8, opacity: 0, duration: 1.1, stagger: 0.09, ease: 'power2.out',
       });
     }, root);
@@ -346,13 +305,40 @@ export const About = () => {
   }, []);
 
   return (
-    <section id="om-norrsyn" ref={root} className="on-dark bg-forest text-white">
-      <div className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 py-24 md:py-32">
+    <section id="om-norrsyn" ref={root} className="ho on-dark">
+      {/* Dusk: the paper of the last light section falls into the dark, once. */}
+      <div className="ho-dusk" aria-hidden="true" />
+      <div className="ho-inner mx-auto max-w-3xl px-6 sm:px-10 pt-28 md:pt-40 pb-20 md:pb-24 text-center">
+        <div className="ho-glyph" aria-hidden="true">
+          <span className="ho-mark" />
+          <span className="ho-line" />
+          <span className="ho-ring" />
+        </div>
+        <div className="ho-cap" aria-hidden="true">
+          <span>Rätt bolag</span>
+          <span>Briefen</span>
+          <span>Samtalet</span>
+        </div>
+        <h2 data-ho className="st st-sec st-center mb-6">
+          <span className="st-display display">När säljaren tar över ska så lite som möjligt vara en gissning.</span>
+        </h2>
+        <p data-ho className="text-white/72 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
+          Vi avgör inte vad som händer i samtalet. Vi ser till att säljaren
+          går in med rätt bolag, rätt person, rätt läge och ett underlag som
+          går att använda.
+        </p>
+        <p data-ho className="text-white font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
+          En Brief är inte ett löfte om en affär. Det är arbetet för att lämna
+          så lite som möjligt åt slumpen innan första kontakten.
+        </p>
+      </div>
+
+      <div ref={body} className="mx-auto max-w-6xl px-6 sm:px-10 md:px-12 pb-24 md:pb-32">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
           <div className="md:col-span-5">
             <div data-about className="eyebrow text-white/55 mb-6">Om Norrsyn</div>
             <h2 data-about className="st st-sec">
-              <span className="st-display display">Vi gör grundarbetet inför era viktigaste samtal.</span>
+              <span className="st-display display">Vi hittar era bästa möjligheter.</span>
             </h2>
           </div>
           <div className="md:col-span-7 md:pl-4 grid sm:grid-cols-2 gap-8 md:gap-12">
@@ -441,7 +427,7 @@ export const Contact = () => {
           <div className="md:col-span-5">
             <div className="eyebrow text-white/50 mb-6">Kontakt</div>
             <h2 className="st st-sec mb-6">
-              <span className="st-display display">Vi börjar med ett samtal.</span>
+              <span className="st-display display">Ta första steget här.</span>
             </h2>
             <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm">
               Berätta kort vad ni säljer och hur ni arbetar med prospektering
@@ -532,13 +518,15 @@ export const Footer = () => (
             av affärssignaler och kontext inför första kontakt.
           </p>
           {/* The operator, stated once in prose and once in the copyright
-              line; the product leads, the entity follows. The name
-              disambiguation lives on the terms page and in the structured
-              data, where it belongs. */}
+              line; the product leads, the entity follows. A short name
+              disambiguation rides along in the prose line so it reaches
+              every page; the fuller version stays on the terms page and
+              in the structured data. */}
           <p className="text-white/55 text-[13px] leading-[1.7] max-w-xs mb-6">
             Norrsyn är en tjänst för research och account intelligence inom
             B2B-försäljning, driven av{' '}
-            <span className="text-white/75">NRSYN AB</span> i Jönköping.
+            <span className="text-white/75">NRSYN AB</span> i Jönköping —
+            ett självständigt bolag utan koppling till Norrsyn AI HB.
           </p>
           <div className="font-mono text-[12.5px] text-white/55 space-y-1">
             <a href="mailto:info@norrsyn.se" className="link-underline block w-fit">info@norrsyn.se</a>
