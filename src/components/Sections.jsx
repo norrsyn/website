@@ -444,8 +444,8 @@ export const Contact = () => {
               <span className="st-display display">Vi börjar med ett samtal.</span>
             </h2>
             <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm mb-10">
-              Berätta vad ni säljer och vilka kunder ni vill nå. Vi tar det
-              därifrån.
+              Berätta kort vad ni säljer och hur ni arbetar med prospektering
+              idag. Vi tar det därifrån.
             </p>
             {/* The direct way in, set like every other label on the page. */}
             <dl className="ct-direct">
@@ -480,7 +480,7 @@ export const Contact = () => {
               </div>
               <div className="space-y-2">
                 <label htmlFor="c-desc" className="eyebrow text-white/55 block">Meddelande</label>
-                <textarea id="c-desc" rows="4" name="description" value={formData.description} onChange={handleChange} className={`${field} resize-none`} placeholder="Vad säljer ni och vilka kunder vill ni nå?" />
+                <textarea id="c-desc" rows="4" name="description" value={formData.description} onChange={handleChange} className={`${field} resize-none`} placeholder="Vad säljer ni, och hur arbetar ni med prospektering idag?" />
               </div>
 
               <div className="pt-2">
