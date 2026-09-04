@@ -542,7 +542,9 @@ export function s4Scene(el, R = docRect) {
       desktop = geo.desktop;
       const box = el.querySelector('[data-wk-standouts]');
       B = R(box);
-      barY = R(box.querySelector('.so-bar')).cy;
+      // The branch lands on the rule under the header, not on its words —
+      // the header may wrap to two lines on narrow screens.
+      barY = R(box.querySelector('.so-bar')).b - 0.5;
       const fEl = el.querySelector('[data-so-field]');
       F = R(fEl);
       marks = Array.from(fEl.children).map(R);
@@ -675,7 +677,8 @@ export function s5Scene(el, R = docRect) {
       desktop = geo.desktop;
       const box = el.querySelector('[data-wk-qualify]');
       B = R(box);
-      barY = R(box.querySelector('.qf-bar')).cy;
+      // Same anchor as 04: the rule under the header, whatever its height.
+      barY = R(box.querySelector('.qf-bar')).b - 0.5;
       cards = Array.from(el.querySelectorAll('[data-cand]')).map((c) => ({
         el: c, r: R(c), go: c.dataset.go === '1',
         rows: Array.from(c.querySelectorAll('[data-row]')).map((rw) => ({ el: rw, r: R(rw) })),

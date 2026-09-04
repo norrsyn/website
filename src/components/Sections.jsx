@@ -54,17 +54,16 @@ export const Handoff = () => {
           <span>Samtalet</span>
         </div>
         <h2 data-ho className="st st-sec st-center mb-6">
-          <span className="st-lead">Affären avgörs fortfarande mellan människor.</span>
           <span className="st-display display">När säljaren tar över ska så lite som möjligt vara en gissning.</span>
         </h2>
         <p data-ho className="text-white/72 text-[15px] md:text-base leading-[1.75] max-w-xl mx-auto mb-8">
-          Vi avgör inte vad som händer i samtalet, men vi ser till att det
-          finns ett verkligt skäl att ta det: rätt bolag, rätt personer, rätt
-          läge och ett underlag som går att använda.
+          Vi avgör inte vad som händer i samtalet. Vi ser till att säljaren
+          går in med rätt bolag, rätt person, rätt läge och ett underlag som
+          går att använda.
         </p>
         <p data-ho className="text-white font-medium text-[15px] md:text-[17px] max-w-xl mx-auto">
-          En Brief är inte ett löfte om en affär. Det är vårt arbete för att
-          så lite som möjligt ska lämnas åt slumpen innan första kontakten.
+          En Brief är inte ett löfte om en affär. Det är arbetet för att lämna
+          så lite som möjligt åt slumpen innan första kontakten.
         </p>
       </div>
     </section>
@@ -82,23 +81,19 @@ export const Handoff = () => {
 // echo the demo cohort (3 120 of a 31 000-company industry universe) and are
 // labelled illustrative. No fake live data.
 // ==========================================================================
-/* The portal's own market story, five stages, in the portal's own words.
-   The numbers are the page's one funnel (FUNNEL in story.jsx): 31 000 in the
-   industry universe, 3 120 matching the requirement profile, 388 held, 96
-   deep-researched so far, 24 delivered — and are labelled illustrative.
-   No fake live data. */
+/* The portal's own market model, in the portal's own four stages: the
+   universe (with the estimated match as its sub-line, not a stage of its
+   own), searched, qualified, delivered. The numbers are the page's one
+   funnel (FUNNEL in story.jsx) and are labelled illustrative. No fake live
+   data. */
 const STAGES = [
   {
-    v: '31\u00a0000', l: 'Ert branschuniversum', n: 'Aktiva bolag i de branscher ni säljer till. Bolagsverket och SCB.', k: 'universe',
-    // The estimate belongs to the universe, as it does in the portal.
+    v: '31\u00a0000', l: 'Ert branschuniversum', n: 'Aktiva bolag i de branscher ni säljer till.', k: 'universe',
+    ext: { v: 'varav ~3\u00a0120', l: 'uppskattas matcha er profil' },
   },
-  { v: '3\u00a0120', l: 'Matchar er kravbild', n: 'Avgränsade av er OfferBrain: en namnlista, inte en uppskattning.', k: 'cohort' },
-  { v: '388', l: 'Håller i granskningen', n: 'Rätt bransch, storlek, geografi och systemmiljö. Regelstyrt.', k: 'held' },
-  {
-    v: '96', l: 'Djupresearchade hittills', n: 'Vi fortsätter tills alla 388 är genomgångna.', k: 'searched',
-    ext: { v: '292', l: 'återstår', n: 'Det som redan är undersökt kommer inte tillbaka som nytt.' },
-  },
-  { v: '24', l: 'Levererade i briefs', n: 'Granskade av analytiker.', k: 'delivered' },
+  { v: '1\u00a0180', l: 'Genomsökta av Norrsyn', n: 'Även bolag som valts bort ingår. Att välja bort är en del av arbetet.', k: 'searched' },
+  { v: '96', l: 'Har hittills kvalificerat sig', n: 'Når er tröskel. Bara de starkaste går vidare till en Brief.', k: 'qualified' },
+  { v: '24', l: 'Levererade i Briefs', n: 'Granskade och levererade.', k: 'delivered' },
 ];
 
 export const Tam = () => {
@@ -126,14 +121,13 @@ export const Tam = () => {
           <div className="md:col-span-6">
             <div data-tam className="eyebrow text-ink-4 mb-4">Er marknad över tid</div>
             <h2 data-tam className="st st-sec mb-4">
-              <span className="st-lead">Vi slutar inte vid en leverans.</span>
               <span className="st-display display">Vi fortsätter tills er marknad är genomarbetad.</span>
             </h2>
             <p data-tam className="text-ink-3 text-[14.5px] md:text-[15px] leading-[1.7] max-w-lg mb-4">
               Varje leverans arbetar igenom en del av marknaden. I portalen ser
-              ni hela vägen: hur stort ert branschuniversum är, hur många som
-              matchar er kravbild, hur många som håller, hur långt researchen
-              har kommit och vad som har levererats.
+              ni hela vägen: hur stort ert branschuniversum är, hur många vi
+              har gått igenom, vad som har kvalificerat sig och vad som har
+              levererats.
             </p>
             <p data-tam className="text-ink text-[14.5px] md:text-[15px] font-medium leading-[1.7] max-w-lg">
               Det som redan är undersökt kommer inte tillbaka som nytt, och det
@@ -152,13 +146,17 @@ export const Tam = () => {
                     {st.ext && (
                       <span className="mp-ext">
                         <b>{st.ext.v}</b> {st.ext.l}
-                        <span className="mp-note">{st.ext.n}</span>
+                        {st.ext.n && <span className="mp-note">{st.ext.n}</span>}
                       </span>
                     )}
                   </span>
                 </li>
               ))}
             </ol>
+            <p data-tam className="tam-note">
+              Genomgången fortsätter löpande. Övriga värden uppdateras i takt
+              med arbetet.
+            </p>
             <p data-tam className="tam-note">
               Illustrativa siffror. Vyn finns under Översikt i er portal.
             </p>
@@ -354,34 +352,31 @@ export const About = () => {
           <div className="md:col-span-5">
             <div data-about className="eyebrow text-white/55 mb-6">Om Norrsyn</div>
             <h2 data-about className="st st-sec">
-              <span className="st-lead">Säljare lägger sin bästa tid på fel bolag.</span>
               <span className="st-display display">Vi gör grundarbetet inför era viktigaste samtal.</span>
             </h2>
           </div>
           <div className="md:col-span-7 md:pl-4 grid sm:grid-cols-2 gap-8 md:gap-12">
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
-                Norrsyn finns för att ändra på det. Vi bevakar den svenska
-                B2B-marknaden löpande och läser varje bolag mot er kravbild:
-                vad som har hänt, vad det betyder för just ert erbjudande och
-                vem som äger frågan.
+                Norrsyn bevakar den svenska B2B-marknaden löpande och läser
+                varje bolag mot er kravbild: vad som har hänt, vad det betyder
+                för ert erbjudande och vem som äger frågan.
               </p>
               <p data-about>
-                Offentliga register, finansiell historik, rekryteringar,
-                pressflöden och bolagens egna kanaler vägs samman till en
-                bedömning som en analytiker står bakom.
+                Register, finansiell historik, rekryteringar, pressflöden och
+                bolagens egna kanaler vägs samman till en bedömning som en
+                analytiker står bakom.
               </p>
             </div>
             <div className="space-y-5 text-white/72 text-[15px] leading-[1.75]">
               <p data-about>
-                Vi utgår från Jönköping, mitt i det Sverige vi arbetar igenom.
-                Våra kunder säljer B2B på den svenska marknaden och vet vem de
-                vill nå, oavsett var de själva sitter.
+                Vi utgår från Jönköping och arbetar med kunder som säljer B2B
+                på den svenska marknaden, oavsett var de själva sitter.
               </p>
               <p data-about>
-                Det vi lämnar ifrån oss är aldrig listor. Det är ett fåtal
-                genomarbetade Briefs där en affär är rimlig, med källorna öppna
-                så att era säljare kan bedöma dem själva.
+                Vi lämnar aldrig listor. Vi lämnar ett fåtal genomarbetade
+                Briefs, med källorna öppna så att era säljare kan bedöma dem
+                själva.
               </p>
             </div>
           </div>
@@ -446,22 +441,17 @@ export const Contact = () => {
           <div className="md:col-span-5">
             <div className="eyebrow text-white/50 mb-6">Kontakt</div>
             <h2 className="st st-sec mb-6">
-              <span className="st-lead">Berätta kort vad ni gör, så hör vi av oss.</span>
               <span className="st-display display">Vi börjar med ett samtal.</span>
             </h2>
             <p className="text-white/72 text-[15px] leading-[1.75] max-w-sm mb-10">
-              Vi pratar igenom vad ni säljer och vart ni vill, och ser
-              tillsammans om Norrsyn är rätt för er.
+              Berätta vad ni säljer och vilka kunder ni vill nå. Vi tar det
+              därifrån.
             </p>
             {/* The direct way in, set like every other label on the page. */}
             <dl className="ct-direct">
               <div>
                 <dt>E-post</dt>
                 <dd><a href="mailto:info@norrsyn.se" className="link-underline">info@norrsyn.se</a></dd>
-              </div>
-              <div>
-                <dt>Plats</dt>
-                <dd>Jönköping, Sverige</dd>
               </div>
             </dl>
           </div>
@@ -489,8 +479,8 @@ export const Contact = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="c-desc" className="eyebrow text-white/55 block">Berätta kort om ert företag</label>
-                <textarea id="c-desc" rows="4" name="description" value={formData.description} onChange={handleChange} className={`${field} resize-none`} placeholder="Vad gör ni, och har ni någon fråga?" />
+                <label htmlFor="c-desc" className="eyebrow text-white/55 block">Meddelande</label>
+                <textarea id="c-desc" rows="4" name="description" value={formData.description} onChange={handleChange} className={`${field} resize-none`} placeholder="Vad säljer ni och vilka kunder vill ni nå?" />
               </div>
 
               <div className="pt-2">
