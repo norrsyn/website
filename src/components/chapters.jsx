@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from '../lib/cohort.js';
 import { LayoutGrid, Send, Building2, ScanSearch, FileText } from 'lucide-react';
-import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS, FUNNEL, PH_HAND } from './story.jsx';
+import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, NAMED, CHECKS, FUNNEL, PH_HAND } from './story.jsx';
 
 // ==========================================================================
 // THE CHAPTERS — one source of truth for the story's data, copy and
@@ -219,7 +219,7 @@ export function Standouts() {
         ))}
       </div>
       <ul className="so-cands">
-        {CANDIDATES.map((c) => (
+        {NAMED.map((c) => (
           <li key={c.key} data-cand={c.key} className="so-cand">
             <i className="so-dot" style={{ background: TONES[c.tone] }} aria-hidden="true" />
             <b>{c.name}</b>

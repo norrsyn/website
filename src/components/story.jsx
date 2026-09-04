@@ -35,7 +35,7 @@ export const TONE_LABEL = { rekrytering: 'Rekrytering', beslut: 'Ny beslutsfatta
    companies that held in 03 are the ones that stand out here. */
 export const STANDOUTS = [
   { at: 0.474, tone: 'expansion', cand: 'hk' },
-  { at: 0.33, tone: 'system' },
+  { at: 0.33, tone: 'system', cand: 'vi' },
   { at: 0.58, tone: 'rekrytering', cand: 'nf', multi: ['rekrytering', 'beslut', 'expansion'] },
   { at: 0.72, tone: 'beslut', cand: 'si' },
 ];
@@ -65,6 +65,13 @@ export const CANDIDATES = [
     verdict: 'go',
   },
 ];
+
+/* One more that lights up in 04 — a system change under way — named in the
+   margin and the legend, but not one of the three inspected in 05. */
+export const EXTRA_STANDOUTS = [
+  { key: 'vi', name: 'Vänerns Industriteknik AB', sub: 'Tillverkning · Lidköping', tone: 'system', signals: ['Byter affärssystem'] },
+];
+export const NAMED = [...CANDIDATES, ...EXTRA_STANDOUTS];
 
 /* The delivery the company lands in, as the portal lists it. */
 export const PORTAL_ROWS = [

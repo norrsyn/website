@@ -16,7 +16,7 @@ import {
   lengthAtY, lerp, green, greenHi, white, OFFS, TAU,
 } from './stage.js';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from './cohort.js';
-import { TONES, STANDOUTS, CANDIDATES } from '../components/story.jsx';
+import { TONES, STANDOUTS, NAMED } from '../components/story.jsx';
 
 /** A tip fades in the last stretch of its route instead of vanishing. */
 const tipFade = (t) => 1 - band(0.86, 1)(t);
@@ -644,7 +644,7 @@ export function s4Scene(el, R = docRect) {
           .forEach(({ sd, k, y: my }) => {
             const t = band(0.55, 1)(lit[k]);
             if (t <= 0) return;
-            const c = CANDIDATES.find((cc) => cc.key === sd.cand);
+            const c = NAMED.find((cc) => cc.key === sd.cand);
             const y = Math.max(my, lastY + 28);
             lastY = y;
             const x0 = F.r + 6, tx = F.r + 22;
