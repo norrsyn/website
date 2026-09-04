@@ -86,6 +86,8 @@
 }
 .jy-art-ph { top: 58vh; }
 .jy-art .jr-foot { margin-top: 0.9rem; }
+/* 01: the six fibers run home under the ledger; the note sits below them. */
+.jy-layer[data-ch="s1"] .jr-foot { margin-top: 3.6rem; }
 .jy-art .jr-intake-wrap,
 .jy-art .jr-map,
 .jy-art .jr-manifold,

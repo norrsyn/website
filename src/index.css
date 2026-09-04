@@ -1361,6 +1361,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .ph-slots { display: flex; flex-direction: column; }
+/* The conclusion, as a fifth line under the four: the rose mark is filled —
+   the question that has an answer once you have defined it. */
+.ph-hand {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin: 1.9rem 0 0;
+  max-width: 30rem;
+  font-size: 15.5px;
+  line-height: 1.55;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: #fff;
+}
+.ph-hand-mark {
+  flex: 0 0 auto;
+  width: 13px; height: 13px;
+  margin-top: 5px;
+  border-radius: 2px;
+  background: rgba(214, 96, 158, 0.82);
+  box-shadow: 0 0 0 1.5px rgba(214, 96, 158, 0.28);
+}
 .ph-slot {
   display: flex;
   align-items: flex-start;

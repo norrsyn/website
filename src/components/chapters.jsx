@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { COLS, MARKS, RANKS, ALIVE_AFTER_03 } from '../lib/cohort.js';
 import { LayoutGrid, Send, Building2, ScanSearch, FileText } from 'lucide-react';
-import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS, FUNNEL } from './story.jsx';
+import { INTAKE, RAILS, CASE, PORTAL_ROWS, TONES, TONE_LABEL, CANDIDATES, CHECKS, FUNNEL, PH_HAND } from './story.jsx';
 
 // ==========================================================================
 // THE CHAPTERS — one source of truth for the story's data, copy and
@@ -112,6 +112,13 @@ export function ProblemGrid() {
             </span>
           </div>
         ))}
+        {/* The conclusion of the four, hung from the last of them: the fit
+            is the one question only you can answer, so that is where the
+            work starts. */}
+        <p data-rv className="ph-hand">
+          <span className="ph-hand-mark" aria-hidden="true" />
+          <span>{PH_HAND}</span>
+        </p>
       </div>
     </div>
   );

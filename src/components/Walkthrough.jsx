@@ -6,7 +6,7 @@ import { createStage } from '../lib/stage.js';
 import {
   spineScene, problemetScene, s1Scene, s2Scene, s3Scene, s4Scene, s5Scene, s6Scene,
 } from '../lib/scenes.js';
-import { COPY, PH_BODY, PH_HAND } from './story.jsx';
+import { COPY, PH_BODY } from './story.jsx';
 import {
   Node, Head, Foot, ProblemHeadline, ProblemGrid,
   Ledger, MarketMap, Screening, Standouts, Qualify, PortalMini,
@@ -115,9 +115,6 @@ export default function Walkthrough() {
             {PH_BODY}
           </p>
           <ProblemGrid />
-          <p data-rv className="mt-16 md:mt-20 max-w-2xl text-white text-[17px] md:text-[19px] leading-[1.6] font-medium tracking-[-0.015em]">
-            {PH_HAND}
-          </p>
         </div>
       </section>
 

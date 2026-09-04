@@ -260,10 +260,16 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       L6.el.style.setProperty('--jy-brief-end', k.toFixed(3));
       if (L6.lift && L6.flip) {
         // The Brief grows the whole way through — never a small card alone.
+        // It grows by `zoom`, not by a transform: the type is laid out and
+        // rasterised at the size it is shown, so the head of the document is
+        // as sharp as the document. The translate is in the zoomed element's
+        // own units, hence divided by the zoom.
         const e = q5(sm(0.06, 0.92, o));
         const { dx, dy, k: kk } = L6.flip;
         const ty = dy - st.dy.s6 / L6.artScale;
-        L6.lift.style.transform = `translate(${(dx * e).toFixed(1)}px, ${(ty * e).toFixed(1)}px) scale(${(1 + (kk - 1) * e).toFixed(4)})`;
+        const z = 1 + (kk - 1) * e;
+        L6.lift.style.zoom = z.toFixed(4);
+        L6.lift.style.transform = `translate(${(dx * e / z).toFixed(2)}px, ${(ty * e / z).toFixed(2)}px)`;
       }
       if (L6.open) {
         // The click: "Öppna brief" takes the press and holds it for as long
@@ -520,10 +526,19 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       L6.open = L6.el.querySelector('.pm-open');
       if (L6.lift) {
         L6.lift.style.transform = '';
+        L6.lift.style.zoom = '';
+        L6.lift.style.width = '';
         const b = R(L6.lift);
         const k = colW / b.w;
-        const th = b.h * k;
-        L6.flip = { dx: (colL - b.l) / L6.artScale, dy: (H - th - b.t) / L6.artScale, k };
+        // An explicit width, so zoom scales the box instead of re-wrapping
+        // the text inside the same width; then the landing is measured with
+        // the zoom applied, so margins and metrics rounding are in the sum.
+        L6.lift.style.width = `${(b.w / L6.artScale).toFixed(2)}px`;
+        L6.lift.style.zoom = k.toFixed(4);
+        const bz = R(L6.lift);
+        L6.lift.style.zoom = '';
+        const th = bz.h;
+        L6.flip = { dx: (colL - bz.l) / L6.artScale, dy: (H - th - bz.t) / L6.artScale, k };
         // The document's words sit just above the Brief's head, on its column:
         // the paper above is the margin, the words open the dossier below.
         if (end?.el) {
@@ -546,6 +561,11 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
       ['C', ax, 186, gx, 68, gx, 236, 40],
       ['L', gx, (TRAVEL + CREEP) * H + 4],
     ]);
+    // Geometry changed: everything derived from it is applied again on the
+    // next frame, including the ending, which otherwise only re-applies when
+    // the scroll moves — a reload deep in the page would leave the Brief
+    // where the measurement reset it.
+    lastOut = -1; lastEnd = null; lastP = -1;
     if (!running) { compute(); applyDOM(); field.render(performance.now()); }
   }
 

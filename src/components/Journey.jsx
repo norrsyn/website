@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import HeroContent from './HeroContent.jsx';
-import { COPY, PH_BODY, PH_HAND } from './story.jsx';
+import { COPY, PH_BODY } from './story.jsx';
 import {
   Head, Foot, ProblemHeadline, ProblemGrid,
   Ledger, MarketMap, Screening, Standouts, Qualify, PortalMini,
@@ -97,7 +97,12 @@ export default function Journey() {
     // their height), and each batch of fonts as it lands. `fonts.ready` alone
     // resolves before a stylesheet-loaded family has even been requested.
     const ro = new ResizeObserver(() => journey.measure());
-    fr.querySelectorAll('.jy-copy, .jy-art, .hf-content').forEach((el) => ro.observe(el));
+    // 06's artefact is not observed: the Brief grows by zoom at the end, which
+    // resizes that box every frame and would re-measure in a loop.
+    fr.querySelectorAll('.jy-copy, .jy-art, .hf-content').forEach((el) => {
+      if (el.classList.contains('jy-art') && el.closest('[data-ch="s6"]')) return;
+      ro.observe(el);
+    });
     const onFonts = () => journey.measure();
     document.fonts?.addEventListener?.('loadingdone', onFonts);
     ro.observe(fr);
@@ -188,9 +193,6 @@ export default function Journey() {
             </div>
             <div className="jy-art jy-art-ph">
               <ProblemGrid />
-              <p className="jy-hand mt-8 max-w-2xl text-white text-[17px] leading-[1.6] font-medium tracking-[-0.015em]">
-                {PH_HAND}
-              </p>
             </div>
           </div>
 

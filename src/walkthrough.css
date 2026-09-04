@@ -56,6 +56,8 @@
 .wk .ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box { border-color: rgba(214, 96, 158, 0.95); }
 .wk .ph-slot[data-active="1"][data-kind="passform"] .ph-slot-box::after { background: rgba(214, 96, 158, 0.9); }
 .wk .ph-slot { border-bottom-color: rgba(255, 255, 255, 0.12); }
+.wk .ph-hand { color: #fff; }
+@media (min-width: 1024px) { .wk .jr-01 .jr-foot { margin-top: 3.6rem; } }
 .wk .wk-ph-copy { color: rgba(255, 255, 255, 0.78); }
 .wk .wk-ph-register {
   display: flex;

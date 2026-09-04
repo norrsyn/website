@@ -78,7 +78,7 @@ export const PORTAL_ROWS = [
 export const PH_BODY =
   'Behov, rätt person och rätt tidpunkt står inte i något register. Det är det vi tar reda på, bolag för bolag, innan ni lyfter luren.';
 export const PH_HAND =
-  'Därför börjar vi inte med en lista. Vi börjar med vad rätt betyder för er.';
+  'För att veta vilka bolag ni ska agera på måste vi först definiera vad rätt betyder för er.';
 
 // The funnel: ONE set of numbers used everywhere on the page — the six
 // chapters, the market-over-time view and the Brief. Illustrative, and the
@@ -115,7 +115,7 @@ export const COPY = {
         branschuniversum. Dem följer vi genom resten av processen.
       </>
     ),
-    foot: 'Punkterna utanför ramen är branschuniversumet: 31\u00a0000 aktiva bolag i de branscher ni säljer till. Siffrorna är illustrativa; ett streck motsvarar tio bolag.',
+    foot: 'Nu betar vi av 10\u00a0% av er totalt adresserbara marknad. Ett streck är tio bolag; siffrorna är illustrativa.',
   },
   s3: {
     n: '03', tag: '03 · Granskningen', title: '”Det mesta ska bort.”',

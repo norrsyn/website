@@ -190,8 +190,14 @@ export function problemetScene(el, R = docRect) {
 
 /* ── 01: six answers become six strands, and the strands become the line ─ */
 export function s1Scene(el, R = docRect) {
-  let sec, LG, rows = [], entry = null, fibers = [], collector = null, home = null, spindle = [], desktop = false;
-  let foldY = 0, cX = 0, homeY = 0, joinY = 0, sp0 = 0, labelAt = null, collVert = 0, homeRun = 0, rowsT = 0;
+  let sec, LG, rows = [], entry = null, A = [], B = [], C = [], turnLen = [], foldLen = [];
+  let foldY = 0, cX = 0, neckY = 0, home = [], labelAt = null, desktop = false, rowsT = 0;
+  let hb = 0, y0 = 0; // where the run home completes, and where the descent resumes
+  const LANE = (i) => cX + i * 2.2;      // ribbon lanes on the collector
+  const TURN = (i) => 13 + i * 2.2;      // nested right corner
+  const FOLD = (i) => 26 - i * 2.2;      // nested left corner
+  const NECK = (i) => -2.75 + i * 1.1;   // spindle entry offsets
+
   return {
     el, bg: '#0C1310', t: 0, b: 0, node: null,
     measure(geo) {
@@ -200,7 +206,7 @@ export function s1Scene(el, R = docRect) {
       LG = R(el.querySelector('[data-wk-ledger]'));
       rows = Array.from(el.querySelectorAll('.jr-intake-row')).map((r) => ({ el: r, r: R(r) }));
       desktop = geo.desktop;
-      if (!desktop) { entry = null; fibers = []; collector = null; home = null; spindle = []; return; }
+      if (!desktop) { entry = null; A = []; B = []; C = []; return; }
       const { railX } = geo;
       // The fold crosses between the copy and the first row of the ledger:
       // a fixed distance above the rows where there is room, midway where
@@ -210,58 +216,70 @@ export function s1Scene(el, R = docRect) {
       rowsT = rows.length ? rows[0].r.t : LG.t;
       const gap = rowsT - copyB;
       foldY = gap >= 130 ? rowsT - 96 : copyB + gap * 0.5;
-      const rr = Math.max(8, Math.min(26, rowsT + 8 - foldY));
-      cX = LG.r + 30;
+      cX = LG.r + 32;
       geo.singleEndY = foldY - 26;
-      // The arrival: down the rail, one rounded fold to the right, across the
-      // head of the ledger, one rounded turn down its side.
+      // The arrival: down the rail, a fold to the right, across the head of
+      // the ledger, one knot at the collector, then down the collector to
+      // where the first answer will join.
       entry = path([
         ['M', railX, foldY - 26],
-        ['Q', railX, foldY, railX + 26, foldY, 10],
-        ['L', cX - rr, foldY],
-        ['Q', cX, foldY, cX, foldY + rr, 10],
-        ['L', cX, rowsT + 8],
+        ['Q', railX, foldY, railX + 26, foldY, 8],
+        ['L', cX - 7, foldY],
+        ['A', cX, foldY, 7, Math.PI, Math.PI * 2.5, 20],
+        ['L', cX, rowsT + 42],
       ]);
-      // Each answer leaves its row and joins the collector: six into one.
-      fibers = rows.map((row) => {
+      const collectY = LG.b + 36;
+      neckY = collectY + 44;
+      home = rows.map((_, i) => collectY - 12 + i * 2.4);
+      // Each criterion is one continuous fiber: from its own row into its
+      // own lane on the collector, down, and home under the ledger.
+      A = rows.map((row, i) => {
         const y = row.r.cy;
-        return path([['M', LG.r + 16, y], ['L', cX - 14, y], ['Q', cX, y, cX, y + 14, 8]]);
-      });
-      // The collector runs down the ledger's side and turns under it.
-      homeY = LG.b + 34;
-      collector = path([['M', cX, rowsT + 8], ['L', cX, homeY - 28], ['Q', cX, homeY, cX - 28, homeY, 10]]);
-      collVert = lengthAtY(collector, homeY - 28);
-      // One signal runs home to the spine and turns down it.
-      joinY = homeY + 30;
-      sp0 = joinY + 36;
-      home = path([
-        ['M', cX - 28, homeY],
-        ['L', railX + 30, homeY],
-        ['Q', railX, homeY, railX, homeY + 30, 12],
-        ['L', railX, sp0],
-      ]);
-      homeRun = cX - 28 - (railX + 30);
-      // The spindle: past the join the one signal breathes apart into six
-      // strands — the six criteria — and settles into the bundle that
-      // carries the model through the rest of the page.
-      spindle = OFFS.map((fo, i) => {
-        const w = fo * 2.6, ph = PHASE[i];
         return path([
-          ['M', railX, sp0],
-          ['C', railX, sp0 + 44 + ph, railX + w, sp0 + 60 + ph, railX + w, sp0 + 92 + ph, 16],
-          ['C', railX + w, sp0 + 126 + ph, railX + fo, sp0 + 156 + ph, railX + fo, sp0 + 200, 16],
+          ['M', LG.r + 16, y],
+          ['L', LANE(i) - 12, y],
+          ['Q', LANE(i), y, LANE(i), y + 14, 6],
+          ['L', LANE(i), home[i] - TURN(i)],
+          ['Q', LANE(i), home[i], LANE(i) - TURN(i), home[i], 8],
+          ['L', LG.r + 18, home[i]],
+        ]);
+      });
+      turnLen = A.map((P, i) => lengthAtY(P, home[i] - TURN(i)));
+      B = rows.map((_, i) => path([
+        ['M', LG.r + 18, home[i]],
+        ['L', railX + NECK(i) + FOLD(i), home[i]],
+        ['Q', railX + NECK(i), home[i], railX + NECK(i), home[i] + FOLD(i), 8],
+        ['L', railX + NECK(i), neckY],
+      ]));
+      foldLen = B.map((P, i) => lengthAtY(P, home[i] + FOLD(i)));
+      // The horizontal runs are drawn over scroll bands (a vertical head
+      // cannot trace a horizontal line 1:1). Everything after them descends
+      // from a lagged head that starts where the fold ends and catches the
+      // real head up over the next hundred pixels — no jump, no teleport.
+      hb = home[5] - TURN(5) + 150;
+      y0 = home[0] + FOLD(0);
+      // The spindle: the six fibers breathe apart and settle into the bundle
+      // that carries the model through the rest of the page.
+      C = OFFS.map((fo, i) => {
+        const w = fo * 2.6, ph = PHASE[i], x0 = railX + NECK(i);
+        return path([
+          ['M', x0, neckY],
+          ['C', x0, neckY + 44 + ph, railX + w, neckY + 60 + ph, railX + w, neckY + 92 + ph, 16],
+          ['C', railX + w, neckY + 126 + ph, railX + fo, neckY + 156 + ph, railX + fo, neckY + 200, 16],
           ['L', railX + fo, geo.spindleEnd ?? sec.b + 2],
         ]);
       });
       geo.ropeStart = geo.spindleEnd ?? sec.b + 2;
-      labelAt = [railX + 26, joinY + 34];
+      labelAt = [railX + 26, neckY + 81.5];
     },
-    // The head hands over to the ledger at the fold, with a fade.
+    // The head rides the spine until the fold; from there the ledger's own
+    // tips carry it — with a fade, never a cut.
     cometAlpha(y) { return !entry ? 1 : smooth(foldY - 40, foldY - 110, y); },
     paint(ctx, f) {
       const h = f.head;
-      // The ledger is read as the head reaches each row: the question is
-      // acknowledged, the criterion goes live, and its answer leaves the row.
+      // The ledger is read in turn as the head physically reaches each row:
+      // the question is acknowledged, the criterion goes live, and only then
+      // does its fiber leave the row — at the row's own height.
       rows.forEach((row) => {
         const read = h > row.r.t + 6 ? '1' : '0';
         const live = h > row.r.t + 26 ? '1' : '0';
@@ -271,38 +289,45 @@ export function s1Scene(el, R = docRect) {
       if (!desktop || !entry) return;
       const yT = f.top, yB = f.bot;
       const et = band(foldY - 26, foldY + 106)(h);
-      if (et > 0) strokeLine(ctx, entry, entry.len * et, { alpha: 0.62, width: 2, glow: 0.5, tip: et < 1, tipA: 0.7 * tipFade(et), yTop: yT, yBot: yB });
+      if (et > 0) strokeLine(ctx, entry, entry.len * et, { alpha: 0.62, width: 1.75, glow: 0.6, tip: et < 1, tipA: 0.7 * tipFade(et), yTop: yT, yBot: yB });
+      if (h > rowsT - 60) {
+        ctx.fillStyle = green(1);
+        ctx.beginPath(); ctx.arc(cX, foldY, 2.4, 0, TAU); ctx.fill();
+      }
+      // Each lane grows with the head — its tip IS the head — until the turn;
+      // the turn and the run home draw over the next forty pixels of scroll.
+      let lanesLive = 0, lanesGrowing = false;
       rows.forEach((row, i) => {
-        const t = band(row.r.t + 26, row.r.t + 66)(h);
-        if (t > 0) strokeLine(ctx, fibers[i], fibers[i].len * t, { alpha: 0.5, width: 1, tip: t < 1, tipA: 0.5 * tipFade(t), yTop: yT, yBot: yB });
+        const P = A[i];
+        if (h <= row.r.t + 26) return;
+        lanesLive++;
+        let s = Math.min(lengthAtY(P, h), turnLen[i]);
+        if (s < turnLen[i]) lanesGrowing = true;
+        const tb = band(home[i] - TURN(i), home[i] - TURN(i) + 40)(h);
+        if (tb > 0) s = turnLen[i] + (P.len - turnLen[i]) * tb;
+        strokeLine(ctx, P, s, { alpha: 0.5, width: 1, tip: false, yTop: yT, yBot: yB });
       });
-      // The collector grows with the head; its turn draws over a short band.
-      if (h > rowsT + 8) {
-        const turn = band(homeY - 28, homeY + 16)(h);
-        const cs = h < homeY - 28 ? lengthAtY(collector, h) : collVert + (collector.len - collVert) * turn;
-        strokeLine(ctx, collector, cs, { alpha: 0.62, width: 2, tip: cs < collector.len, tipA: 0.7 * tipFade(cs / collector.len), yTop: yT, yBot: yB });
-      }
-      // Home: the run to the spine over a band, then the descent from a
-      // lagged head that catches the real one — no jump.
-      let hl = -Infinity;
-      const hr = band(homeY + 16, homeY + 150)(h);
-      if (hr > 0) {
-        let hs = homeRun * hr;
-        if (hr >= 1) {
-          hl = Math.min(h, joinY + 2.5 * (h - (homeY + 150)));
-          hs = Math.max(hs, lengthAtY(home, hl));
-        }
-        strokeLine(ctx, home, hs, { alpha: 0.62, width: 2, tip: hs < home.len, tipA: 0.7 * (hr < 1 ? tipFade(hr) : 1), yTop: yT, yBot: yB });
-      }
-      // Past the join: six strands from one, each drawn to the lagged head.
-      if (hl > sp0) {
-        spindle.forEach((P) => {
-          const sl = lengthAtY(P, hl);
-          if (sl > 0) strokeLine(ctx, P, sl, { alpha: 0.55, width: 1.1, tip: false, yTop: yT, yBot: yB });
+      // One tip for the whole collector, on the ribbon's centre.
+      if (lanesGrowing) drawTip(ctx, LANE(0) + (lanesLive - 1) * 1.1, Math.min(h, home[0] - TURN(0)), 0.85, 8);
+      // The lagged head: parked at the fold's end while the ribbon runs home,
+      // then catching the real head at two and a half times its speed.
+      const hl = h > hb ? Math.min(h, y0 + 2.5 * (h - hb)) : -Infinity;
+      B.forEach((P, i) => {
+        const b0 = home[i] - TURN(i) + 40;
+        const bt = band(b0, b0 + 110)(h);
+        if (bt <= 0) return;
+        let s = foldLen[i] * bt;
+        if (bt >= 1) s = Math.max(s, lengthAtY(P, hl));
+        strokeLine(ctx, P, s, { alpha: 0.5, width: 1, tip: false, yTop: yT, yBot: yB });
+      });
+      if (hl > neckY) {
+        C.forEach((P) => {
+          const s = lengthAtY(P, hl);
+          if (s > 0) strokeLine(ctx, P, s, { alpha: 0.55, width: 1.1, tip: false, yTop: yT, yBot: yB });
         });
         if (hl < (f.geo.spindleEnd ?? sec.b)) drawTip(ctx, f.geo.railX, hl, 0.8, 9);
       }
-      const la = band(joinY + 60, joinY + 120)(h);
+      const la = band(neckY + 120, neckY + 180)(h);
       if (la > 0 && labelAt) {
         ctx.beginPath();
         ctx.moveTo(labelAt[0] - 10.5, labelAt[1] - 3.5); ctx.lineTo(labelAt[0] - 5, labelAt[1] - 3.5);
