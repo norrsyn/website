@@ -72,7 +72,7 @@ export const LABEL = {
 };
 const SCENE = { ph: problemetScene, s1: s1Scene, s2: s2Scene, s3: s3Scene, s4: s4Scene, s5: s5Scene, s6: s6Scene };
 // Where the anchors in the navigation land inside the story.
-const ANCHOR_TO = { '#start': 'hero', '#varfor-norrsyn': 'ph', '#processen': 's1' };
+const ANCHOR_TO = { '#start': 'hero', '#varfor-norrsyn': 'ph', '#processen': 's1', '#brief': 'brief' };
 
 // A chapter arrives from TRAVEL viewports below and leaves as far above —
 // one full frame, so two chapters never share the frame except at their
@@ -610,7 +610,12 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
     if (id === 'hero') { glideTo(0); return; }
     // s6's own "next" hands off to the real document below the frame,
     // masthead still hidden — the chapter's zoom just played that part.
-    if (id === 'brief') { glideToEl('#brief'); return; }
+    // The Brief: land on the frame's own ending, where the document's head
+    // already sits flush at the bottom of the frame and the rest of it
+    // follows below. Landing inside the section instead would show the
+    // metrics with no masthead, and revealing the section's own head would
+    // repeat the head the frame is already showing.
+    if (id === 'brief') { glideTo(wrapTop + TOTAL * H); return; }
     if (!WIN[id]) return;
     glideTo(wrapTop + (WIN[id][0] + (TIN[id] || T) + 0.1) * H);
   }
@@ -623,10 +628,6 @@ export function createJourney({ wrap, frame, canvas, layers, hero, control, end 
   }
   /** An anchor anywhere on the page: into the story, or down to a section. */
   function goToAnchor(hash) {
-    // A direct jump to the Brief skips s6's own reveal, so it shows the
-    // document's real head (masthead, grade, contact) instead of assuming
-    // the visitor already watched it grow out of the chapter.
-    if (hash === '#brief') document.querySelector('#brief')?.classList.add('brief-jump');
     const id = ANCHOR_TO[hash];
     if (id) { goTo(id); return true; }
     return glideToEl(hash);
